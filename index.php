@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>bina-7</title>
+    <!-- Stylesheets -->
+    <link rel="icon" href="<?php echo THEME_URL; ?>/assets/images/favicon.svg">
+    <link href="<?php echo THEME_URL; ?>/assets/css/style.css" rel="stylesheet">
+    <!-- Responsive -->
+    <link href="<?php echo THEME_URL; ?>/assets/css/responsive.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <!--[if lt IE 9]><script src="<?php echo THEME_URL; ?>/assets/js/respond.js"></script><![endif]-->
+    <script src="<?php echo THEME_URL; ?>/assets/js/jquery-3.2.1.min.js"></script>
+</head>
+
+<body>
+
+    <div class="mobile-menu">
+        <div class="logo-mobile">
+            <a href="index.html"><img src="<?php echo THEME_URL; ?>/assets/images/logo.svg" alt="Logo"></a>
+            <div class="is-closed"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+        <div class="mmenu">
+            <ul class="main_menu">
+                <li><a class="page-scroll" href="about.html">About Us</a></li>
+                <li><a class="page-scroll" href="why-us.html">Why Us </a></li>
+                <li><a class="page-scroll" href="subscriptions.html">Subscriptions</a></li>
+                <li><a class="page-scroll" href="articles.html">Articles</a></li>
+                <li><a class="page-scroll btn-site" href="contact.html"><span>Contact Us</span></a></li>
+                <li><a class="page-scroll" href=""><img src="<?php echo THEME_URL; ?>/assets/images/icon-user.png" alt="" /></a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="main-wrapper">
+
+        <header id="header">
+            <div class="container">
+                <div class="logo-site">
+                    <a href="index.html">
+                        <img src="<?php echo THEME_URL; ?>/assets/images/logo.svg" alt="" />
+                    </a>
+                </div>
+                <ul class="main_menu">
+                    <li><a class="page-scroll" href="about.html">About Us</a></li>
+                    <li><a class="page-scroll" href="why-us.html">Why Us </a></li>
+                    <li><a class="page-scroll" href="subscriptions.html">Subscriptions</a></li>
+                    <li><a class="page-scroll" href="articles.html">Articles</a></li>
+                    <li><a class="page-scroll btn-site" href="contact.html"><span>Contact Us</span></a></li>
+                    <li><a class="page-scroll" href=""><img src="<?php echo THEME_URL; ?>/assets/images/icon-user.png" alt="" /></a></li>
+                </ul>
+                <button type="button" class="hamburger"><i class="icon-hamburger"></i></button>
+            </div>
+        </header>
+        <!--header-->
+
+        <section class="section_home">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="home_txt wow fadeInUp">
+                            <h1>Pass the <span>General Aptitude</span> Test with Confidence</h1>
+                            <p>Prepare for the General Aptitude Test with structured training, realistic practice exams, and clear expert guidance. </p>
+                            <ul>
+                                <li><a href="" class="btn-site"><span>Start Learning</span></a></li>
+                                <li><a href="" class="btn-site btn-oth"><span>View Packages</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="thumb-hero wow fadeInUp">
+                            <img src="<?php echo THEME_URL; ?>/assets/images/thumb-hero.png" alt="Hero Image" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--section_home-->
+        
+        <section class="section_hint">
+            <div class="container">
+                <div class="cont-hint wow fadeInUp">
+                    <p>bina 7 for General Aptitude is dedicated to empowering students and providing them with all the necessary tools to excel in the General Aptitude Test (GAT), driven by an ambitious vision and clear strategic objectives.</p>
+                </div>
+            </div>
+        </section>
+        <!--section_hint-->
+
+        <section class="section_why_us">
+            <div class="container">
+                <div class="sec_head_why wow fadeInUp">
+                    <p>Why Us</p>
+                </div>
+                <div class="row wow fadeInUp">
+                    <div class="col-lg-3">
+                        <div class="item-why-us">
+                            <h4>Simplified Learning Approach</h4>
+                            <p>Complex aptitude concepts are broken down into clear, easy-to-understand lessons for faster comprehension.</p>
+                            <figure><img src="<?php echo THEME_URL; ?>/assets/images/why1.png" alt="Image Why" /></figure>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="item-why-us">
+                            <h4>Real Exam-Style Practice Tests</h4>
+                            <p>Practice with realistic simulations designed to match the actual General Aptitude Test format.</p>
+                            <figure><img src="<?php echo THEME_URL; ?>/assets/images/why2.png" alt="Image Why" /></figure>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="item-why-us">
+                            <h4>Expert Explanations & Guidance</h4>
+                            <p>Every question is supported by detailed explanations to help students understand logic, not just answers.</p>
+                            <figure><img src="<?php echo THEME_URL; ?>/assets/images/why3.png" alt="Image Why" /></figure>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="item-why-us">
+                            <h4>Proven Performance Improvement</h4>
+                            <p>Structured training plans focused on improving accuracy, confidence, and overall exam performance.</p>
+                            <figure><img src="<?php echo THEME_URL; ?>/assets/images/why4.png" alt="Image Why" /></figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--section_why_us-->
+        
+        <section class="section_subscriptions">
+            <div class="container">
+                <div class="sec_head wow fadeInUp">
+                    <h2>Subscriptions</h2>
+                    <p>Sign up for one of the packages and enjoy a unique experience</p>
+                </div>
+                <div class="owl-carousel" id="subscriptions-slider">
+                    <div class="item">
+                        <div class="item-plan wow fadeInUp">
+                            <div class="info-plan">
+                                <h6>Monthly Package</h6>
+                                <span>Share a Month at Price </span>
+                                <p><i class="icon-rsa"></i><b>59 / </b> 1 Month</p>
+                            </div>
+                            <div class="includes-plan">
+                                <b>Includes:</b>
+                                <ul>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Access to releases</li>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Access to the leaderboard</li>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Get rewards for the distinguished</li>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Access to all features</li>
+                                </ul>
+                            </div>
+                            <a href="" class="btn-site btn-oth"><span>Sign Up Now</span></a>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="popular-plan wow fadeInUp">
+                            <div class="sp-popular"><strong>Most Popular</strong></div>
+                            <div class="item-plan">
+                                <div class="info-plan">
+                                    <h6>Three Months Package </h6>
+                                    <span>Subscription 3 months at </span>
+                                    <p><i class="icon-rsa"></i><b>110 / </b> 3 Month</p>
+                                </div>
+                                <div class="includes-plan">
+                                    <b>Includes:</b>
+                                    <ul>
+                                        <li><span><i class="fa-solid fa-check"></i></span> Access to releases</li>
+                                        <li><span><i class="fa-solid fa-check"></i></span> Access to the leaderboard</li>
+                                        <li><span><i class="fa-solid fa-check"></i></span> Get rewards for the distinguished</li>
+                                        <li><span><i class="fa-solid fa-check"></i></span> Access to all features</li>
+                                    </ul>
+                                </div>
+                                <a href="" class="btn-site"><span>Sign Up Now</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-plan wow fadeInUp">
+                            <div class="info-plan">
+                                <h6>Two months package</h6>
+                                <span>Subscription 2 months at </span>
+                                <p><i class="icon-rsa"></i><b>79 / </b> 2 Month</p>
+                            </div>
+                            <div class="includes-plan">
+                                <b>Includes:</b>
+                                <ul>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Access to releases</li>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Access to the leaderboard</li>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Get rewards for the distinguished</li>
+                                    <li><span><i class="fa-solid fa-check"></i></span> Access to all features</li>
+                                </ul>
+                            </div>
+                            <a href="" class="btn-site btn-oth"><span>Sign Up Now</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--section_subscriptions-->
+
+        <section class="section_articles">
+            <div class="container">
+                <div class="sec_head wow fadeInUp">
+                    <h2>Thoughtful Articles</h2>
+                    <p>A sea of knowledge in the world of capabilities and ways to achieve success</p>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="item-article wow fadeInUp">
+                            <figure><img src="<?php echo THEME_URL; ?>/assets/images/art1.png" alt="Image Article" /></figure>
+                            <div class="txt-art">
+                                <div>
+                                    <span>12 Jan 2026</span>
+                                    <small>2 Minutes read</small>
+                                </div>
+                                <h6>Your study and your willingness to test abilities may be easier than expected!</h6>
+                                <p>Your willingness to test abilities can be more effective  using diverse study strategies. Here’s an explanation of some of these  strategies..... <a href="">Read more</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="item-article wow fadeInUp">
+                            <figure><img src="<?php echo THEME_URL; ?>/assets/images/art2.png" alt="Image Article" /></figure>
+                            <div class="txt-art">
+                                <div>
+                                    <span>05 Jan 2026</span>
+                                    <small>3 Minutes read</small>
+                                </div>
+                                <h6>How do you answer above ninety in an aptitude test?</h6>
+                                <p>Your willingnes to get more than 90% of the general aptitude test, you must follow a comprehensive plan that includes good preparation..... <a href="">Read more</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="lst-articles wow fadeInUp">
+                            <div>
+                                <h6><a href="">2 minutes reading How do you manage study time?</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                            <div>
+                                <h6><a href="">How to divide the preparation schedule for the aptitude test</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                            <div>
+                                <h6><a href="">Tips for those who want to retest abilities</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                            <div>
+                                <h6><a href="">Tips for preparing for the General Computed Aptitude Test</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                            <div>
+                                <h6><a href="">2 minutes reading How do you manage study time?</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                            <div>
+                                <h6><a href="">How to divide the preparation schedule for the aptitude test</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                            <div>
+                                <h6><a href="">Tips for those who want to retest abilities</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                            <div>
+                                <h6><a href="">Tips for preparing for the General Computed Aptitude Test</a></h6>
+                                <span>12 Jan 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--section_articles-->
+
+        <section class="section_request">
+            <div class="container">
+                <div class="cont-request">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="thumb-request">
+                                <figure><img src="<?php echo THEME_URL; ?>/assets/images/thumb-request.png" alt="" /></figure>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="txt-request">
+                                <h4>Confused About YourExam Preparation?</h4>
+                                <p>Don’t worry. Our experts are ready to help you choose the right practice tests and study plan.</p>
+                                <a href="" class="btn-site"><span>Request a Call Back</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--section_clients-->
+
+        <footer id="footer">
+            <div class="container">
+                <div class="top-footer">
+                    <div class="row align-items-center">
+                        <div class="col-lg-2">
+                            <div class="cont-ft wow fadeInUp">
+                                <figure class="logo-ft">
+                                    <img src="<?php echo THEME_URL; ?>/assets/images/logo.svg" alt="Logo" class="img-fluid">
+                                </figure>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="menu-ft wow fadeInUp">
+                                <ul class="li-ft">
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="why-us.html">Why Us </a></li>
+                                    <li><a href="subscriptions.html">Subscriptions</a></li>
+                                    <li><a href="articles.html">Articles</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="menu-contact wow fadeInUp">
+                                <ul class="list-contact">
+                                    <li><a href="tel:+96622334455"><i class="fa-solid fa-phone"></i> +966 XX XXX XXXX</a>
+                                    </li>
+                                    <li><a href="mailto:isupport@bina7.com"><i class="fa-solid fa-envelope"></i>
+                                            support@bina7.com</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-ft">
+                    <div class="cont-bt">
+                        <p class="copyRight wow fadeInUp">© 2026 Copyright - bina 7</p>
+                        <p><a href="">Privacy Policy</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+        <!--footer-->
+
+
+    </div>
+    <!--main-wrapper-->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="<?php echo THEME_URL; ?>/assets/js/bootstrap.min.js"></script>
+    <script src="<?php echo THEME_URL; ?>/assets/js/all.min.js"></script>
+    <script src="<?php echo THEME_URL; ?>/assets/js/owl.carousel.min.js"></script>
+    <script src="<?php echo THEME_URL; ?>/assets/js/wow.js"></script>
+    <script src="<?php echo THEME_URL; ?>/assets/js/jquery.easing.min.js"></script>
+    <script src="<?php echo THEME_URL; ?>/assets/js/script.js"></script>
+    <script>
+        new WOW().init();
+    </script>
+
+
+</body>
+
+</html>

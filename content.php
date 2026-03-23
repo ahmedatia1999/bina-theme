@@ -1,0 +1,1 @@
+<?php if(is_single() or is_page()) { the_content(); } ?>
