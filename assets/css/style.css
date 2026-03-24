@@ -5562,3 +5562,7 @@ body {
     font-size: 14px;
     font-weight: bold;
 }
+
+[data-state="open"] {
+    padding-bottom: 20px;
+}

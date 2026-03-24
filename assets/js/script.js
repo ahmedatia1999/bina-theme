@@ -59,36 +59,47 @@ $(document).ready(function () {
     /* ============================================
    ACCORDION
 ============================================ */
-    $(document).on('click', '[data-orientation="vertical"] button', function () {
-        const btn = $(this);
-        const isOpen = btn.attr('aria-expanded') === 'true';
-        const contentId = btn.attr('aria-controls');
+    const accordionItems = $('[data-orientation="vertical"]').has('[aria-controls]');
+    
 
-        // أغلق كل العناصر - نفس الطريقة الآمنة
-        $('[data-orientation="vertical"] button').each(function () {
-            const otherId = $(this).attr('aria-controls');
-            const otherContent = otherId ? document.getElementById(otherId) : null;
+    accordionItems.each(function () {
 
-            $(this).attr('aria-expanded', 'false');
-            $(this).closest('[data-state]').attr('data-state', 'closed');
-            $(this).find('svg').css('transform', 'rotate(0deg)');
+        $(this).find('button').on('click', function () {
 
-            if (otherContent) {
-                $(otherContent).css('max-height', '0').removeAttr('hidden');
+            const button = $(this);
+            const contentId = button.attr('aria-controls');
+            const content = $('#' + CSS.escape(contentId));
+
+            const isOpen = button.attr('aria-expanded') === 'true';
+
+            // اقفل كل العناصر
+            accordionItems.each(function () {
+                const btn = $(this).find('button');
+                const cId = btn.attr('aria-controls');
+                const c = $('#' + CSS.escape(cId));
+
+                btn.attr('aria-expanded', 'false');
+                btn.attr('data-state', 'closed');
+
+                c.attr('data-state', 'closed');
+                c.attr('hidden', true);
+            });
+
+            // لو كان مفتوح → اقفله (وده اللي كان ناقص)
+            if (isOpen) {
+                return;
             }
+
+            // افتح الحالي
+            button.attr('aria-expanded', 'true');
+            button.attr('data-state', 'open');
+
+            content.attr('data-state', 'open');
+            content.removeAttr('hidden');
         });
 
-        // افتح المضغوط لو كان مغلق
-        if (!isOpen) {
-            const content = document.getElementById(contentId);
-            if (content) {
-                btn.attr('aria-expanded', 'true');
-                btn.closest('[data-state]').attr('data-state', 'open');
-                btn.find('svg').css('transform', 'rotate(180deg)');
-                $(content).css('max-height', content.scrollHeight + 'px');
-            }
-        }
     });
+
 
     /* ============================================
    PARTNERS MARQUEE
