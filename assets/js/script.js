@@ -90,4 +90,50 @@ $(document).ready(function () {
         }
     });
 
+    /* ============================================
+   PARTNERS MARQUEE
+============================================ */
+    function initMarquee() {
+        const track = $('.marquee-track');
+        if (!track.length) return;
+
+        // نسخ المحتوى للحصول على حركة لا نهائية
+        const items = track.html();
+        track.append(items);
+
+        let position = 0;
+        const speed = 0.5; // عدل السرعة حسب رغبتك
+        const isRTL = $('html').attr('dir') === 'rtl';
+
+        function animate() {
+            position += isRTL ? speed : -speed;
+
+            const totalWidth = track[0].scrollWidth / 2;
+
+            if (isRTL && position >= totalWidth) {
+                position = 0;
+            } else if (!isRTL && position <= -totalWidth) {
+                position = 0;
+            }
+
+            track.css('transform', `translateX(${position}px)`);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // إيقاف عند hover
+        track.closest('.marquee-wrapper').on('mouseenter', function () {
+            track.css('animation-play-state', 'paused');
+        }).on('mouseleave', function () {
+            track.css('animation-play-state', 'running');
+        });
+    }
+
+    $(document).ready(function () {
+        initMarquee();
+    });
+
+
+
 });
