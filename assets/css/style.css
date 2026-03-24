@@ -5401,3 +5401,160 @@ body {
 [data-side=right] .\[\[data-side\=right\]_\&\]\:cursor-e-resize {
     cursor: e-resize
 }
+
+#header.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px rgba(255, 255, 255, 0.95);
+}
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    /* مش full height */
+    max-height: 0;
+    overflow: hidden;
+    background: #ffffff;
+    transition: max-height 0.4s ease, box-shadow 0.3s ease;
+    z-index: 9998;
+    box-shadow: none;
+}
+
+.mobile-menu.active {
+    max-height: 100vh;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* الهيدر داخل المنيو - لوجو وزرار X */
+.mobile-menu .menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.mobile-menu .close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #333;
+    padding: 4px;
+    line-height: 1;
+}
+
+/* الروابط */
+.mobile-menu .main_menu {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+}
+
+.mobile-menu .main_menu li a {
+    display: block;
+    padding: 14px 24px;
+    font-size: 16px;
+    color: #222;
+    text-decoration: none;
+    text-align: center;
+    border-bottom: 1px solid #f5f5f5;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.mobile-menu .main_menu li:first-child a {
+    background: #f0f4ff;
+    color: #F95738;
+    font-weight: 700;
+}
+
+.mobile-menu .main_menu li a:hover {
+    background: #fff5f3;
+    color: #F95738;
+}
+
+/* الأزرار في الأسفل */
+.mobile-menu .menu-footer {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.mobile-menu .btn-login {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #F95738;
+    color: #F95738;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.mobile-menu .btn-login:hover {
+    background: #fff5f3;
+}
+
+.mobile-menu .btn-add {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    background: #F95738;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.mobile-menu .btn-add:hover {
+    background: #e04a2f;
+}
+
+#mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    z-index: 9997;
+}
+
+#mobile-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.reviews-swiper .swiper-button-next,
+.reviews-swiper .swiper-button-prev {
+    color: #F95738;
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reviews-swiper .swiper-button-next {
+    left: 0;
+}
+
+.reviews-swiper .swiper-button-prev {
+    right: 0;
+}
+
+.reviews-swiper .swiper-button-next::after,
+.reviews-swiper .swiper-button-prev::after {
+    font-size: 14px;
+    font-weight: bold;
+}
