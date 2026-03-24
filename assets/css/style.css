@@ -358,9 +358,9 @@ video {
 }
 
 :root {
-    --primary: 211 65% 59%;
+    --primary: 10 94% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 60% 22%;
+    --secondary: 0 0% 0%;
     --secondary-foreground: 0 0% 100%;
     --background: 0 0% 100%;
     --foreground: 220 20% 10%;
@@ -1879,20 +1879,20 @@ body {
 
 .border-green-200 {
     --tw-border-opacity: 1;
-    border-color: rgb(187 247 208 / var(--tw-border-opacity, 1))
+    border-color: rgb(0 0% 0% / var(--tw-border-opacity, 1))
 }
 
 .border-green-500\/20 {
-    border-color: #22c55e33
+    border-color: #000;
 }
 
 .border-green-500\/30 {
-    border-color: #22c55e4d
+    border-color: #000;
 }
 
 .border-green-600 {
     --tw-border-opacity: 1;
-    border-color: rgb(22 163 74 / var(--tw-border-opacity, 1))
+    border-color: rgb(0 0% 0% / var(--tw-border-opacity, 1))
 }
 
 .border-input {
@@ -2042,29 +2042,29 @@ body {
 
 .bg-green-50 {
     --tw-bg-opacity: 1;
-    background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1))
+    background-color: rgb(0 0% 0% / var(--tw-bg-opacity, 1))
 }
 
 .bg-green-500 {
     --tw-bg-opacity: 1;
-    background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1))
+    background-color: rgb(0 0% 0% / var(--tw-bg-opacity, 1))
 }
 
 .bg-green-500\/10 {
-    background-color: #22c55e1a
+    background-color: #000
 }
 
 .bg-green-500\/15 {
-    background-color: #22c55e26
+    background-color: #000
 }
 
 .bg-green-500\/5 {
-    background-color: #22c55e0d
+    background-color: #000
 }
 
 .bg-green-600 {
     --tw-bg-opacity: 1;
-    background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1))
+    background-color: rgb(0 0% 0% / var(--tw-bg-opacity, 1))
 }
 
 .bg-muted {
@@ -2237,7 +2237,7 @@ body {
 }
 
 .from-green-500 {
-    --tw-gradient-from: #22c55e var(--tw-gradient-from-position);
+    --tw-gradient-from: #000 var(--tw-gradient-from-position);
     --tw-gradient-to: rgb(34 197 94 / 0) var(--tw-gradient-to-position);
     --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
 }
@@ -2402,11 +2402,11 @@ body {
 }
 
 .to-green-500 {
-    --tw-gradient-to: #22c55e var(--tw-gradient-to-position)
+    --tw-gradient-to: #000 var(--tw-gradient-to-position)
 }
 
 .to-green-600 {
-    --tw-gradient-to: #16a34a var(--tw-gradient-to-position)
+    --tw-gradient-to: #000 var(--tw-gradient-to-position)
 }
 
 .to-indigo-600 {
@@ -2993,21 +2993,21 @@ body {
 
 .text-green-500 {
     --tw-text-opacity: 1;
-    color: rgb(34 197 94 / var(--tw-text-opacity, 1))
+    color: rgb(0 0% 0% / var(--tw-text-opacity, 1))
 }
 
 .text-green-600 {
     --tw-text-opacity: 1;
-    color: rgb(22 163 74 / var(--tw-text-opacity, 1))
+    color: rgb(0 0% 0% / var(--tw-text-opacity, 1))
 }
 
 .text-green-600\/40 {
-    color: #16a34a66
+    color: #000;
 }
 
 .text-green-700 {
     --tw-text-opacity: 1;
-    color: rgb(21 128 61 / var(--tw-text-opacity, 1))
+    color: rgb(0 0% 0% / var(--tw-text-opacity, 1))
 }
 
 .text-indigo-500\/40 {
@@ -3546,12 +3546,12 @@ body {
 
 .hover\:bg-green-600:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1))
+    background-color: rgb(0 0% 0% / var(--tw-bg-opacity, 1))
 }
 
 .hover\:bg-green-700:hover {
     --tw-bg-opacity: 1;
-    background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1))
+    background-color: rgb(0 0% 0% / var(--tw-bg-opacity, 1))
 }
 
 .hover\:bg-muted:hover {
@@ -3612,13 +3612,13 @@ body {
 }
 
 .hover\:from-green-600:hover {
-    --tw-gradient-from: #16a34a var(--tw-gradient-from-position);
+    --tw-gradient-from: #000 var(--tw-gradient-from-position);
     --tw-gradient-to: rgb(22 163 74 / 0) var(--tw-gradient-to-position);
     --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
 }
 
 .hover\:to-green-700:hover {
-    --tw-gradient-to: #15803d var(--tw-gradient-to-position)
+    --tw-gradient-to: #000 var(--tw-gradient-to-position)
 }
 
 .hover\:text-accent-foreground:hover {
@@ -4458,7 +4458,7 @@ body {
 }
 
 .dark\:border-green-800\/50:is(.dark *) {
-    border-color: #16653480
+    border-color: #000
 }
 
 .dark\:border-red-800\/50:is(.dark *) {
@@ -4470,7 +4470,7 @@ body {
 }
 
 .dark\:bg-green-950\/30:is(.dark *) {
-    background-color: #052e164d
+    background-color: #000
 }
 
 .dark\:bg-red-950\/30:is(.dark *) {
@@ -4504,12 +4504,12 @@ body {
 
 .dark\:text-green-300:is(.dark *) {
     --tw-text-opacity: 1;
-    color: rgb(134 239 172 / var(--tw-text-opacity, 1))
+    color: rgb(0 0% 0% / var(--tw-text-opacity, 1))
 }
 
 .dark\:text-green-400:is(.dark *) {
     --tw-text-opacity: 1;
-    color: rgb(74 222 128 / var(--tw-text-opacity, 1))
+    color: rgb(0 0% 0% / var(--tw-text-opacity, 1))
 }
 
 .dark\:text-red-300:is(.dark *) {
