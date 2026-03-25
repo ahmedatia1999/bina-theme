@@ -84,9 +84,13 @@
             font-display: swap
         }
     </style>
-    </script>
     <link rel="stylesheet" crossorigin="" href="css/style.css">
     <style type="text/css">
+        /* Force light theme for this standalone register page */
+        :root {
+            --primary: 10 94% 60%;
+            --primary-foreground: 0 0% 100%;
+        }
         :where(html[dir="ltr"]),
         :where([data-sonner-toaster][dir="ltr"]) {
             --toast-icon-margin-start: -3px;
@@ -781,6 +785,10 @@
 </head>
 
 <body>
+    <script>
+        document.documentElement.classList.remove('dark');
+        document.body && document.body.classList.remove('dark');
+    </script>
     <div class="relative min-h-svh">
         <header class="absolute top-0 left-0 right-0 z-10 flex h-16 shrink-0 items-center justify-start px-4 md:px-6">
             <div class="flex items-center gap-3"><button data-slot="dropdown-menu-trigger"
@@ -797,10 +805,18 @@
                         <path d="M14 18h6"></path>
                     </svg></button><button data-slot="button"
                     class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9 relative overflow-hidden transition-all"
-                    aria-label="Switch to light theme"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    aria-label="Switch to dark theme"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-moon h-[1.2rem] w-[1.2rem]">
-                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                        stroke-linejoin="round" class="lucide lucide-sun h-[1.2rem] w-[1.2rem]">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2"></path>
+                        <path d="M12 20v2"></path>
+                        <path d="m4.93 4.93 1.41 1.41"></path>
+                        <path d="m17.66 17.66 1.41 1.41"></path>
+                        <path d="M2 12h2"></path>
+                        <path d="M20 12h2"></path>
+                        <path d="m6.34 17.66-1.41 1.41"></path>
+                        <path d="m19.07 4.93-1.41 1.41"></path>
                     </svg></button></div>
         </header>
         <main class="min-h-svh">
@@ -810,7 +826,7 @@
                         <div class="w-full max-w-md">
                             <form class="flex flex-col gap-6">
                                 <div data-slot="field-group"
-                                    class="group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&amp;&gt;[data-slot=field-group]]:gap-4">
+                                    class="group/field-group @container/field-group flex w-full flex-col gap-6 data-[slot=checkbox-group]:gap-3 [&amp;&gt;[data-slot=field-group]]:gap-4">
                                     <div class="flex flex-col items-center gap-1 text-center">
                                         <h1 class="text-2xl font-bold">إنشاء حسابك</h1>
                                         <p class="text-muted-foreground text-sm text-balance">املأ النموذج أدناه لإنشاء
@@ -820,15 +836,15 @@
                                         <div data-slot="form-item" class="gap-2 flex flex-col"><label
                                                 data-slot="form-label"
                                                 class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 data-[error=true]:text-destructive"
-                                                data-error="true" for="_R_29av5uivaiivb_-form-item">الاسم
+                                                data-error="false" for="_R_29av5uivaiivb_-form-item">الاسم
                                                 الأول</label><input data-slot="form-control"
                                                 class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                                                 placeholder="الاسم الأول" autofocus="" id="_R_29av5uivaiivb_-form-item"
                                                 aria-describedby="_R_29av5uivaiivb_-form-item-description _R_29av5uivaiivb_-form-item-message"
-                                                aria-invalid="true" name="firstName" value="">
+                                                aria-invalid="false" name="firstName" value="">
                                             <div class="min-h-[1.2rem]">
                                                 <p data-slot="form-message" id="_R_29av5uivaiivb_-form-item-message"
-                                                    class="text-destructive text-sm">الاسم الأول مطلوب</p>
+                                                    class="text-destructive text-sm"></p>
                                             </div>
                                         </div>
                                         <div data-slot="form-item" class="gap-2 flex flex-col"><label
@@ -877,7 +893,7 @@
                                             data-slot="popover-trigger"
                                             class="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[&gt;svg]:px-3 justify-between w-full"
                                             role="combobox" aria-expanded="false" type="button" aria-haspopup="dialog"
-                                            aria-controls="radix-_R_alav5uivaiivb_" data-state="closed">اختر المدينة<svg
+                                            aria-controls="radix-_R_alav5uivaiivb_" data-state="closed" id="cityTrigger" disabled="">جاري تحميل المدن...<svg
                                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round"
@@ -885,16 +901,20 @@
                                                 <path d="m7 15 5 5 5-5"></path>
                                                 <path d="m7 9 5-5 5 5"></path>
                                             </svg></button>
-                                        <div class="min-h-[1.2rem]"></div>
+                                        <input type="hidden" name="city" id="cityValue" value="">
+                                        <div class="min-h-[1.2rem]">
+                                            <p data-slot="form-message" id="_R_lav5uivaiivb_-form-item-message"
+                                                class="text-destructive text-sm"></p>
+                                        </div>
                                     </div>
                                     <div data-slot="form-item" class="grid gap-2"><label data-slot="form-label"
                                             class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 data-[error=true]:text-destructive"
-                                            data-error="true" for="_R_pav5uivaiivb_-form-item">كلمة المرور</label>
+                                            data-error="false" for="_R_pav5uivaiivb_-form-item">كلمة المرور</label>
                                         <div class="relative "><input type="password" data-slot="form-control"
-                                                class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive pr-9"
+                                                class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive pr-10"
                                                 id="_R_pav5uivaiivb_-form-item" placeholder="أدخل كلمة المرور"
-                                                aria-describedby="_R_pav5uivaiivb_-form-item-description _R_pav5uivaiivb_-form-item-message"
-                                                aria-invalid="true" name="password" value=""><button data-slot="button"
+                                                aria-describedby="_R_pav5uivaiivb_-form-item-description"
+                                                aria-invalid="false" name="password" value=""><button data-slot="button"
                                                 class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:text-accent-foreground dark:hover:bg-accent/50 size-9 text-muted-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-0 rounded-l-none hover:bg-transparent"
                                                 type="button" tabindex="-1"><svg xmlns="http://www.w3.org/2000/svg"
                                                     width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -908,18 +928,14 @@
                                         <p data-slot="form-description" id="_R_pav5uivaiivb_-form-item-description"
                                             class="text-muted-foreground text-sm">يجب أن تكون 8 أحرف على الأقل مع أحرف
                                             كبيرة وصغيرة وأرقام.</p>
-                                        <div class="min-h-[1.2rem]">
-                                            <p data-slot="form-message" id="_R_pav5uivaiivb_-form-item-message"
-                                                class="text-destructive text-sm">يجب أن تكون كلمة المرور 8 أحرف على
-                                                الأقل</p>
-                                        </div>
+                                        <div class="min-h-[1.2rem]"></div>
                                     </div>
                                     <div data-slot="form-item" class="grid gap-2"><label data-slot="form-label"
                                             class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 data-[error=true]:text-destructive"
                                             data-error="false" for="_R_tav5uivaiivb_-form-item">تأكيد كلمة
                                             المرور</label>
                                         <div class="relative "><input type="password" data-slot="form-control"
-                                                class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive pr-9"
+                                                class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive pr-10"
                                                 id="_R_tav5uivaiivb_-form-item" placeholder="أكد كلمة المرور"
                                                 aria-describedby="_R_tav5uivaiivb_-form-item-description"
                                                 aria-invalid="false" name="confirmPassword" value=""><button
@@ -941,14 +957,14 @@
                                     <div data-slot="form-item" class="grid gap-2"><label data-slot="form-label"
                                             class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 data-[error=true]:text-destructive"
                                             data-error="false" for="_R_11av5uivaiivb_-form-item">نوع الحساب</label>
-                                        <div role="radiogroup" aria-required="false" dir="ltr" data-slot="form-control"
+                                        <div role="radiogroup" aria-required="false" dir="rtl" data-slot="form-control"
                                             class="gap-3 flex flex-col space-y-1 mt-2" id="_R_11av5uivaiivb_-form-item"
                                             aria-describedby="_R_11av5uivaiivb_-form-item-description"
                                             aria-invalid="false" tabindex="0" style="outline:none"><label for="customer"
                                                 class="flex items-start gap-2 rounded-lg border bg-background p-4 rtl:flex-row-reverse cursor-pointer hover:bg-accent transition-colors"><button
                                                     type="button" role="radio" aria-checked="false"
                                                     data-state="unchecked" value="customer" data-slot="radio-group-item"
-                                                    class="border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
+                                                    class="border-input text-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
                                                     id="customer" tabindex="-1"
                                                     data-radix-collection-item=""></button><input type="radio"
                                                     aria-hidden="true"
@@ -960,7 +976,7 @@
                                                     type="button" role="radio" aria-checked="false"
                                                     data-state="unchecked" value="contractor"
                                                     data-slot="radio-group-item"
-                                                    class="border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
+                                                    class="border-input text-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
                                                     id="contractor" tabindex="-1"
                                                     data-radix-collection-item=""></button><input type="radio"
                                                     aria-hidden="true"
@@ -968,6 +984,7 @@
                                                     tabindex="-1" value="contractor"><span
                                                     class="text-sm font-medium leading-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70">مزود
                                                     خدمة ( مقاول- مهندس - مورد- استشاري )</span></label></div>
+                                        <input type="hidden" name="accountType" id="accountTypeValue" value="">
                                         <p data-slot="form-description" id="_R_11av5uivaiivb_-form-item-description"
                                             class="text-muted-foreground text-sm">اختر ما إذا كنت تريد الحصول على
                                             الخدمات أو تقديم الخدمات.</p>
@@ -977,7 +994,8 @@
                                         class="group/field flex w-full gap-3 data-[invalid=true]:text-destructive flex-col [&amp;&gt;*]:w-full [&amp;&gt;.sr-only]:w-auto">
                                         <button data-slot="button"
                                             class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3"
-                                            type="submit">إنشاء حساب</button></div>
+                                            type="submit">إنشاء حساب</button>
+                                    </div>
                                     <p data-slot="field-description"
                                         class="text-muted-foreground text-sm leading-normal font-normal group-has-[[data-orientation=horizontal]]/field:text-balance last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&amp;]:-mt-1.5 [&amp;&gt;a:hover]:text-primary [&amp;&gt;a]:underline [&amp;&gt;a]:underline-offset-4 px-6 text-center">
                                         بإنشاء حساب، أنت توافق على<!-- --> <a
@@ -997,7 +1015,7 @@
                             class="h-full w-full object-cover dark:brightness-[0.6] dark:grayscale"
                             style="object-position:20% 50%"></div>
                 </div>
-            </div>
+            </div><!--$--><!--/$-->
         </main>
     </div>
 
@@ -1012,6 +1030,7 @@
 
     <!-- 3. سكريبتك -->
     <script src="js/script.js"></script>
+    <script src="js/register.js"></script>
 
 </body>
 

@@ -268,6 +268,99 @@
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Register page (cities + user registration)
+
+    add_action('wp_ajax_bina_get_cities', 'bina_get_cities_ajax');
+    add_action('wp_ajax_nopriv_bina_get_cities', 'bina_get_cities_ajax');
+
+    function bina_get_cities_ajax() {
+        // Simple starter list. Replace later with DB-driven source if needed.
+        $cities = array(
+            array('value' => 'riyadh', 'label' => 'الرياض'),
+            array('value' => 'jeddah', 'label' => 'جدة'),
+            array('value' => 'makkah', 'label' => 'مكة المكرمة'),
+            array('value' => 'madinah', 'label' => 'المدينة المنورة'),
+            array('value' => 'dammam', 'label' => 'الدمام'),
+            array('value' => 'khobar', 'label' => 'الخبر'),
+            array('value' => 'taif', 'label' => 'الطائف'),
+            array('value' => 'abha', 'label' => 'أبها'),
+            array('value' => 'tabuk', 'label' => 'تبوك'),
+            array('value' => 'buraydah', 'label' => 'بريدة'),
+        );
+
+        wp_send_json_success($cities);
+    }
+
+    add_action('wp_ajax_bina_register_user', 'bina_register_user_ajax');
+    add_action('wp_ajax_nopriv_bina_register_user', 'bina_register_user_ajax');
+
+    function bina_register_user_ajax() {
+        $field_errors = array();
+
+        $first_name = isset($_POST['firstName']) ? sanitize_text_field($_POST['firstName']) : '';
+        $last_name = isset($_POST['lastName']) ? sanitize_text_field($_POST['lastName']) : '';
+        $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+        $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+        $city = isset($_POST['city']) ? sanitize_text_field($_POST['city']) : '';
+        $password = isset($_POST['password']) ? (string) $_POST['password'] : '';
+        $confirm_password = isset($_POST['confirmPassword']) ? (string) $_POST['confirmPassword'] : '';
+        $account_type = isset($_POST['accountType']) ? sanitize_text_field($_POST['accountType']) : '';
+
+        if ($first_name === '') $field_errors['firstName'] = 'الاسم الأول مطلوب';
+        if ($email === '' || !is_email($email)) $field_errors['email'] = 'يرجى إدخال بريد إلكتروني صحيح';
+        if ($phone === '') $field_errors['phone'] = 'رقم الهاتف مطلوب';
+        if ($city === '') $field_errors['city'] = 'المدينة مطلوبة';
+        if (strlen($password) < 8) $field_errors['password'] = 'يجب أن تكون كلمة المرور 8 أحرف على الأقل';
+        if ($confirm_password === '') $field_errors['confirmPassword'] = 'يرجى تأكيد كلمة المرور.';
+        if ($confirm_password !== '' && $confirm_password !== $password) $field_errors['confirmPassword'] = 'كلمتا المرور غير متطابقتين';
+
+        if ($email !== '' && email_exists($email)) {
+            $field_errors['email'] = 'هذا البريد الإلكتروني مستخدم بالفعل';
+        }
+
+        if (!empty($field_errors)) {
+            wp_send_json_error(array(
+                'message' => 'يرجى تصحيح الأخطاء في النموذج',
+                'fieldErrors' => $field_errors,
+            ), 400);
+        }
+
+        // Use email as username base
+        $username_base = sanitize_user(current(explode('@', $email)), true);
+        if ($username_base === '') $username_base = 'user';
+        $username = $username_base;
+        $i = 1;
+        while (username_exists($username)) {
+            $username = $username_base . $i;
+            $i++;
+        }
+
+        $user_id = wp_create_user($username, $password, $email);
+        if (is_wp_error($user_id)) {
+            wp_send_json_error(array('message' => $user_id->get_error_message()), 500);
+        }
+
+        wp_update_user(array(
+            'ID' => $user_id,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'display_name' => trim($first_name . ' ' . $last_name),
+        ));
+
+        update_user_meta($user_id, 'bina_phone', $phone);
+        update_user_meta($user_id, 'bina_city', $city);
+        update_user_meta($user_id, 'bina_account_type', $account_type);
+
+        // Auto-login after registration
+        wp_set_current_user($user_id);
+        wp_set_auth_cookie($user_id);
+
+        wp_send_json_success(array(
+            'user_id' => $user_id,
+        ));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function send_contact_us_mail($data = array(), $to_emails = array()){
 
