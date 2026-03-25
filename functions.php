@@ -361,6 +361,78 @@
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Login page (AJAX)
+
+    add_action('wp_ajax_bina_login_user', 'bina_login_user_ajax');
+    add_action('wp_ajax_nopriv_bina_login_user', 'bina_login_user_ajax');
+
+    function bina_login_user_ajax() {
+        $field_errors = array();
+
+        $identifier = isset($_POST['identifier']) ? sanitize_text_field($_POST['identifier']) : '';
+        $password = isset($_POST['password']) ? (string) $_POST['password'] : '';
+
+        if ($identifier === '') {
+            $field_errors['identifier'] = 'البريد الإلكتروني أو رقم الهاتف مطلوب';
+        }
+        if ($password === '') {
+            $field_errors['password'] = 'كلمة المرور مطلوبة';
+        }
+
+        if (!empty($field_errors)) {
+            wp_send_json_error(array(
+                'message' => 'يرجى تصحيح الأخطاء في النموذج',
+                'fieldErrors' => $field_errors,
+            ), 400);
+        }
+
+        $user = null;
+
+        // Email login
+        if (is_email($identifier)) {
+            $user = get_user_by('email', $identifier);
+        }
+
+        // Phone login: match registered phone meta
+        if (!$user) {
+            $user_query = new WP_User_Query(array(
+                'meta_key' => 'bina_phone',
+                'meta_value' => $identifier,
+                'number' => 1,
+                'fields' => 'all',
+            ));
+            $users = $user_query->get_results();
+            if (!empty($users)) {
+                $user = $users[0];
+            }
+        }
+
+        if (!$user) {
+            $field_errors['identifier'] = 'بيانات الدخول غير صحيحة';
+            wp_send_json_error(array(
+                'message' => 'بيانات الدخول غير صحيحة',
+                'fieldErrors' => $field_errors,
+            ), 400);
+        }
+
+        if (!wp_check_password($password, $user->user_pass, $user->ID)) {
+            $field_errors['password'] = 'كلمة المرور غير صحيحة';
+            wp_send_json_error(array(
+                'message' => 'بيانات الدخول غير صحيحة',
+                'fieldErrors' => $field_errors,
+            ), 400);
+        }
+
+        wp_set_current_user($user->ID);
+        wp_set_auth_cookie($user->ID, true);
+        do_action('wp_login', $user->user_login, $user);
+
+        wp_send_json_success(array(
+            'redirect_url' => home_url('/'),
+        ));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function send_contact_us_mail($data = array(), $to_emails = array()){
 
