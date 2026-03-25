@@ -1,0 +1,43 @@
+---
+description: Elementor widgets: use ICONS/currentColor for SVG hover colors
+globs: elementor/widget-*.php
+alwaysApply: false
+---
+
+# Elementor widgets: icons & SVG color behavior
+
+When converting static sections to Elementor widgets, **avoid uploading colored images for icons** when the design expects hover color changes.
+
+- **Preferred**: Use Elementor **Icon control** (`Controls_Manager::ICONS`) per item (e.g., inside a Repeater).
+- **Render**: Use `Elementor\Icons_Manager::render_icon()` so the icon uses `currentColor`.
+- **Styling**: Wrap the rendered icon in an element that carries Tailwind-like color classes:
+  - Normal: `text-primary`
+  - Hover: `group-hover:text-white`
+  - Keep your existing container hover (e.g., `group-hover:bg-primary`) so icon + background swap together.
+
+## Example pattern
+
+```php
+use Elementor\Controls_Manager;
+use Elementor\Icons_Manager;
+
+$repeater->add_control(
+  'icon',
+  [
+    'label' => __('Card Icon', 'bina'),
+    'type' => Controls_Manager::ICONS,
+  ]
+);
+
+// render
+if (!empty($item['icon']['value'])) {
+  echo '<span class="text-primary group-hover:text-white transition-colors">';
+  Icons_Manager::render_icon($item['icon'], ['aria-hidden' => 'true']);
+  echo '</span>';
+}
+```
+
+## Avoid
+
+- Uploading **PNG/JPG/WebP** icons if you need color transitions (CSS can’t recolor them reliably).
+- Inline SVGs with hardcoded `fill="#..."` / `stroke="#..."` when hover should recolor.
