@@ -5,6 +5,7 @@ $(document).ready(function () {
     const mobileMenu = $('.mobile-menu');
     const overlay = $('#mobile-overlay');
     const closeBtn = $('.close');
+    const $html = $('html');
 
     /* ============================================
        SCROLL - HEADER
@@ -32,6 +33,54 @@ $(document).ready(function () {
 
     closeBtn.on('click', closeMenu);
     overlay.on('click', closeMenu);
+
+    /* ============================================
+       THEME TOGGLE (DASHBOARD)
+       - toggles `dark` class on <html>
+       - persists to localStorage
+    ============================================ */
+    (function initThemeToggle() {
+        const STORAGE_KEY = 'bina_theme';
+
+        const $toggle = $('button[aria-label*="theme" i], button[aria-label*="ثيم" i], button[aria-label*="الوضع" i]').first();
+        if (!$toggle.length) return; // don't affect pages without the toggle
+
+        function setIcon(isDark) {
+            // Keep it simple: swap SVG inside the button
+            const sun = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun h-[1.2rem] w-[1.2rem]"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>';
+            const moon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon h-[1.2rem] w-[1.2rem]"><path d="M12 3a7 7 0 1 0 9 9 9 9 0 0 1-9-9"></path></svg>';
+            $toggle.html(isDark ? moon : sun);
+            $toggle.attr('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+        }
+
+        function applyTheme(mode) {
+            const isDark = mode === 'dark';
+            $html.toggleClass('dark', isDark);
+            setIcon(isDark);
+        }
+
+        function getInitialTheme() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved === 'dark' || saved === 'light') return saved;
+            } catch (_) { }
+            // default: prefer system
+            try {
+                return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            } catch (_) { }
+            return 'light';
+        }
+
+        // init
+        applyTheme(getInitialTheme());
+
+        $toggle.on('click', function () {
+            const nowDark = !$html.hasClass('dark');
+            const next = nowDark ? 'dark' : 'light';
+            applyTheme(next);
+            try { localStorage.setItem(STORAGE_KEY, next); } catch (_) { }
+        });
+    })();
 
     /* ============================================
        SMOOTH SCROLL - ANCHOR LINKS

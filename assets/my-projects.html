@@ -987,240 +987,127 @@
                             <path d="m19.07 4.93-1.41 1.41"></path>
                         </svg></button></div>
             </header>
-            <div class="flex-1 overflow-y-auto px-4 space-y-6 pb-8">
-                <div class="space-y-6 page-container">
-                    <div class="w-full min-w-0">
-                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight wrap-break-word">لوحة التحكم</h1>
-                        <p class="text-muted-foreground mt-1 wrap-break-word">مرحباً بك في لوحة التحكم. إليك نظرة عامة
-                            على مشاريعك وأنشطتك.</p>
+            <div class="flex-1 overflow-y-auto px-4 space-y-6 pb-8"><!--$--><!--/$-->
+                <div class="page-container space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">مشاريعي</h1>
+                            <p class="text-sm sm:text-base text-muted-foreground">إدارة ومتابعة 1 مشروع</p>
+                        </div><a data-slot="button"
+                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3"
+                            href="/ar/customer/my-projects/create"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-4 w-4">
+                                <path d="M5 12h14"></path>
+                                <path d="M12 5v14"></path>
+                            </svg>إنشاء مشروع</a>
                     </div>
-                    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-full min-w-0"><a class="block"
-                            href="/ar/customer/my-projects/create">
-                            <div data-slot="card"
-                                class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full transition-all hover:shadow-md hover:border-primary/50">
-                                <div data-slot="card-header"
-                                    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <div class="rounded-lg bg-primary/10 p-2"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-plus h-5 w-5 text-primary">
-                                                    <path d="M5 12h14"></path>
-                                                    <path d="M12 5v14"></path>
-                                                </svg></div>
-                                            <div class="flex-1">
-                                                <div data-slot="card-title" class="font-semibold text-base">إنشاء مشروع
-                                                </div>
-                                                <p class="text-muted-foreground mt-1 text-sm">ابدأ مشروعاً جديداً</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="mb-6">
+                        <div
+                            class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-3 pb-6 border-b sm:items-end w-full min-w-0">
+                            <div class="w-full sm:w-[200px] min-w-0"><button type="button" role="combobox"
+                                    aria-controls="radix-_r_64_" aria-expanded="false" aria-autocomplete="none"
+                                    dir="ltr" data-state="closed" data-slot="select-trigger" data-size="default"
+                                    class="border-input data-[placeholder]:text-muted-foreground [&amp;_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*='size-'])]:size-4 w-full sm:w-[200px]"><span
+                                        data-slot="select-value" style="pointer-events: none;">جميع الحالات</span><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-chevron-down size-4 opacity-50"
+                                        aria-hidden="true">
+                                        <path d="m6 9 6 6 6-6"></path>
+                                    </svg></button></div>
+                            <div class="w-full sm:w-[240px] min-w-0"><button data-slot="popover-trigger"
+                                    class="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[&gt;svg]:px-3 justify-between w-full sm:w-[240px]"
+                                    role="combobox" aria-expanded="false" type="button" aria-haspopup="dialog"
+                                    aria-controls="radix-_r_65_" data-state="closed">الفئة<svg
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-chevrons-up-down me-2 h-4 w-4 shrink-0 opacity-50">
+                                        <path d="m7 15 5 5 5-5"></path>
+                                        <path d="m7 9 5-5 5 5"></path>
+                                    </svg></button></div>
+                            <div class="w-full sm:w-[240px] min-w-0"><button data-slot="popover-trigger"
+                                    class="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[&gt;svg]:px-3 justify-between w-full sm:w-[240px]"
+                                    role="combobox" aria-expanded="false" type="button" aria-haspopup="dialog"
+                                    aria-controls="radix-_r_66_" data-state="closed">موعد التذكير<svg
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-chevrons-up-down me-2 h-4 w-4 shrink-0 opacity-50">
+                                        <path d="m7 15 5 5 5-5"></path>
+                                        <path d="m7 9 5-5 5 5"></path>
+                                    </svg></button></div>
+                            <div class="w-full sm:w-[240px] min-w-0">
+                                <div class="sr-only">
+                                    <div aria-live="polite" aria-atomic="true" role="status"></div>
+                                    <div aria-live="assertive" aria-atomic="true" role="alert"></div>
                                 </div>
+                                <div id="_r_67_-description" class="sr-only">قائمة منسدلة متعددة الاختيار. استخدم مفاتيح
+                                    الأسهم للتنقل، Enter للتحديد، و Escape للإغلاق.</div>
+                                <div id="_r_67_-count" class="sr-only" aria-live="polite">لم يتم تحديد أي خيارات</div>
+                                <button data-slot="popover-trigger"
+                                    class="gap-2 whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-primary-foreground shadow-xs has-[&gt;svg]:px-3 flex p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&amp;_svg]:pointer-events-auto w-full sm:w-[240px]"
+                                    role="combobox" aria-expanded="false" aria-haspopup="listbox"
+                                    aria-describedby="_r_67_-description _r_67_-count"
+                                    aria-label="اختيار متعدد: تم تحديد 0 من 100 خيار. المدينة" type="button"
+                                    data-state="closed"
+                                    style="min-width: 200px; max-width: min(100%, 100%); width: 100%;">
+                                    <div class="flex items-center justify-between w-full mx-auto"><span
+                                            class="text-sm text-muted-foreground mx-3">المدينة</span><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-chevron-down h-4 cursor-pointer text-muted-foreground mx-2">
+                                            <path d="m6 9 6 6 6-6"></path>
+                                        </svg></div>
+                                </button>
                             </div>
-                        </a><a class="block" href="/ar/customer/my-projects">
-                            <div data-slot="card"
-                                class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full transition-all hover:shadow-md hover:border-primary/50">
-                                <div data-slot="card-header"
-                                    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <div class="rounded-lg bg-primary/10 p-2"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-folder-open h-5 w-5 text-primary">
-                                                    <path
-                                                        d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2">
-                                                    </path>
-                                                </svg></div>
-                                            <div class="flex-1">
-                                                <div data-slot="card-title" class="font-semibold text-base">مشاريعي
-                                                </div>
-                                                <p class="text-muted-foreground mt-1 text-sm">عرض جميع مشاريعك</p>
-                                            </div>
-                                        </div><span data-slot="badge"
-                                            class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent bg-secondary text-secondary-foreground [a&amp;]:hover:bg-secondary/90">0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a><a class="block" href="/ar/customer/chat">
-                            <div data-slot="card"
-                                class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full transition-all hover:shadow-md hover:border-primary/50">
-                                <div data-slot="card-header"
-                                    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <div class="rounded-lg bg-primary/10 p-2"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-message-square h-5 w-5 text-primary">
-                                                    <path
-                                                        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z">
-                                                    </path>
-                                                </svg></div>
-                                            <div class="flex-1">
-                                                <div data-slot="card-title" class="font-semibold text-base">الرسائل
-                                                </div>
-                                                <p class="text-muted-foreground mt-1 text-sm">التواصل مع المقاولين</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a><a class="block" href="/ar/customer/notifications">
-                            <div data-slot="card"
-                                class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full transition-all hover:shadow-md hover:border-primary/50">
-                                <div data-slot="card-header"
-                                    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <div class="rounded-lg bg-primary/10 p-2"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-bell h-5 w-5 text-primary">
-                                                    <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
-                                                    <path
-                                                        d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326">
-                                                    </path>
-                                                </svg></div>
-                                            <div class="flex-1">
-                                                <div data-slot="card-title" class="font-semibold text-base">الإشعارات
-                                                </div>
-                                                <p class="text-muted-foreground mt-1 text-sm">عرض إشعاراتك</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a><a class="block" href="/ar/customer/conflicts">
-                            <div data-slot="card"
-                                class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full transition-all hover:shadow-md hover:border-primary/50">
-                                <div data-slot="card-header"
-                                    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <div class="rounded-lg bg-primary/10 p-2"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-circle-alert h-5 w-5 text-primary">
-                                                    <circle cx="12" cy="12" r="10"></circle>
-                                                    <line x1="12" x2="12" y1="8" y2="12"></line>
-                                                    <line x1="12" x2="12.01" y1="16" y2="16"></line>
-                                                </svg></div>
-                                            <div class="flex-1">
-                                                <div data-slot="card-title" class="font-semibold text-base">النزاعات
-                                                </div>
-                                                <p class="text-muted-foreground mt-1 text-sm">إدارة نزاعات المشاريع</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a></div>
-                    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
-                        <div data-slot="card"
-                            class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full">
-                            <div data-slot="card-header"
-                                class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between pb-2">
-                                <div data-slot="card-title" class="text-sm font-medium text-muted-foreground">إجمالي
-                                    المشاريع</div>
-                                <div class="rounded-lg bg-primary/10 p-2"><svg xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-folder-open h-4 w-4 text-primary">
-                                        <path
-                                            d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2">
-                                        </path>
-                                    </svg></div>
-                            </div>
-                            <div data-slot="card-content" class="px-4 md:px-6">
-                                <div class="text-2xl font-bold">0</div>
-                            </div>
-                        </div>
-                        <div data-slot="card"
-                            class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full">
-                            <div data-slot="card-header"
-                                class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between pb-2">
-                                <div data-slot="card-title" class="text-sm font-medium text-muted-foreground">المشاريع
-                                    النشطة</div>
-                                <div class="rounded-lg bg-primary/10 p-2"><svg xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-file-text h-4 w-4 text-primary">
-                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                                        <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                        <path d="M10 9H8"></path>
-                                        <path d="M16 13H8"></path>
-                                        <path d="M16 17H8"></path>
-                                    </svg></div>
-                            </div>
-                            <div data-slot="card-content" class="px-4 md:px-6">
-                                <div class="text-2xl font-bold">0</div>
-                            </div>
-                        </div>
-                        <div data-slot="card"
-                            class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full">
-                            <div data-slot="card-header"
-                                class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between pb-2">
-                                <div data-slot="card-title" class="text-sm font-medium text-muted-foreground">العروض
-                                    المعلقة</div>
-                                <div class="rounded-lg bg-primary/10 p-2"><svg xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-bell h-4 w-4 text-primary">
-                                        <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
-                                        <path
-                                            d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326">
-                                        </path>
-                                    </svg></div>
-                            </div>
-                            <div data-slot="card-content" class="px-4 md:px-6">
-                                <div class="text-2xl font-bold">0</div>
-                            </div>
-                        </div>
-                        <div data-slot="card"
-                            class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full">
-                            <div data-slot="card-header"
-                                class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between pb-2">
-                                <div data-slot="card-title" class="text-sm font-medium text-muted-foreground">الرسائل
-                                    غير المقروءة</div>
-                                <div class="rounded-lg bg-primary/10 p-2"><svg xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-message-square h-4 w-4 text-primary">
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                    </svg></div>
-                            </div>
-                            <div data-slot="card-content" class="px-4 md:px-6">
-                                <div class="text-2xl font-bold">0</div>
-                            </div>
+                            <div class="w-full sm:w-auto sm:flex sm:items-end"><button data-slot="button"
+                                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[&gt;svg]:px-3 w-full sm:w-auto">مسح
+                                    المرشحات</button></div>
                         </div>
                     </div>
-                    <div class="grid gap-4 md:grid-cols-2 w-full min-w-0">
+                    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         <div data-slot="card"
-                            class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full">
+                            class="bg-card text-card-foreground gap-6 rounded-xl border py-6 shadow-sm group relative flex flex-col overflow-hidden transition-all hover:shadow-lg cursor-pointer">
                             <div data-slot="card-header"
-                                class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6">
-                                <div data-slot="card-title" class="leading-none font-semibold">نظرة عامة على حالة
-                                    المشروع</div>
+                                class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 space-y-3">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div class="flex-1 space-y-2">
+                                        <div class="flex flex-wrap items-center gap-2"><span data-slot="badge"
+                                                class="inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden [a&amp;]:hover:bg-secondary/90 bg-gray-50 text-gray-600 border border-gray-300">قيد
+                                                الانتظار</span><span data-slot="badge"
+                                                class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-foreground [a&amp;]:hover:bg-accent [a&amp;]:hover:text-accent-foreground">أعمال
+                                                العزل (حراري – مائي – صوتي)</span></div>
+                                        <div data-slot="card-title" class="leading-none font-semibold line-clamp-1">
+                                            ahmed atia</div>
+                                    </div><button data-slot="dropdown-menu-trigger"
+                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9 h-8 w-8 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 shrink-0 absolute top-2 end-2"
+                                        type="button" id="radix-_r_69_" aria-haspopup="menu" aria-expanded="false"
+                                        data-state="closed"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-ellipsis-vertical h-4 w-4">
+                                            <circle cx="12" cy="12" r="1"></circle>
+                                            <circle cx="12" cy="5" r="1"></circle>
+                                            <circle cx="12" cy="19" r="1"></circle>
+                                        </svg><span class="sr-only">فتح القائمة</span></button>
+                                </div>
+                                <div data-slot="card-description" class="text-muted-foreground text-sm line-clamp-2">
+                                    test asdasdas</div>
                             </div>
-                            <div data-slot="card-content" class="px-4 md:px-6 space-y-4 min-w-0">
-                                <p class="text-sm text-muted-foreground text-center py-4">لا توجد مشاريع بعد</p>
-                            </div>
-                        </div>
-                        <div data-slot="card"
-                            class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm h-full w-full min-w-0">
-                            <div data-slot="card-header"
-                                class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6">
-                                <div data-slot="card-title" class="leading-none font-semibold">النشاط الأخير</div>
-                            </div>
-                            <div data-slot="card-content" class="px-4 md:px-6 min-w-0">
-                                <p class="text-sm text-muted-foreground text-center py-4">لا يوجد نشاط حديث</p>
+                            <div data-slot="card-content" class="px-4 md:px-6 mt-auto space-y-3">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2 text-sm text-muted-foreground"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-clock h-4 w-4">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg><span>أقل من أسبوع</span></div>
+                                </div>
                             </div>
                         </div>
                     </div>

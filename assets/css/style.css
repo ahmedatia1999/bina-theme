@@ -370,7 +370,7 @@ video {
     --popover-foreground: 220 20% 10%;
     --muted: 220 15% 96%;
     --muted-foreground: 220 10% 45%;
-    --accent: 211 65% 70%;
+    --accent: 0 0% 97%;
     --accent-foreground: 220 20% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -389,6 +389,29 @@ video {
     --logo-blue: 211 65% 59%;
     --logo-blue-light: 211 65% 70%;
     --logo-navy: 215 60% 22%
+}
+
+.dark {
+    --background: 222 25% 8%;
+    --foreground: 0 0% 98%;
+    --card: 222 25% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 222 25% 10%;
+    --popover-foreground: 0 0% 98%;
+    --muted: 220 15% 16%;
+    --muted-foreground: 220 10% 70%;
+    --accent: 220 15% 18%;
+    --accent-foreground: 0 0% 98%;
+    --border: 220 15% 22%;
+    --input: 220 15% 22%;
+    --ring: 211 65% 59%;
+
+    /* optional: keep sidebar coherent in dark mode */
+    --sidebar-background: 222 25% 8%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-accent: 220 15% 18%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 220 15% 22%;
 }
 
 * {
@@ -1082,7 +1105,7 @@ body {
 }
 
 .h-20 {
-    height: 5rem
+    height: 5rem !important;
 }
 
 .h-24 {
@@ -5565,4 +5588,32 @@ body {
 
 [data-state="open"] {
     padding-bottom: 20px;
+}
+
+@media (min-width: 48rem) {
+    .md\:grid-cols-12 {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .md\:col-span-6 {
+        grid-column: span 6 / span 6;
+    }
+
+    .md\:col-span-12 {
+        grid-column: span 12 / span 12;
+    }
+
+    .md\:col-span-4 {
+        grid-column: span 4 / span 4;
+    }
+}
+
+@media (min-width: 40rem) {
+    .sm\:opacity-0 {
+        opacity: 0;
+    }
+}
+
+.h-\[calc\(100dvh-5rem\)\] {
+    height: calc(100dvh - 5rem);
 }
