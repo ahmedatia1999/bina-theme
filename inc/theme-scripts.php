@@ -46,6 +46,22 @@
         $easing_js = get_template_directory() . '/assets/js/jquery.easing.min.js';
         $all_min_js = get_template_directory() . '/assets/js/all.min.js';
 
+        // Swiper (CDN) - required for `.reviews-swiper` and any Swiper sections
+        // Loaded globally to keep Elementor widgets functional without page-level conditions.
+        wp_enqueue_style(
+            'bina-swiper',
+            'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+            array(),
+            '11.0.0'
+        );
+        wp_enqueue_script(
+            'bina-swiper',
+            'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+            array(),
+            '11.0.0',
+            true
+        );
+
         // Do NOT enqueue bundled jquery-3.2.1.min.js (WordPress already provides jQuery)
         if ( file_exists( $bootstrap_js ) ) {
             wp_register_script( 'bina-bootstrap', get_template_directory_uri() . '/assets/js/bootstrap.min.js', array(), filemtime( $bootstrap_js ), true );
@@ -65,7 +81,7 @@
 
         // Enqueue main script file (depends on jQuery)
         if ( file_exists( $script_js ) ) {
-            wp_enqueue_script( 'bina-script', get_template_directory_uri() . '/assets/js/script.js', array( 'jquery' ), filemtime( $script_js ), true );
+            wp_enqueue_script( 'bina-script', get_template_directory_uri() . '/assets/js/script.js', array( 'jquery', 'bina-swiper' ), filemtime( $script_js ), true );
         }
 
         // Localize the script with new data

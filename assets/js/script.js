@@ -185,8 +185,16 @@ $(document).ready(function () {
     /* ============================================
        REVIEWS CAROUSEL
     ============================================ */
-    if ($('.reviews-swiper').length) {
-        new Swiper('.reviews-swiper', {
+    $('.reviews-swiper').each(function () {
+        var el = this;
+        if (!el || el.dataset.binaSwiperInited === '1') return;
+        if (typeof Swiper === 'undefined') return;
+
+        var $el = $(el);
+        var nextEl = $el.find('.swiper-button-next')[0];
+        var prevEl = $el.find('.swiper-button-prev')[0];
+
+        new Swiper(el, {
             slidesPerView: 1,
             spaceBetween: 20,
             loop: true,
@@ -196,15 +204,17 @@ $(document).ready(function () {
                 disableOnInteraction: false,
             },
             navigation: {
-                nextEl: '.reviews-swiper .swiper-button-next',
-                prevEl: '.reviews-swiper .swiper-button-prev',
+                nextEl: nextEl,
+                prevEl: prevEl,
             },
             breakpoints: {
                 768: { slidesPerView: 2 },
                 1024: { slidesPerView: 3 }
             }
         });
-    }
+
+        el.dataset.binaSwiperInited = '1';
+    });
 
     /* ============================================
        ACCORDION - النوع الأول (document 3)
