@@ -34,6 +34,10 @@ function register_new_widgets($widgets_manager)
     require_once(__DIR__ . '/widget-engineers-hero.php');
     require_once(__DIR__ . '/widget-engineers-why-join.php');
     require_once(__DIR__ . '/widget-engineers-how-it-works.php');
+    require_once(__DIR__ . '/widget-engineers-earnings.php');
+    require_once(__DIR__ . '/widget-engineers-specialties.php');
+    require_once(__DIR__ . '/widget-engineers-priority-system.php');
+    require_once(__DIR__ . '/widget-engineers-cta.php');
     require_once(__DIR__ . '/widget-partners-marquee.php');
     require_once(__DIR__ . '/widget-services.php');
     require_once(__DIR__ . '/widget-why-us.php');
@@ -74,6 +78,10 @@ function register_new_widgets($widgets_manager)
     $widgets_manager->register(new \bina_Engineers_Hero_Widget());
     $widgets_manager->register(new \bina_Engineers_Why_Join_Widget());
     $widgets_manager->register(new \bina_Engineers_How_It_Works_Widget());
+    $widgets_manager->register(new \bina_Engineers_Earnings_Widget());
+    $widgets_manager->register(new \bina_Engineers_Specialties_Widget());
+    $widgets_manager->register(new \bina_Engineers_Priority_System_Widget());
+    $widgets_manager->register(new \bina_Engineers_CTA_Widget());
     $widgets_manager->register(new \bina_Partners_Marquee_Widget());
     $widgets_manager->register(new \bina_Services_Widget());
     $widgets_manager->register(new \bina_Why_Us_Widget());
