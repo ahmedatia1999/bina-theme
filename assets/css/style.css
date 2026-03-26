@@ -5181,6 +5181,10 @@ body {
         grid-template-columns: repeat(12, minmax(0, 1fr))
     }
 
+    .lg\:grid-cols-10 {
+        grid-template-columns: repeat(10, minmax(0, 1fr))
+    }
+
     .lg\:grid-cols-2 {
         grid-template-columns: repeat(2, minmax(0, 1fr))
     }

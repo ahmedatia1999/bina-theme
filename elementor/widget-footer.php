@@ -172,31 +172,6 @@ class bina_Footer_Widget extends Widget_Base {
         );
 
         $this->add_control(
-            'services_title',
-            [
-                'label' => __('Services Column Title', 'bina'),
-                'type' => Controls_Manager::TEXT,
-                'default' => __('خدماتنا', 'bina'),
-            ]
-        );
-        $this->add_control(
-            'services_links',
-            [
-                'label' => __('Services Links', 'bina'),
-                'type' => Controls_Manager::REPEATER,
-                'fields' => $link->get_controls(),
-                'default' => [
-                    [ 'text' => 'البناء الجديد', 'url' => [ 'url' => '/services/new-construction' ] ],
-                    [ 'text' => 'الترميم', 'url' => [ 'url' => '/services/renovation' ] ],
-                    [ 'text' => 'فحص المباني', 'url' => [ 'url' => '/services/inspection' ] ],
-                    [ 'text' => 'إدارة المشاريع', 'url' => [ 'url' => '/services/project-management' ] ],
-                    [ 'text' => 'مواد البناء', 'url' => [ 'url' => '/services/building-materials' ] ],
-                ],
-                'title_field' => '{{{ text }}}',
-            ]
-        );
-
-        $this->add_control(
             'quick_title',
             [
                 'label' => __('Quick Links Title', 'bina'),
@@ -365,7 +340,7 @@ class bina_Footer_Widget extends Widget_Base {
 
             <footer class="bg-secondary text-secondary-foreground relative z-20 content-visibility-auto">
                 <div class="container-custom section-padding">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-8 lg:gap-12">
                         <div class="lg:col-span-3 space-y-4">
                             <div class="flex items-center gap-2.5 [&_span]:text-white"><img src="<?php echo esc_url($logo_url); ?>"
                                     alt="<?php echo esc_attr($settings['logo_alt'] ?? ''); ?>" class="h-20 w-auto">
@@ -392,12 +367,6 @@ class bina_Footer_Widget extends Widget_Base {
                             <h3 class="text-lg font-semibold mb-4 text-white"><?php echo esc_html($settings['company_title'] ?? ''); ?></h3>
                             <ul class="space-y-2">
                                 <?php foreach (($settings['company_links'] ?? []) as $it) { $this->render_bulleted_link($it); } ?>
-                            </ul>
-                        </div>
-                        <div class="lg:col-span-2">
-                            <h3 class="text-lg font-semibold mb-4 text-white"><?php echo esc_html($settings['services_title'] ?? ''); ?></h3>
-                            <ul class="space-y-2">
-                                <?php foreach (($settings['services_links'] ?? []) as $it) { $this->render_bulleted_link($it); } ?>
                             </ul>
                         </div>
                         <div class="lg:col-span-2">
