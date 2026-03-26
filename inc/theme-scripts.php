@@ -99,3 +99,17 @@
 // add action to enqueue scripts and styles in the last position
 add_action( 'wp_enqueue_scripts', 'theme_scripts', 9999999 );
 
+/**
+ * Remove jQuery Migrate on frontend to silence console message:
+ * "JQMIGRATE: Migrate is installed..."
+ * Keep it enabled in wp-admin for compatibility.
+ */
+function bina_disable_jquery_migrate_frontend( $scripts ) {
+    if ( is_admin() ) return;
+    if ( empty( $scripts->registered['jquery'] ) ) return;
+
+    $deps = $scripts->registered['jquery']->deps;
+    $scripts->registered['jquery']->deps = array_diff( $deps, array( 'jquery-migrate' ) );
+}
+add_action( 'wp_default_scripts', 'bina_disable_jquery_migrate_frontend' );
+

@@ -187,7 +187,7 @@ class bina_Reviews_Swiper_Widget extends Widget_Base {
                         </div>
 
                         <!-- Swiper -->
-                        <div class="relative px-6">
+                        <div class="relative px-6 reviews-swiper-wrap">
                             <div class="swiper reviews-swiper">
                                 <div class="swiper-wrapper">
                                     <?php foreach ($reviews as $r): ?>
@@ -217,12 +217,10 @@ class bina_Reviews_Swiper_Widget extends Widget_Base {
                                         </div>
                                     <?php endforeach; ?>
                                 </div><!-- end swiper-wrapper -->
-
-                                <!-- أزرار التنقل -->
-                                <div class="swiper-button-next"></div>
-                                <div class="swiper-button-prev"></div>
-
                             </div><!-- end swiper -->
+                            <!-- أزرار التنقل خارج السلايدر حتى لا يتم قصها بالـ overflow -->
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
                         </div>
 
                         <!-- Footer Stats -->

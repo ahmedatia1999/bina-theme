@@ -1,4 +1,4 @@
-$(document).ready(function () {
+jQuery(function ($) {
 
     const header = $('#header');
     const hamburger = $('.hamburger');
@@ -6,6 +6,30 @@ $(document).ready(function () {
     const overlay = $('#mobile-overlay');
     const closeBtn = $('.close');
     const $html = $('html');
+
+    // Ensure header stays fixed even when rendered inside transformed Elementor wrappers.
+    (function normalizeStickyHeader() {
+        const $header = $('#header').first();
+        if (!$header.length) return;
+
+        const $overlay = $('#mobile-overlay').first();
+        const $mobileMenu = $('.mobile-menu').first();
+
+        // Move to body to avoid "position: fixed" being trapped by parent transform/overflow.
+        if (!$header.parent().is('body')) {
+            if ($mobileMenu.length) $('body').prepend($mobileMenu);
+            if ($overlay.length) $('body').prepend($overlay);
+            $('body').prepend($header);
+        }
+
+        $header.css({
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            zIndex: '9999'
+        });
+    })();
 
     /* ============================================
        SCROLL - HEADER
@@ -24,11 +48,13 @@ $(document).ready(function () {
     hamburger.on('click', function () {
         mobileMenu.addClass('active');
         overlay.addClass('active');
+        $('body').addClass('menu-open');
     });
 
     function closeMenu() {
         mobileMenu.removeClass('active');
         overlay.removeClass('active');
+        $('body').removeClass('menu-open');
     }
 
     closeBtn.on('click', closeMenu);
@@ -191,8 +217,9 @@ $(document).ready(function () {
         if (typeof Swiper === 'undefined') return;
 
         var $el = $(el);
-        var nextEl = $el.find('.swiper-button-next')[0];
-        var prevEl = $el.find('.swiper-button-prev')[0];
+        var $wrap = $el.closest('.reviews-swiper-wrap');
+        var nextEl = ($wrap.find('.swiper-button-next')[0]) || ($el.find('.swiper-button-next')[0]);
+        var prevEl = ($wrap.find('.swiper-button-prev')[0]) || ($el.find('.swiper-button-prev')[0]);
 
         new Swiper(el, {
             slidesPerView: 1,
@@ -285,56 +312,121 @@ $(document).ready(function () {
        فيه data-orientation="vertical" + data-state
     ============================================ */
     function initAccordionTypeTwo() {
-        // الـ buttons اللي عندها aria-controls وجوه data-orientation="vertical"
-        var $buttons = $('button[aria-controls][data-orientation="vertical"]');
+        function smoothClose($el, done) {
+            if (!$el || !$el.length) {
+                if (typeof done === 'function') done();
+                return;
+            }
+            var el = $el[0];
+            el.style.overflow = 'hidden';
+            el.style.height = el.scrollHeight + 'px';
+            el.style.opacity = '1';
+            el.style.paddingBottom = '16px';
+            el.style.transition = 'none';
 
-        if (!$buttons.length) return;
+            requestAnimationFrame(function () {
+                el.style.transition = 'height 240ms ease, opacity 200ms ease, padding-bottom 200ms ease';
+                el.style.height = '0px';
+                el.style.opacity = '0';
+                el.style.paddingBottom = '0px';
+            });
 
-        $buttons.on('click.accordionType2', function () {
+            window.setTimeout(function () {
+                $el.attr('hidden', true);
+                el.style.transition = '';
+                el.style.height = '';
+                el.style.opacity = '';
+                el.style.paddingBottom = '';
+                el.style.overflow = '';
+                if (typeof done === 'function') done();
+            }, 260);
+        }
+
+        function smoothOpen($el) {
+            if (!$el || !$el.length) return;
+            var el = $el[0];
+            $el.removeAttr('hidden');
+            el.style.overflow = 'hidden';
+            el.style.height = '0px';
+            el.style.opacity = '0';
+            el.style.paddingBottom = '0px';
+            el.style.transition = 'none';
+
+            requestAnimationFrame(function () {
+                el.style.transition = 'height 280ms ease, opacity 240ms ease, padding-bottom 240ms ease';
+                el.style.height = el.scrollHeight + 'px';
+                el.style.opacity = '1';
+                el.style.paddingBottom = '16px';
+            });
+
+            window.setTimeout(function () {
+                el.style.transition = '';
+                el.style.height = '';
+                el.style.opacity = '';
+                el.style.overflow = '';
+                // keep padding-bottom on opened answer
+                el.style.paddingBottom = '16px';
+            }, 300);
+        }
+
+        // delegated binding to support Elementor/dynamic renders
+        $(document).off('click.accordionType2', 'button[aria-controls][data-orientation="vertical"]');
+        $(document).on('click.accordionType2', 'button[aria-controls][data-orientation="vertical"]', function (e) {
+            e.preventDefault();
             var $btn = $(this);
             var contentId = $btn.attr('aria-controls');
-            var $content = $('#' + CSS.escape(contentId));
+            if (!contentId) return;
+
+            var contentEl = document.getElementById(contentId);
+            if (!contentEl) return;
+            var $content = $(contentEl);
             var isOpen = $btn.attr('aria-expanded') === 'true';
 
             // إيجاد الـ parent accordion container (مش الـ item نفسه)
             var $container = $btn.closest('[data-orientation="vertical"]:not([data-state])');
+            if (!$container.length) return;
+            if ($container.data('accBusy') === true) return;
+            $container.data('accBusy', true);
 
-            // اقفل كل العناصر داخل نفس الـ container
-            $container.find('button[aria-controls][data-orientation="vertical"]').each(function () {
-                var $b = $(this);
-                var cId = $b.attr('aria-controls');
-                var $c = $('#' + CSS.escape(cId));
-                var $item = $b.closest('[data-orientation="vertical"][data-state]');
+            // اقفل العنصر المفتوح الحالي فقط (أخف بكثير من لف كل العناصر)
+            var $openedBtn = $container.find('button[aria-controls][data-orientation="vertical"][aria-expanded="true"]').not($btn).first();
+            if ($openedBtn.length) {
+                var openedId = $openedBtn.attr('aria-controls');
+                var openedEl = openedId ? document.getElementById(openedId) : null;
+                var $openedContent = openedEl ? $(openedEl) : $();
+                var $openedItem = $openedBtn.closest('[data-orientation="vertical"][data-state]');
 
-                if ($c.length && !$c.attr('hidden')) {
-                    var curH = $c.outerHeight();
-                    $c.css({ height: curH, overflow: 'hidden' });
-                    $c.stop(true, false).animate({ height: 0 }, 300, function () {
-                        $c.attr('hidden', true).css({ height: '', overflow: '' });
-                    });
+                if ($openedContent.length && !$openedContent.attr('hidden')) {
+                    smoothClose($openedContent);
                 }
-
-                $b.attr('aria-expanded', 'false').attr('data-state', 'closed');
-                $item.attr('data-state', 'closed');
-                $b.find('svg').css('transform', 'rotate(0deg)');
-            });
+                $openedBtn.attr('aria-expanded', 'false').attr('data-state', 'closed');
+                $openedItem.attr('data-state', 'closed');
+                $openedBtn.find('svg').css('transform', 'rotate(0deg)');
+            }
 
             // لو كان مفتوح، اقفله بس
-            if (isOpen) return;
+            if (isOpen) {
+                smoothClose($content, function () {
+                    $container.data('accBusy', false);
+                });
+                $btn.attr('aria-expanded', 'false').attr('data-state', 'closed');
+                var $selfItem = $btn.closest('[data-orientation="vertical"][data-state]');
+                $selfItem.attr('data-state', 'closed');
+                $btn.find('svg').css('transform', 'rotate(0deg)');
+                return;
+            }
 
             // افتح الحالي
             var $item = $btn.closest('[data-orientation="vertical"][data-state]');
 
-            $content.css({ height: 0, overflow: 'hidden' }).removeAttr('hidden');
-            var targetH = $content[0].scrollHeight;
-
-            $content.stop(true, false).animate({ height: targetH }, 300, function () {
-                $content.css({ height: '', overflow: '' });
-            });
+            smoothOpen($content);
 
             $btn.attr('aria-expanded', 'true').attr('data-state', 'open');
             $item.attr('data-state', 'open');
             $btn.find('svg').css('transform', 'rotate(180deg)');
+            window.setTimeout(function () {
+                $container.data('accBusy', false);
+            }, 320);
         });
     }
 
@@ -428,52 +520,6 @@ $(document).ready(function () {
         }
     });
 
-    /* ============================================
-       BACK TO TOP BUTTON
-    ============================================ */
-    const $backToTop = $('<button>')
-        .attr('id', 'back-to-top')
-        .attr('aria-label', 'Back to top')
-        .html('&#8679;')
-        .appendTo('body');
-
-    $('<style>').prop('type', 'text/css').html(`
-        #back-to-top {
-            position: fixed;
-            bottom: 90px;
-            right: 24px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--primary, #1a56db);
-            color: #fff;
-            font-size: 22px;
-            border: none;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 40;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        #back-to-top.show { opacity: 1; transform: translateY(0); }
-        #back-to-top:hover { background: var(--primary-dark, #1748b8); }
-    `).appendTo('head');
-
-    $(window).on('scroll', function () {
-        if ($(this).scrollTop() > 400) {
-            $backToTop.addClass('show');
-        } else {
-            $backToTop.removeClass('show');
-        }
-    });
-
-    $backToTop.on('click', function () {
-        $('html, body').animate({ scrollTop: 0 }, 600);
-    });
 
     /* ============================================
        LAZY LOAD IMAGES

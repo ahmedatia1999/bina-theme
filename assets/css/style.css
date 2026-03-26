@@ -1077,7 +1077,7 @@ body {
 }
 
 .h-10 {
-    height: 2.5rem
+    height: 2.5rem !important;
 }
 
 .h-11 {
@@ -1093,7 +1093,7 @@ body {
 }
 
 .h-16 {
-    height: 4rem
+    height: 4rem !important
 }
 
 .h-2 {
@@ -5447,7 +5447,7 @@ body {
     overflow: hidden;
     background: #ffffff;
     transition: max-height 0.4s ease, box-shadow 0.3s ease;
-    z-index: 9998;
+    z-index: 10001;
     box-shadow: none;
 }
 
@@ -5553,7 +5553,7 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: 0.3s;
-    z-index: 9997;
+    z-index: 10000;
 }
 
 #mobile-overlay.active {
@@ -5561,8 +5561,12 @@ body {
     visibility: visible;
 }
 
-.reviews-swiper .swiper-button-next,
-.reviews-swiper .swiper-button-prev {
+body.menu-open {
+    overflow: hidden;
+}
+
+.reviews-swiper-wrap .swiper-button-next,
+.reviews-swiper-wrap .swiper-button-prev {
     color: #F95738;
     width: 32px;
     height: 32px;
@@ -5570,20 +5574,59 @@ body {
     border-radius: 50%;
     border: 1px solid #e5e7eb;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    top: 50%;
+    transform: translateY(-50%);
 }
 
-.reviews-swiper .swiper-button-next {
-    left: 0;
+/* LTR positions */
+html:not([dir="rtl"]) .reviews-swiper-wrap .swiper-button-next {
+    right: -44px !important;
+    left: auto !important;
 }
 
-.reviews-swiper .swiper-button-prev {
-    right: 0;
+html:not([dir="rtl"]) .reviews-swiper-wrap .swiper-button-prev {
+    left: -44px !important;
+    right: auto !important;
 }
 
-.reviews-swiper .swiper-button-next::after,
-.reviews-swiper .swiper-button-prev::after {
+/* RTL positions */
+html[dir="rtl"] .reviews-swiper-wrap .swiper-button-next {
+    right: -44px !important;
+    left: auto !important;
+}
+
+html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
+    left: -44px !important;
+    right: auto !important;
+}
+
+.reviews-swiper-wrap .swiper-button-next::after,
+.reviews-swiper-wrap .swiper-button-prev::after {
     font-size: 14px;
     font-weight: bold;
+}
+
+@media (max-width: 767px) {
+    .bina-mobile-logo {
+        height: 4rem !important;
+        width: auto;
+    }
+
+    html:not([dir="rtl"]) .reviews-swiper-wrap .swiper-button-next {
+        right: -14px !important;
+    }
+
+    html:not([dir="rtl"]) .reviews-swiper-wrap .swiper-button-prev {
+        left: -14px !important;
+    }
+
+    html[dir="rtl"] .reviews-swiper-wrap .swiper-button-next {
+        right: -14px !important;
+    }
+
+    html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
+        left: -14px !important;
+    }
 }
 
 [data-state="open"] {

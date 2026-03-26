@@ -198,39 +198,6 @@ class bina_FAQ_Widget extends Widget_Base {
                     </div>
                 </section>
 
-                <script>
-                (function () {
-                  var root = document.querySelector('[data-bina-faq="<?php echo esc_js($wid); ?>"]');
-                  if (!root) return;
-                  root.addEventListener('click', function (e) {
-                    var btn = e.target && e.target.closest ? e.target.closest('button[aria-controls]') : null;
-                    if (!btn || !root.contains(btn)) return;
-                    var panelId = btn.getAttribute('aria-controls');
-                    if (!panelId) return;
-                    var panel = document.getElementById(panelId);
-                    if (!panel) return;
-                    var item = btn.closest('[data-state][data-orientation="vertical"]');
-                    if (!item) return;
-                    var isOpen = btn.getAttribute('aria-expanded') === 'true';
-                    var nextState = isOpen ? 'closed' : 'open';
-
-                    btn.setAttribute('aria-expanded', nextState === 'open' ? 'true' : 'false');
-                    btn.setAttribute('data-state', nextState);
-                    panel.setAttribute('data-state', nextState);
-                    item.setAttribute('data-state', nextState);
-
-                    var h3 = item.querySelector('h3[data-orientation="vertical"]');
-                    if (h3) h3.setAttribute('data-state', nextState);
-
-                    if (nextState === 'open') {
-                      panel.removeAttribute('hidden');
-                    } else {
-                      panel.setAttribute('hidden', '');
-                    }
-                  });
-                })();
-                </script>
-
         <?php
     }
 }

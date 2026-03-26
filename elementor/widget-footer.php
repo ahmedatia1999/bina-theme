@@ -368,7 +368,7 @@ class bina_Footer_Widget extends Widget_Base {
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
                         <div class="lg:col-span-3 space-y-4">
                             <div class="flex items-center gap-2.5 [&_span]:text-white"><img src="<?php echo esc_url($logo_url); ?>"
-                                    alt="<?php echo esc_attr($settings['logo_alt'] ?? ''); ?>" class="h-10 w-auto">
+                                    alt="<?php echo esc_attr($settings['logo_alt'] ?? ''); ?>" class="h-20 w-auto">
                             </div>
                             <p class="text-secondary-foreground/80 text-sm leading-relaxed"><?php echo esc_html($settings['about_text'] ?? ''); ?></p>
                             <div class="flex gap-3">

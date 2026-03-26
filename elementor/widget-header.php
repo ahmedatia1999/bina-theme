@@ -202,7 +202,7 @@ class bina_Header_Widget extends Widget_Base {
                 <nav class="flex items-center justify-between">
                     <a class="relative z-10" href="<?php echo esc_url($logo_link); ?>">
                         <div class="flex items-center gap-2.5 ">
-                            <img src="<?php echo esc_url($logo_url); ?>" alt="" class="h-20 w-auto">
+                            <img src="<?php echo esc_url($logo_url); ?>" alt="" class="h-20 w-auto bina-mobile-logo">
                         </div>
                     </a>
 
@@ -260,8 +260,8 @@ class bina_Header_Widget extends Widget_Base {
 
         <div class="mobile-menu">
             <div class="menu-header">
-                <button class="close">✕</button>
-                <img src="<?php echo esc_url($logo_url); ?>" alt="" style="height: 80px;">
+                <img src="<?php echo esc_url($logo_url); ?>" alt="" class="bina-mobile-logo" style="height: 80px;">
+                <button class="close" type="button" aria-label="<?php echo esc_attr__('Close menu', 'bina'); ?>">✕</button>
             </div>
 
             <ul class="main_menu">
