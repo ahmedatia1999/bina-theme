@@ -5660,3 +5660,90 @@ html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
 .h-\[calc\(100dvh-5rem\)\] {
     height: calc(100dvh - 5rem);
 }
+
+/* Contact Form 7 financing form */
+.bina-financing-cf7 .wpcf7-form p {
+    margin: 0;
+}
+
+.bina-financing-cf7 .wpcf7-form-control-wrap {
+    display: block;
+}
+
+.bina-financing-cf7 input[type="text"],
+.bina-financing-cf7 input[type="email"],
+.bina-financing-cf7 input[type="tel"],
+.bina-financing-cf7 textarea {
+    width: 100%;
+}
+
+.bina-financing-cf7 .wpcf7-radio,
+.bina-financing-cf7 .wpcf7-checkbox {
+    display: grid;
+    gap: .75rem;
+}
+
+.bina-financing-cf7 .cf7-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bina-financing-cf7 .cf7-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bina-financing-cf7 .cf7-grid-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+    .bina-financing-cf7 .cf7-grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .bina-financing-cf7 .cf7-grid-5 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+.bina-financing-cf7 .wpcf7-list-item {
+    margin: 0;
+}
+
+.bina-financing-cf7 .wpcf7-list-item label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: 1rem;
+    border-radius: .75rem;
+    border: 2px solid hsl(var(--border));
+    background: hsl(var(--background));
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.bina-financing-cf7 .wpcf7-list-item input {
+    accent-color: hsl(var(--primary));
+}
+
+.bina-financing-cf7 .wpcf7-list-item label:hover {
+    border-color: hsl(var(--primary) / .5);
+}
+
+.bina-financing-cf7 .wpcf7-list-item input:checked + .wpcf7-list-item-label {
+    color: hsl(var(--primary));
+    font-weight: 700;
+}
+
+.bina-financing-cf7 .wpcf7-submit {
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+}
+
+.bina-financing-cf7 .wpcf7-acceptance .wpcf7-list-item label {
+    justify-content: flex-start;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}

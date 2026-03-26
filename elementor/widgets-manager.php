@@ -14,6 +14,11 @@ function register_new_widgets($widgets_manager)
     require_once(__DIR__ . '/widget-financing-hero.php');
     require_once(__DIR__ . '/widget-financing-about-service.php');
     require_once(__DIR__ . '/widget-financing-why-choose.php');
+    require_once(__DIR__ . '/widget-financing-beneficiaries.php');
+    require_once(__DIR__ . '/widget-financing-how-it-works.php');
+    require_once(__DIR__ . '/widget-financing-form-shortcode.php');
+    require_once(__DIR__ . '/widget-financing-team-message.php');
+    require_once(__DIR__ . '/widget-financing-disclaimer.php');
     require_once(__DIR__ . '/widget-partners-marquee.php');
     require_once(__DIR__ . '/widget-services.php');
     require_once(__DIR__ . '/widget-why-us.php');
@@ -34,6 +39,11 @@ function register_new_widgets($widgets_manager)
     $widgets_manager->register(new \bina_Financing_Hero_Widget());
     $widgets_manager->register(new \bina_Financing_About_Service_Widget());
     $widgets_manager->register(new \bina_Financing_Why_Choose_Widget());
+    $widgets_manager->register(new \bina_Financing_Beneficiaries_Widget());
+    $widgets_manager->register(new \bina_Financing_How_It_Works_Widget());
+    $widgets_manager->register(new \bina_Financing_Form_Shortcode_Widget());
+    $widgets_manager->register(new \bina_Financing_Team_Message_Widget());
+    $widgets_manager->register(new \bina_Financing_Disclaimer_Widget());
     $widgets_manager->register(new \bina_Partners_Marquee_Widget());
     $widgets_manager->register(new \bina_Services_Widget());
     $widgets_manager->register(new \bina_Why_Us_Widget());
