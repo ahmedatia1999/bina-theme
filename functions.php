@@ -46,6 +46,13 @@
     }
 
     require_once(get_template_directory() . '/elementor/widgets-manager.php');
+
+    // Auth roles used by register/login widgets.
+    function bina_register_auth_roles() {
+        add_role('customer', 'Customer', array('read' => true));
+        add_role('service_provider', 'Service Provider', array('read' => true));
+    }
+    add_action('init', 'bina_register_auth_roles');
     
     if(isset($_GET['bina_ajax'])) require_once THEME_DIR . '/ajax/ajax.php';
 
@@ -305,6 +312,9 @@
         $password = isset($_POST['password']) ? (string) $_POST['password'] : '';
         $confirm_password = isset($_POST['confirmPassword']) ? (string) $_POST['confirmPassword'] : '';
         $account_type = isset($_POST['accountType']) ? sanitize_text_field($_POST['accountType']) : '';
+        if ($account_type === 'contractor') {
+            $account_type = 'service_provider';
+        }
 
         if ($first_name === '') $field_errors['firstName'] = 'الاسم الأول مطلوب';
         if ($email === '' || !is_email($email)) $field_errors['email'] = 'يرجى إدخال بريد إلكتروني صحيح';
@@ -316,6 +326,22 @@
 
         if ($email !== '' && email_exists($email)) {
             $field_errors['email'] = 'هذا البريد الإلكتروني مستخدم بالفعل';
+        }
+
+        if ($phone !== '') {
+            $existing_phone = new WP_User_Query(array(
+                'meta_key'   => 'bina_phone',
+                'meta_value' => $phone,
+                'number'     => 1,
+                'fields'     => 'ID',
+            ));
+            if (!empty($existing_phone->get_results())) {
+                $field_errors['phone'] = 'رقم الهاتف مستخدم بالفعل';
+            }
+        }
+
+        if (!in_array($account_type, array('customer', 'service_provider'), true)) {
+            $field_errors['accountType'] = 'نوع الحساب غير صالح';
         }
 
         if (!empty($field_errors)) {
@@ -347,6 +373,10 @@
             'display_name' => trim($first_name . ' ' . $last_name),
         ));
 
+        $role_to_set = ($account_type === 'service_provider') ? 'service_provider' : 'customer';
+        $wp_user = new WP_User($user_id);
+        $wp_user->set_role($role_to_set);
+
         update_user_meta($user_id, 'bina_phone', $phone);
         update_user_meta($user_id, 'bina_city', $city);
         update_user_meta($user_id, 'bina_account_type', $account_type);
@@ -355,8 +385,13 @@
         wp_set_current_user($user_id);
         wp_set_auth_cookie($user_id);
 
+        $redirect_url = ($role_to_set === 'service_provider')
+            ? home_url('/service-provider/dashboard')
+            : home_url('/customer/dashboard');
+
         wp_send_json_success(array(
             'user_id' => $user_id,
+            'redirect_url' => $redirect_url,
         ));
     }
 
@@ -373,7 +408,7 @@
         $password = isset($_POST['password']) ? (string) $_POST['password'] : '';
 
         if ($identifier === '') {
-            $field_errors['identifier'] = 'البريد الإلكتروني أو رقم الهاتف مطلوب';
+            $field_errors['identifier'] = 'البريد الإلكتروني أو اسم المستخدم أو رقم الهاتف مطلوب';
         }
         if ($password === '') {
             $field_errors['password'] = 'كلمة المرور مطلوبة';
@@ -391,6 +426,11 @@
         // Email login
         if (is_email($identifier)) {
             $user = get_user_by('email', $identifier);
+        }
+
+        // Username login
+        if (!$user) {
+            $user = get_user_by('login', $identifier);
         }
 
         // Phone login: match registered phone meta
@@ -427,8 +467,20 @@
         wp_set_auth_cookie($user->ID, true);
         do_action('wp_login', $user->user_login, $user);
 
+        $account_type = get_user_meta($user->ID, 'bina_account_type', true);
+        if ($account_type === 'contractor') {
+            $account_type = 'service_provider';
+        }
+
+        $redirect_url = home_url('/');
+        if ($account_type === 'service_provider' || in_array('service_provider', (array) $user->roles, true)) {
+            $redirect_url = home_url('/service-provider/dashboard');
+        } elseif ($account_type === 'customer' || in_array('customer', (array) $user->roles, true)) {
+            $redirect_url = home_url('/customer/dashboard');
+        }
+
         wp_send_json_success(array(
-            'redirect_url' => home_url('/'),
+            'redirect_url' => $redirect_url,
         ));
     }
 

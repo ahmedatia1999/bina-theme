@@ -60,6 +60,10 @@ function register_new_widgets($widgets_manager)
     require_once(__DIR__ . '/widget-contact-form-shortcode.php');
     require_once(__DIR__ . '/widget-contact-support-services.php');
     require_once(__DIR__ . '/widget-contact-info-cta.php');
+    require_once(__DIR__ . '/widget-add-project-hero.php');
+    require_once(__DIR__ . '/widget-login-form.php');
+    require_once(__DIR__ . '/widget-register-form.php');
+    require_once(__DIR__ . '/widget-forgot-password-form.php');
     require_once(__DIR__ . '/widget-partners-marquee.php');
     require_once(__DIR__ . '/widget-services.php');
     require_once(__DIR__ . '/widget-why-us.php');
@@ -126,6 +130,10 @@ function register_new_widgets($widgets_manager)
     $widgets_manager->register(new \bina_Contact_Form_Shortcode_Widget());
     $widgets_manager->register(new \bina_Contact_Support_Services_Widget());
     $widgets_manager->register(new \bina_Contact_Info_CTA_Widget());
+    $widgets_manager->register(new \bina_Add_Project_Hero_Widget());
+    $widgets_manager->register(new \bina_Login_Form_Widget());
+    $widgets_manager->register(new \bina_Register_Form_Widget());
+    $widgets_manager->register(new \bina_Forgot_Password_Form_Widget());
     $widgets_manager->register(new \bina_Partners_Marquee_Widget());
     $widgets_manager->register(new \bina_Services_Widget());
     $widgets_manager->register(new \bina_Why_Us_Widget());
