@@ -92,6 +92,14 @@
           const isOn = b === btn;
           b.setAttribute("aria-checked", isOn ? "true" : "false");
           b.setAttribute("data-state", isOn ? "checked" : "unchecked");
+          b.style.backgroundColor = isOn ? "hsl(var(--primary))" : "transparent";
+          b.style.borderColor = isOn ? "hsl(var(--primary))" : "";
+
+          const card = b.closest("label");
+          if (card) {
+            card.style.borderColor = isOn ? "hsl(var(--primary))" : "";
+            card.style.backgroundColor = isOn ? "hsl(var(--primary) / 0.08)" : "";
+          }
         });
 
         const value = btn.getAttribute("value") || "";

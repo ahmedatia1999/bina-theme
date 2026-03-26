@@ -25,7 +25,8 @@ class bina_Forgot_Password_Form_Widget extends Widget_Base {
 
     protected function render() {
         $s = $this->get_settings_for_display();
-        $action = wp_lostpassword_url();
+        wp_enqueue_script('bina-forgot-password-js', get_template_directory_uri() . '/assets/js/forgot-password.js', array(), filemtime(get_template_directory() . '/assets/js/forgot-password.js'), true);
+        $nonce = wp_create_nonce('bina_forgot_password_nonce');
         ?>
         <div class="relative min-h-svh">
             <header class="absolute top-0 left-0 right-0 z-10 flex h-16 shrink-0 items-center justify-end px-4 md:px-6">
@@ -47,12 +48,13 @@ class bina_Forgot_Password_Form_Widget extends Widget_Base {
                                 <p class="text-muted-foreground text-balance"><?php echo esc_html($s['desc'] ?? ''); ?></p>
                             </div>
                             <div data-slot="card-content" class="px-4 md:px-6">
-                                <form class="flex flex-col gap-6" method="post" action="<?php echo esc_url($action); ?>">
+                                <form class="flex flex-col gap-6" method="post" action="#" data-bina-forgot-form data-forgot-nonce="<?php echo esc_attr($nonce); ?>">
                                     <div data-slot="field-group" class="group/field-group @container/field-group flex w-full flex-col gap-7 data-[slot=checkbox-group]:gap-3 [&amp;&gt;[data-slot=field-group]]:gap-4">
                                         <div data-slot="form-item" class="grid gap-2">
                                             <label data-slot="form-label" class="flex items-center gap-2 text-sm leading-none font-medium select-none"><?php echo esc_html($s['email_label'] ?? ''); ?></label>
                                             <input type="text" data-slot="form-control" class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" inputmode="email" autocapitalize="none" placeholder="<?php echo esc_attr($s['email_placeholder'] ?? ''); ?>" name="user_login" value="">
                                             <p data-slot="form-description" class="text-muted-foreground text-sm"><?php echo esc_html($s['email_help'] ?? ''); ?></p>
+                                            <p class="text-sm text-red-500 mt-1" data-error-for="email" style="display:none"></p>
                                         </div>
                                         <div role="group" data-slot="field" data-orientation="vertical" class="group/field flex w-full gap-3 data-[invalid=true]:text-destructive flex-col [&amp;&gt;*]:w-full [&amp;&gt;.sr-only]:w-auto">
                                             <button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3 w-full" type="submit"><?php echo esc_html($s['button_text'] ?? ''); ?></button>

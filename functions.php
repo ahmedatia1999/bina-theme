@@ -277,6 +277,27 @@
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Register page (cities + user registration)
 
+    function bina_normalize_phone($phone) {
+        $phone = (string) $phone;
+        $digits = preg_replace('/\D+/', '', $phone);
+
+        if ($digits === '') {
+            return '';
+        }
+
+        if (strpos($digits, '00966') === 0) {
+            $digits = substr($digits, 5);
+        } elseif (strpos($digits, '966') === 0) {
+            $digits = substr($digits, 3);
+        }
+
+        if (strlen($digits) === 9 && strpos($digits, '5') === 0) {
+            $digits = '0' . $digits;
+        }
+
+        return $digits;
+    }
+
     add_action('wp_ajax_bina_get_cities', 'bina_get_cities_ajax');
     add_action('wp_ajax_nopriv_bina_get_cities', 'bina_get_cities_ajax');
 
@@ -312,6 +333,7 @@
         $password = isset($_POST['password']) ? (string) $_POST['password'] : '';
         $confirm_password = isset($_POST['confirmPassword']) ? (string) $_POST['confirmPassword'] : '';
         $account_type = isset($_POST['accountType']) ? sanitize_text_field($_POST['accountType']) : '';
+        $phone_normalized = bina_normalize_phone($phone);
         if ($account_type === 'contractor') {
             $account_type = 'service_provider';
         }
@@ -329,13 +351,19 @@
         }
 
         if ($phone !== '') {
-            $existing_phone = new WP_User_Query(array(
+            $existing_phone_raw = new WP_User_Query(array(
                 'meta_key'   => 'bina_phone',
                 'meta_value' => $phone,
                 'number'     => 1,
                 'fields'     => 'ID',
             ));
-            if (!empty($existing_phone->get_results())) {
+            $existing_phone_normalized = new WP_User_Query(array(
+                'meta_key'   => 'bina_phone_normalized',
+                'meta_value' => $phone_normalized,
+                'number'     => 1,
+                'fields'     => 'ID',
+            ));
+            if (!empty($existing_phone_raw->get_results()) || !empty($existing_phone_normalized->get_results())) {
                 $field_errors['phone'] = 'رقم الهاتف مستخدم بالفعل';
             }
         }
@@ -378,6 +406,7 @@
         $wp_user->set_role($role_to_set);
 
         update_user_meta($user_id, 'bina_phone', $phone);
+        update_user_meta($user_id, 'bina_phone_normalized', $phone_normalized);
         update_user_meta($user_id, 'bina_city', $city);
         update_user_meta($user_id, 'bina_account_type', $account_type);
 
@@ -436,6 +465,19 @@
         // Phone login: match registered phone meta
         if (!$user) {
             $user_query = new WP_User_Query(array(
+                'meta_key' => 'bina_phone_normalized',
+                'meta_value' => bina_normalize_phone($identifier),
+                'number' => 1,
+                'fields' => 'all',
+            ));
+            $users = $user_query->get_results();
+            if (!empty($users)) {
+                $user = $users[0];
+            }
+        }
+
+        if (!$user) {
+            $user_query = new WP_User_Query(array(
                 'meta_key' => 'bina_phone',
                 'meta_value' => $identifier,
                 'number' => 1,
@@ -481,6 +523,51 @@
 
         wp_send_json_success(array(
             'redirect_url' => $redirect_url,
+        ));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Forgot password (AJAX)
+
+    add_action('wp_ajax_bina_forgot_password', 'bina_forgot_password_ajax');
+    add_action('wp_ajax_nopriv_bina_forgot_password', 'bina_forgot_password_ajax');
+
+    function bina_forgot_password_ajax() {
+        $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+        $nonce = isset($_POST['nonce']) ? sanitize_text_field($_POST['nonce']) : '';
+
+        if (!wp_verify_nonce($nonce, 'bina_forgot_password_nonce')) {
+            wp_send_json_error(array(
+                'message' => 'طلب غير صالح',
+                'fieldErrors' => array('email' => 'حدث خطأ في الأمان، حاول مرة أخرى'),
+            ), 400);
+        }
+
+        if ($email === '' || !is_email($email)) {
+            wp_send_json_error(array(
+                'message' => 'يرجى إدخال بريد إلكتروني صحيح',
+                'fieldErrors' => array('email' => 'يرجى إدخال بريد إلكتروني صحيح'),
+            ), 400);
+        }
+
+        $user = get_user_by('email', $email);
+        if (!$user) {
+            wp_send_json_error(array(
+                'message' => 'هذا البريد الإلكتروني غير مسجل لدينا',
+                'fieldErrors' => array('email' => 'هذا البريد الإلكتروني غير مسجل لدينا'),
+            ), 400);
+        }
+
+        $sent = retrieve_password($user->user_login);
+        if (is_wp_error($sent)) {
+            wp_send_json_error(array(
+                'message' => 'تعذر إرسال رابط إعادة التعيين حاليًا',
+                'fieldErrors' => array('email' => 'تعذر إرسال رابط إعادة التعيين حاليًا'),
+            ), 500);
+        }
+
+        wp_send_json_success(array(
+            'message' => 'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني',
         ));
     }
 
