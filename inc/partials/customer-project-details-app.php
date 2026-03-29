@@ -10,6 +10,8 @@
  * @var string  $st_label
  * @var array   $extra
  * @var string  $edit_url Optional edit URL when user may edit.
+ * @var int[]   $plans_attachment_ids
+ * @var int[]   $site_photos_attachment_ids
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,6 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $edit_url = isset( $edit_url ) ? $edit_url : '';
+
+$plans_attachment_ids       = isset( $plans_attachment_ids ) && is_array( $plans_attachment_ids ) ? array_map( 'absint', $plans_attachment_ids ) : array();
+$site_photos_attachment_ids = isset( $site_photos_attachment_ids ) && is_array( $site_photos_attachment_ids ) ? array_map( 'absint', $site_photos_attachment_ids ) : array();
 
 $neighborhood = isset( $extra['neighborhood'] ) ? (string) $extra['neighborhood'] : '';
 $street         = isset( $extra['street'] ) ? (string) $extra['street'] : '';
@@ -75,5 +80,48 @@ $has_photos     = isset( $extra['has_photos'] ) ? (string) $extra['has_photos'] 
 				<div><dt class="text-muted-foreground"><?php esc_html_e( 'صور للموقع', 'bina' ); ?></dt><dd><?php echo esc_html( $has_photos ); ?></dd></div>
 			<?php endif; ?>
 		</dl>
+		<?php if ( ! empty( $plans_attachment_ids ) ) : ?>
+			<div class="mt-6 pt-4 border-t border-border/60">
+				<h3 class="text-sm font-semibold mb-3"><?php esc_html_e( 'مرفقات المخططات', 'bina' ); ?></h3>
+				<ul class="flex flex-wrap gap-3">
+					<?php
+					foreach ( $plans_attachment_ids as $aid ) {
+						if ( $aid < 1 ) {
+							continue;
+						}
+						$url = wp_get_attachment_url( $aid );
+						if ( ! $url ) {
+							continue;
+						}
+						$mime = get_post_mime_type( $aid );
+						if ( $mime && strpos( $mime, 'image/' ) === 0 ) {
+							echo '<li class="rounded-lg border overflow-hidden max-w-[140px]">' . wp_get_attachment_image( $aid, 'medium', false, array( 'class' => 'w-full h-auto object-cover' ) ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						} else {
+							$title = get_the_title( $aid ) ? get_the_title( $aid ) : __( 'تحميل', 'bina' );
+							echo '<li><a class="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted" href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $title ) . '</a></li>';
+						}
+					}
+					?>
+				</ul>
+			</div>
+		<?php endif; ?>
+		<?php if ( ! empty( $site_photos_attachment_ids ) ) : ?>
+			<div class="mt-6 pt-4 border-t border-border/60">
+				<h3 class="text-sm font-semibold mb-3"><?php esc_html_e( 'صور الموقع المرفوعة', 'bina' ); ?></h3>
+				<div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+					<?php
+					foreach ( $site_photos_attachment_ids as $aid ) {
+						if ( $aid < 1 ) {
+							continue;
+						}
+						if ( ! wp_attachment_is_image( $aid ) ) {
+							continue;
+						}
+						echo '<div class="rounded-xl border overflow-hidden aspect-video bg-muted">' . wp_get_attachment_image( $aid, 'large', false, array( 'class' => 'w-full h-full object-cover' ) ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
+				</div>
+			</div>
+		<?php endif; ?>
 	</div>
 </div>

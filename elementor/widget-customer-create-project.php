@@ -90,15 +90,9 @@ class bina_Customer_Create_Project_Widget extends Widget_Base {
 			}
 			$is_edit      = true;
 			$edit_post_id = $project_id;
-			$extra_raw    = get_post_meta( $project_id, '_bina_extra', true );
-			$extra        = array();
-			if ( is_string( $extra_raw ) && $extra_raw !== '' ) {
-				$decoded = json_decode( $extra_raw, true );
-				if ( is_array( $decoded ) ) {
-					$extra = $decoded;
-				}
-			}
-			$prefill = array(
+			$extra_raw = get_post_meta( $project_id, '_bina_extra', true );
+			$extra     = bina_project_extra_from_meta( is_string( $extra_raw ) ? $extra_raw : '' );
+			$prefill   = array(
 				'title'        => $proj->post_title,
 				'description'  => $proj->post_content,
 				'category'     => (string) get_post_meta( $project_id, '_bina_category', true ),
@@ -111,6 +105,9 @@ class bina_Customer_Create_Project_Widget extends Widget_Base {
 				'has_photos'   => isset( $extra['has_photos'] ) ? (string) $extra['has_photos'] : '',
 			);
 		}
+
+		$plans_attachment_ids       = ( $is_edit && $edit_post_id ) ? bina_get_project_attachment_ids( $edit_post_id, 'plans' ) : array();
+		$site_photos_attachment_ids = ( $is_edit && $edit_post_id ) ? bina_get_project_attachment_ids( $edit_post_id, 'site_photos' ) : array();
 
 		bina_customer_portal_enqueue_shell_assets();
 		$urls     = bina_get_customer_portal_urls( null );

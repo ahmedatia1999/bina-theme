@@ -39,6 +39,10 @@ function bina_get_theme_auto_pages() {
 			'title' => __( 'المحادثات', 'bina' ),
 		),
 		array(
+			'slug'  => 'service-provider-chat',
+			'title' => __( 'محادثات مقدم الخدمة', 'bina' ),
+		),
+		array(
 			'slug'  => 'customer-conflicts',
 			'title' => __( 'النزاعات', 'bina' ),
 		),
@@ -71,6 +75,10 @@ function bina_customer_project_detail_page_slug() {
 
 function bina_customer_chat_page_slug() {
 	return 'customer-chat';
+}
+
+function bina_service_provider_chat_page_slug() {
+	return 'service-provider-chat';
 }
 
 function bina_customer_conflicts_page_slug() {
@@ -130,6 +138,13 @@ function bina_get_customer_project_detail_url( $post_id ) {
 
 function bina_get_customer_chat_url() {
 	return bina_get_page_url_by_slug( bina_customer_chat_page_slug() );
+}
+
+/**
+ * @return string
+ */
+function bina_get_service_provider_chat_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_chat_page_slug() );
 }
 
 function bina_get_customer_conflicts_url() {

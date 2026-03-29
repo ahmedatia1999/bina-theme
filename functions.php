@@ -43,7 +43,12 @@
         'dashboard-pages.php',
         'admin-bar.php',
         'cpt-bina-project.php',
+        'bina-project-meta-helpers.php',
+        'bina-messages-db.php',
+        'bina-project-messages.php',
         'ajax-bina-project.php',
+        'ajax-bina-messages.php',
+        'admin-bina-project.php',
     );
 
     foreach ( $inc_files as $file ) {

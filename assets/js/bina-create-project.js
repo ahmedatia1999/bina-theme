@@ -9,10 +9,27 @@
   const form = root.querySelector("[data-bina-project-form]");
   const badge1 = root.querySelector("#bina-step-badge-1");
   const badge2 = root.querySelector("#bina-step-badge-2");
+  const wrapPlans = root.querySelector("[data-bina-upload-plans]");
+  const wrapPhotos = root.querySelector("[data-bina-upload-photos]");
 
   function getAjaxUrl() {
     if (window.bina && window.bina.ajaxurl) return String(window.bina.ajaxurl);
     return window.location.origin + "/wp-admin/admin-ajax.php";
+  }
+
+  function syncUploadVisibility() {
+    const hp = form ? form.querySelector('[name="has_plans"]:checked') : null;
+    const hph = form ? form.querySelector('[name="has_photos"]:checked') : null;
+    const showPlans = hp && hp.value === "نعم";
+    const showPhotos = hph && hph.value === "نعم";
+    if (wrapPlans) {
+      if (showPlans) wrapPlans.classList.remove("hidden");
+      else wrapPlans.classList.add("hidden");
+    }
+    if (wrapPhotos) {
+      if (showPhotos) wrapPhotos.classList.remove("hidden");
+      else wrapPhotos.classList.add("hidden");
+    }
   }
 
   root.querySelectorAll("[data-bina-category-card]").forEach(function (card) {
@@ -31,6 +48,16 @@
       if (chk) chk.classList.remove("hidden");
     });
   });
+
+  if (form) {
+    form.querySelectorAll('[name="has_plans"]').forEach(function (el) {
+      el.addEventListener("change", syncUploadVisibility);
+    });
+    form.querySelectorAll('[name="has_photos"]').forEach(function (el) {
+      el.addEventListener("change", syncUploadVisibility);
+    });
+    syncUploadVisibility();
+  }
 
   if (nextBtn && step1 && step2) {
     nextBtn.addEventListener("click", function () {
@@ -58,10 +85,11 @@
     const btn = form.querySelector('[type="submit"]');
     if (btn) btn.disabled = true;
 
-    const payload = new URLSearchParams();
     const mode = form.getAttribute("data-bina-mode") || "create";
+    const fd = new FormData();
+
     if (mode === "edit") {
-      payload.set("action", "bina_update_project");
+      fd.append("action", "bina_update_project");
       const pidEl = form.querySelector('[name="post_id"]');
       const pidAttr = form.getAttribute("data-post-id");
       const postId = pidEl && pidEl.value ? pidEl.value : pidAttr || "";
@@ -70,31 +98,45 @@
         if (btn) btn.disabled = false;
         return;
       }
-      payload.set("post_id", String(postId).trim());
+      fd.append("post_id", String(postId).trim());
     } else {
-      payload.set("action", "bina_save_project");
+      fd.append("action", "bina_save_project");
     }
-    payload.set("nonce", form.getAttribute("data-nonce") || "");
-    payload.set("title", (form.querySelector('[name="title"]') || {}).value || "");
-    payload.set("description", (form.querySelector('[name="description"]') || {}).value || "");
+
+    fd.append("nonce", form.getAttribute("data-nonce") || "");
+    fd.append("title", (form.querySelector('[name="title"]') || {}).value || "");
+    fd.append("description", (form.querySelector('[name="description"]') || {}).value || "");
     const catEl = document.getElementById("bina-category-hidden");
-    payload.set("category", catEl ? catEl.value : (form.querySelector('[name="category"]') || {}).value || "");
-    payload.set("reminder", (form.querySelector('[name="reminder"]') || {}).value || "");
-    payload.set("city", (form.querySelector('[name="city"]') || {}).value || "");
-    payload.set("neighborhood", (form.querySelector('[name="neighborhood"]') || {}).value || "");
-    payload.set("street", (form.querySelector('[name="street"]') || {}).value || "");
+    fd.append("category", catEl ? catEl.value : (form.querySelector('[name="category"]') || {}).value || "");
+    fd.append("reminder", (form.querySelector('[name="reminder"]') || {}).value || "");
+    fd.append("city", (form.querySelector('[name="city"]') || {}).value || "");
+    fd.append("neighborhood", (form.querySelector('[name="neighborhood"]') || {}).value || "");
+    fd.append("street", (form.querySelector('[name="street"]') || {}).value || "");
     const st = form.querySelector('[name="start_timing"]:checked');
-    payload.set("start_timing", st ? st.value : "");
+    fd.append("start_timing", st ? st.value : "");
     const hp = form.querySelector('[name="has_plans"]:checked');
-    payload.set("has_plans", hp ? hp.value : "");
+    fd.append("has_plans", hp ? hp.value : "");
     const hph = form.querySelector('[name="has_photos"]:checked');
-    payload.set("has_photos", hph ? hph.value : "");
+    fd.append("has_photos", hph ? hph.value : "");
+
+    const plansInput = form.querySelector("#bina-plans-files");
+    if (plansInput && plansInput.files && plansInput.files.length) {
+      for (let i = 0; i < plansInput.files.length; i++) {
+        fd.append("bina_plans[]", plansInput.files[i]);
+      }
+    }
+
+    const photosInput = form.querySelector("#bina-site-photos-files");
+    if (photosInput && photosInput.files && photosInput.files.length) {
+      for (let i = 0; i < photosInput.files.length; i++) {
+        fd.append("bina_site_photos[]", photosInput.files[i]);
+      }
+    }
 
     fetch(getAjaxUrl(), {
       method: "POST",
       credentials: "same-origin",
-      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-      body: payload.toString(),
+      body: fd,
     })
       .then(function (r) {
         return r.json();

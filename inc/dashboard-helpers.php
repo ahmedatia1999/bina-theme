@@ -119,6 +119,39 @@ function bina_customer_portal_enqueue_shell_assets() {
 }
 
 /**
+ * Enqueue AJAX thread messaging script (customer / service provider chat pages).
+ *
+ * @return void
+ */
+function bina_enqueue_project_messages_script() {
+	static $done = false;
+	if ( $done ) {
+		return;
+	}
+	$path = get_template_directory() . '/assets/js/bina-project-messages.js';
+	if ( ! file_exists( $path ) ) {
+		return;
+	}
+	wp_enqueue_script(
+		'bina-project-messages',
+		get_template_directory_uri() . '/assets/js/bina-project-messages.js',
+		array(),
+		filemtime( $path ),
+		true
+	);
+	wp_localize_script(
+		'bina-project-messages',
+		'binaProjectMessages',
+		array(
+			'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+			'nonce'         => wp_create_nonce( 'bina_project_messages' ),
+			'currentUserId' => get_current_user_id(),
+		)
+	);
+	$done = true;
+}
+
+/**
  * @param WP_User $user User object.
  * @return bool
  */

@@ -1,0 +1,84 @@
+/* Admin: bina_project detail page */
+.bina-admin-project-wrap {
+	max-width: 1100px;
+}
+
+.bina-admin-project-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 16px;
+	margin-top: 16px;
+}
+
+.bina-admin-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 16px 20px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.bina-admin-card--wide {
+	grid-column: 1 / -1;
+}
+
+.bina-admin-card h2 {
+	margin: 0 0 12px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.bina-admin-prose {
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.bina-admin-badge {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 4px;
+	background: #f0f0f1;
+	font-weight: 600;
+}
+
+.bina-admin-attachments {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.bina-admin-attachments li {
+	margin: 0;
+}
+
+.bina-admin-thumb {
+	max-width: 160px;
+	height: auto;
+	vertical-align: middle;
+	border-radius: 4px;
+	border: 1px solid #dcdcde;
+}
+
+.bina-admin-photo-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	gap: 10px;
+}
+
+.bina-admin-photo-item {
+	display: block;
+	border-radius: 4px;
+	overflow: hidden;
+	border: 1px solid #dcdcde;
+	background: #f6f7f7;
+}
+
+.bina-admin-photo-img {
+	width: 100%;
+	height: auto;
+	display: block;
+	vertical-align: middle;
+}

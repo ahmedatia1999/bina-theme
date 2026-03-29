@@ -109,13 +109,10 @@ class bina_Customer_Project_Details_Widget extends Widget_Base {
 		$st_label = isset( $statuses[ $st_key ] ) ? $statuses[ $st_key ] : $st_key;
 
 		$extra_raw = get_post_meta( $project_id, '_bina_extra', true );
-		$extra     = array();
-		if ( is_string( $extra_raw ) && $extra_raw !== '' ) {
-			$decoded = json_decode( $extra_raw, true );
-			if ( is_array( $decoded ) ) {
-				$extra = $decoded;
-			}
-		}
+		$extra     = bina_project_extra_from_meta( is_string( $extra_raw ) ? $extra_raw : '' );
+
+		$plans_attachment_ids       = bina_get_project_attachment_ids( $project_id, 'plans' );
+		$site_photos_attachment_ids = bina_get_project_attachment_ids( $project_id, 'site_photos' );
 
 		$city = $city_disp;
 

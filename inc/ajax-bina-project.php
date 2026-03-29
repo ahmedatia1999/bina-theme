@@ -10,6 +10,91 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Upload files from $_FILES[ $field_name ] (multiple). Returns new attachment IDs.
+ *
+ * @param int    $post_id    Parent project ID.
+ * @param string $field_name e.g. bina_plans or bina_site_photos.
+ * @param array  $allowed_ext File extensions without dot.
+ * @return int[]
+ */
+function bina_project_process_upload_field( $post_id, $field_name, array $allowed_ext ) {
+	$post_id = (int) $post_id;
+	if ( $post_id < 1 || empty( $_FILES[ $field_name ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return array();
+	}
+
+	$files = $_FILES[ $field_name ]; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	if ( empty( $files['name'] ) || ! is_array( $files['name'] ) ) {
+		return array();
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	$max_bytes = min( 5 * 1024 * 1024, (int) wp_max_upload_size() );
+	$max_files = 15;
+	$ids       = array();
+
+	$count = count( $files['name'] );
+	for ( $i = 0; $i < $count && count( $ids ) < $max_files; $i++ ) {
+		if ( ! isset( $files['error'][ $i ] ) || UPLOAD_ERR_OK !== (int) $files['error'][ $i ] ) {
+			continue;
+		}
+		if ( isset( $files['size'][ $i ] ) && (int) $files['size'][ $i ] > $max_bytes ) {
+			continue;
+		}
+
+		$name = isset( $files['name'][ $i ] ) ? sanitize_file_name( $files['name'][ $i ] ) : '';
+		$ext  = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+		if ( $ext === '' || ! in_array( $ext, $allowed_ext, true ) ) {
+			continue;
+		}
+
+		$file_array = array(
+			'name'     => $files['name'][ $i ],
+			'type'     => $files['type'][ $i ],
+			'tmp_name' => $files['tmp_name'][ $i ],
+			'error'    => $files['error'][ $i ],
+			'size'     => $files['size'][ $i ],
+		);
+
+		$overrides = array( 'test_form' => false );
+		$moved     = wp_handle_upload( $file_array, $overrides );
+		if ( isset( $moved['error'] ) || empty( $moved['file'] ) ) {
+			continue;
+		}
+
+		$filetype = wp_check_filetype( basename( $moved['file'] ), null );
+		if ( empty( $filetype['type'] ) ) {
+			@unlink( $moved['file'] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			continue;
+		}
+
+		$attachment = array(
+			'post_mime_type' => $filetype['type'],
+			'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $moved['file'] ) ),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+			'post_parent'    => $post_id,
+		);
+
+		$attach_id = wp_insert_attachment( $attachment, $moved['file'], $post_id );
+		if ( is_wp_error( $attach_id ) || ! $attach_id ) {
+			@unlink( $moved['file'] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			continue;
+		}
+
+		$meta = wp_generate_attachment_metadata( $attach_id, $moved['file'] );
+		wp_update_attachment_metadata( $attach_id, $meta );
+
+		$ids[] = (int) $attach_id;
+	}
+
+	return $ids;
+}
+
+/**
  * Sanitize and validate project fields from POST.
  *
  * @return array<string,mixed>|WP_Error
@@ -100,7 +185,16 @@ function bina_ajax_save_project() {
 	update_post_meta( $post_id, '_bina_reminder', $fields['reminder'] );
 	update_post_meta( $post_id, '_bina_city', $fields['city'] );
 	update_post_meta( $post_id, '_bina_project_status', 'pending' );
-	update_post_meta( $post_id, '_bina_extra', wp_json_encode( $extra ) );
+	update_post_meta( $post_id, '_bina_extra', bina_project_extra_to_json( $extra ) );
+
+	$new_plans  = bina_project_process_upload_field( $post_id, 'bina_plans', array( 'pdf', 'jpg', 'jpeg', 'png', 'webp' ) );
+	$new_photos = bina_project_process_upload_field( $post_id, 'bina_site_photos', array( 'jpg', 'jpeg', 'png', 'webp', 'gif' ) );
+	if ( ! empty( $new_plans ) ) {
+		bina_set_project_attachment_ids( $post_id, array_merge( bina_get_project_attachment_ids( $post_id, 'plans' ), $new_plans ), 'plans' );
+	}
+	if ( ! empty( $new_photos ) ) {
+		bina_set_project_attachment_ids( $post_id, array_merge( bina_get_project_attachment_ids( $post_id, 'site_photos' ), $new_photos ), 'site_photos' );
+	}
 
 	$redirect = function_exists( 'bina_get_customer_project_detail_url' )
 		? bina_get_customer_project_detail_url( $post_id )
@@ -168,7 +262,16 @@ function bina_ajax_update_project() {
 	update_post_meta( $post_id, '_bina_category', $fields['category'] );
 	update_post_meta( $post_id, '_bina_reminder', $fields['reminder'] );
 	update_post_meta( $post_id, '_bina_city', $fields['city'] );
-	update_post_meta( $post_id, '_bina_extra', wp_json_encode( $fields['extra'] ) );
+	update_post_meta( $post_id, '_bina_extra', bina_project_extra_to_json( $fields['extra'] ) );
+
+	$new_plans  = bina_project_process_upload_field( $post_id, 'bina_plans', array( 'pdf', 'jpg', 'jpeg', 'png', 'webp' ) );
+	$new_photos = bina_project_process_upload_field( $post_id, 'bina_site_photos', array( 'jpg', 'jpeg', 'png', 'webp', 'gif' ) );
+	if ( ! empty( $new_plans ) ) {
+		bina_set_project_attachment_ids( $post_id, array_merge( bina_get_project_attachment_ids( $post_id, 'plans' ), $new_plans ), 'plans' );
+	}
+	if ( ! empty( $new_photos ) ) {
+		bina_set_project_attachment_ids( $post_id, array_merge( bina_get_project_attachment_ids( $post_id, 'site_photos' ), $new_photos ), 'site_photos' );
+	}
 
 	$redirect = function_exists( 'bina_get_customer_project_detail_url' )
 		? bina_get_customer_project_detail_url( $post_id )

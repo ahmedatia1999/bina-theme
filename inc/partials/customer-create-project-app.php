@@ -10,6 +10,8 @@
  * @var bool     $is_edit
  * @var int      $edit_post_id
  * @var array    $prefill title, description, category, reminder, city, neighborhood, street, start_timing, has_plans, has_photos
+ * @var int[]    $plans_attachment_ids
+ * @var int[]    $site_photos_attachment_ids
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,6 +32,12 @@ if ( $first_cat === '' && ! empty( $categories[0] ) ) {
 }
 
 $mode = $is_edit ? 'edit' : 'create';
+
+$plans_attachment_ids       = isset( $plans_attachment_ids ) && is_array( $plans_attachment_ids ) ? array_map( 'absint', $plans_attachment_ids ) : array();
+$site_photos_attachment_ids = isset( $site_photos_attachment_ids ) && is_array( $site_photos_attachment_ids ) ? array_map( 'absint', $site_photos_attachment_ids ) : array();
+
+$has_plans_yes  = ( $def( 'has_plans' ) === 'نعم' );
+$has_photos_yes = ( $def( 'has_photos' ) === 'نعم' );
 ?>
 <div data-bina-create-project data-bina-mode="<?php echo esc_attr( $mode ); ?>" class="page-container mx-auto w-full max-w-4xl space-y-6">
 	<a class="inline-flex items-center gap-2 text-sm font-medium hover:bg-accent rounded-md px-4 py-2 ps-0 mb-2" href="<?php echo esc_url( $back_url ); ?>">
@@ -86,7 +94,7 @@ $mode = $is_edit ? 'edit' : 'create';
 	</div>
 
 	<div id="bina-step2" class="space-y-6" <?php echo $is_edit ? '' : 'style="display:none"'; ?>>
-		<form id="bina-project-form-el" data-bina-project-form data-nonce="<?php echo esc_attr( $nonce ); ?>" data-bina-mode="<?php echo esc_attr( $mode ); ?>" <?php echo $is_edit && $edit_post_id ? 'data-post-id="' . esc_attr( (string) $edit_post_id ) . '"' : ''; ?> class="space-y-6">
+		<form id="bina-project-form-el" data-bina-project-form data-nonce="<?php echo esc_attr( $nonce ); ?>" data-bina-mode="<?php echo esc_attr( $mode ); ?>" <?php echo $is_edit && $edit_post_id ? 'data-post-id="' . esc_attr( (string) $edit_post_id ) . '"' : ''; ?> class="space-y-6" enctype="multipart/form-data" method="post">
 			<?php if ( $is_edit && $edit_post_id ) : ?>
 				<input type="hidden" name="post_id" id="bina-post-id" value="<?php echo esc_attr( (string) $edit_post_id ); ?>">
 			<?php endif; ?>
@@ -150,17 +158,66 @@ $mode = $is_edit ? 'edit' : 'create';
 						?>
 					</div>
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<div class="space-y-2">
+						<div class="space-y-2" data-bina-plans-group>
 							<span class="text-sm font-medium"><?php esc_html_e( 'هل لديك مخططات هندسية؟', 'bina' ); ?></span>
-							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_plans" value="نعم" <?php checked( $def( 'has_plans' ), 'نعم' ); ?>> <?php esc_html_e( 'نعم', 'bina' ); ?></label>
-							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_plans" value="لا" <?php checked( $def( 'has_plans' ), 'لا' ); ?>> <?php esc_html_e( 'لا', 'bina' ); ?></label>
+							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_plans" value="نعم" data-bina-toggle-plans="1" <?php checked( $def( 'has_plans' ), 'نعم' ); ?>> <?php esc_html_e( 'نعم', 'bina' ); ?></label>
+							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_plans" value="لا" data-bina-toggle-plans="0" <?php checked( $def( 'has_plans' ), 'لا' ); ?>> <?php esc_html_e( 'لا', 'bina' ); ?></label>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-2" data-bina-photos-group>
 							<span class="text-sm font-medium"><?php esc_html_e( 'هل لديك صور للموقع؟', 'bina' ); ?></span>
-							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_photos" value="نعم" <?php checked( $def( 'has_photos' ), 'نعم' ); ?>> <?php esc_html_e( 'نعم', 'bina' ); ?></label>
-							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_photos" value="لا" <?php checked( $def( 'has_photos' ), 'لا' ); ?>> <?php esc_html_e( 'لا', 'bina' ); ?></label>
+							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_photos" value="نعم" data-bina-toggle-photos="1" <?php checked( $def( 'has_photos' ), 'نعم' ); ?>> <?php esc_html_e( 'نعم', 'bina' ); ?></label>
+							<label class="flex items-center gap-2 text-sm"><input type="radio" name="has_photos" value="لا" data-bina-toggle-photos="0" <?php checked( $def( 'has_photos' ), 'لا' ); ?>> <?php esc_html_e( 'لا', 'bina' ); ?></label>
 						</div>
 					</div>
+
+					<div id="bina-upload-plans-wrap" class="space-y-2 rounded-lg border border-dashed border-border bg-muted/30 p-4 <?php echo $has_plans_yes ? '' : 'hidden'; ?>" data-bina-upload-plans>
+						<label class="text-sm font-medium" for="bina-plans-files"><?php esc_html_e( 'رفع مخططات (PDF أو صور)', 'bina' ); ?></label>
+						<p class="text-xs text-muted-foreground"><?php esc_html_e( 'حد أقصى 15 ملفًا، 5 ميجابايت لكل ملف — PDF، JPG، PNG، WebP', 'bina' ); ?></p>
+						<input class="block w-full text-sm file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground" type="file" id="bina-plans-files" name="bina_plans[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*">
+						<?php if ( $is_edit && ! empty( $plans_attachment_ids ) ) : ?>
+							<div class="mt-3 space-y-2">
+								<p class="text-xs font-medium text-muted-foreground"><?php esc_html_e( 'المرفقات الحالية (يمكنك إضافة المزيد)', 'bina' ); ?></p>
+								<ul class="flex flex-wrap gap-2 text-sm">
+									<?php foreach ( $plans_attachment_ids as $aid ) : ?>
+										<?php
+										$url = wp_get_attachment_url( $aid );
+										if ( ! $url ) {
+											continue;
+										}
+										$mime = get_post_mime_type( $aid );
+										?>
+										<li class="rounded border bg-card px-2 py-1">
+											<?php if ( $mime && strpos( $mime, 'image/' ) === 0 ) : ?>
+												<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer" class="inline-block"><?php echo wp_get_attachment_image( $aid, 'thumbnail', false, array( 'class' => 'h-12 w-auto rounded' ) ); ?></a>
+											<?php else : ?>
+												<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer" class="text-primary underline"><?php echo esc_html( get_the_title( $aid ) ?: __( 'مرفق', 'bina' ) ); ?></a>
+											<?php endif; ?>
+										</li>
+									<?php endforeach; ?>
+								</ul>
+							</div>
+						<?php endif; ?>
+					</div>
+
+					<div id="bina-upload-photos-wrap" class="space-y-2 rounded-lg border border-dashed border-border bg-muted/30 p-4 <?php echo $has_photos_yes ? '' : 'hidden'; ?>" data-bina-upload-photos>
+						<label class="text-sm font-medium" for="bina-site-photos-files"><?php esc_html_e( 'رفع صور الموقع', 'bina' ); ?></label>
+						<p class="text-xs text-muted-foreground"><?php esc_html_e( 'حد أقصى 15 صورة، 5 ميجابايت لكل ملف — JPG، PNG، WebP، GIF', 'bina' ); ?></p>
+						<input class="block w-full text-sm file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground" type="file" id="bina-site-photos-files" name="bina_site_photos[]" multiple accept=".jpg,.jpeg,.png,.webp,.gif,image/*">
+						<?php if ( $is_edit && ! empty( $site_photos_attachment_ids ) ) : ?>
+							<div class="mt-3 flex flex-wrap gap-2">
+								<?php foreach ( $site_photos_attachment_ids as $aid ) : ?>
+									<?php
+									$url = wp_get_attachment_url( $aid );
+									if ( ! $url ) {
+										continue;
+									}
+									?>
+									<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded border"><?php echo wp_get_attachment_image( $aid, 'thumbnail', false, array( 'class' => 'h-16 w-16 object-cover' ) ); ?></a>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+					</div>
+
 					<div class="pt-2">
 						<button type="submit" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-10 px-8 text-sm font-medium w-full sm:w-auto">
 							<?php echo $is_edit ? esc_html__( 'حفظ التعديلات', 'bina' ) : esc_html__( 'حفظ وإنشاء المشروع', 'bina' ); ?>

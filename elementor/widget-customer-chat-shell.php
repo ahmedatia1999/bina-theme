@@ -13,7 +13,7 @@ class bina_Customer_Chat_Shell_Widget extends Widget_Base {
 	}
 
 	public function get_title() {
-		return __( 'Customer — المحادثات (قريباً)', 'bina' );
+		return __( 'Customer — المحادثات', 'bina' );
 	}
 
 	public function get_icon() {
@@ -28,15 +28,15 @@ class bina_Customer_Chat_Shell_Widget extends Widget_Base {
 		$this->start_controls_section(
 			'sec',
 			array(
-				'label' => __( 'محتوى', 'bina' ),
+				'label' => __( 'روابط', 'bina' ),
 			)
 		);
 		$this->add_control(
-			'note',
+			'back_url',
 			array(
-				'label'       => __( 'ملاحظة', 'bina' ),
-				'type'        => Controls_Manager::TEXTAREA,
-				'default'     => __( 'سيتم ربط هذه الصفحة بطبقة رسائل (ميتا، جدول، أو تكامل) لاحقاً.', 'bina' ),
+				'label'   => __( 'رابط لوحة التحكم (اختياري)', 'bina' ),
+				'type'    => Controls_Manager::URL,
+				'default' => array( 'url' => '/customer-dashboard' ),
 			)
 		);
 		$this->end_controls_section();
@@ -44,7 +44,6 @@ class bina_Customer_Chat_Shell_Widget extends Widget_Base {
 
 	protected function render() {
 		$s = $this->get_settings_for_display();
-		$note = isset( $s['note'] ) ? $s['note'] : '';
 
 		if ( ! is_user_logged_in() ) {
 			echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'يجب تسجيل الدخول.', 'bina' ) . '</p>';
@@ -58,9 +57,29 @@ class bina_Customer_Chat_Shell_Widget extends Widget_Base {
 		}
 
 		bina_customer_portal_enqueue_shell_assets();
+
 		$urls     = bina_get_customer_portal_urls( null );
 		$stats    = bina_get_customer_dashboard_stats( $user->ID );
 		$help_url = bina_dashboard_resolve_url( 'https://wa.me/966590000474' );
+
+		$chat_base = bina_get_customer_chat_url();
+		$back      = isset( $s['back_url']['url'] ) ? trim( (string) $s['back_url']['url'] ) : '';
+		if ( $back !== '' ) {
+			$urls['dashboard'] = bina_dashboard_resolve_url( $back );
+		}
+
+		$project_id = isset( $_GET['project_id'] ) ? absint( $_GET['project_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$inbox_ids = bina_get_project_ids_for_messages_inbox( $user->ID );
+
+		$thread_allowed = false;
+		if ( $project_id > 0 ) {
+			$thread_allowed = bina_user_can_access_project_messages( $user->ID, $project_id );
+		}
+
+		if ( $project_id > 0 && $thread_allowed ) {
+			bina_enqueue_project_messages_script();
+		}
 
 		bina_render_customer_portal_shell_start(
 			array(
@@ -72,12 +91,13 @@ class bina_Customer_Chat_Shell_Widget extends Widget_Base {
 				'active_nav' => 'chat',
 			)
 		);
-		?>
-		<div class="w-full max-w-2xl mx-auto rounded-2xl border border-border/80 bg-card p-8 sm:p-10 text-center space-y-4 shadow-sm ring-1 ring-border/20">
-			<h1 class="text-xl font-semibold"><?php esc_html_e( 'المحادثات', 'bina' ); ?></h1>
-			<p class="text-muted-foreground text-sm leading-relaxed"><?php echo esc_html( $note ); ?></p>
-		</div>
-		<?php
+
+		$portal_role       = 'customer';
+		$chat_base_url     = $chat_base;
+		$inbox_project_ids = $inbox_ids;
+
+		include get_template_directory() . '/inc/partials/bina-project-chat-app.php';
+
 		bina_render_customer_portal_shell_end();
 	}
 }
