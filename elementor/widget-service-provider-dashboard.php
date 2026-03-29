@@ -37,16 +37,16 @@ class bina_Service_Provider_Dashboard_Widget extends Widget_Base {
 		};
 
 		$this->add_control( 'url_dashboard', array( 'label' => __( 'لوحة التحكم', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-dashboard' ) ) );
-		$this->add_control( 'url_browse_projects', array( 'label' => __( 'تصفح المشاريع', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/browse-projects' ) ) );
-		$this->add_control( 'url_my_projects', array( 'label' => __( 'مشاريعي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/my-projects' ) ) );
-		$this->add_control( 'url_profile', array( 'label' => __( 'الملف الشخصي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/profile' ) ) );
-		$this->add_control( 'url_subscription', array( 'label' => __( 'الاشتراك', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/subscription' ) ) );
-		$this->add_control( 'url_offers', array( 'label' => __( 'عروضي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/offers' ) ) );
+		$this->add_control( 'url_browse_projects', array( 'label' => __( 'تصفح المشاريع', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-browse-projects' ) ) );
+		$this->add_control( 'url_my_projects', array( 'label' => __( 'مشاريعي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-my-projects' ) ) );
+		$this->add_control( 'url_profile', array( 'label' => __( 'الملف الشخصي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-profile' ) ) );
+		$this->add_control( 'url_subscription', array( 'label' => __( 'الاشتراك', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-subscription' ) ) );
+		$this->add_control( 'url_offers', array( 'label' => __( 'عروضي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-offers' ) ) );
 		$this->add_control( 'url_chat', array( 'label' => __( 'المحادثات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-chat' ) ) );
-		$this->add_control( 'url_conflicts', array( 'label' => __( 'النزاعات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/conflicts' ) ) );
-		$this->add_control( 'url_payments', array( 'label' => __( 'المدفوعات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/payments' ) ) );
-		$this->add_control( 'url_notifications', array( 'label' => __( 'الإشعارات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/notifications' ) ) );
-		$this->add_control( 'url_verification', array( 'label' => __( 'التوثيق (بطاقة سريعة)', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider/profile#verification' ) ) );
+		$this->add_control( 'url_conflicts', array( 'label' => __( 'النزاعات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-conflicts' ) ) );
+		$this->add_control( 'url_payments', array( 'label' => __( 'المدفوعات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-payments' ) ) );
+		$this->add_control( 'url_notifications', array( 'label' => __( 'الإشعارات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-notifications' ) ) );
+		$this->add_control( 'url_verification', array( 'label' => __( 'التوثيق (بطاقة سريعة)', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-profile#verification' ) ) );
 
 		$this->end_controls_section();
 
@@ -111,20 +111,7 @@ class bina_Service_Provider_Dashboard_Widget extends Widget_Base {
 			return;
 		}
 
-		$dash = isset( $s['url_dashboard']['url'] ) ? trim( (string) $s['url_dashboard']['url'] ) : '';
-		$urls = array(
-			'dashboard'        => $dash !== '' ? bina_dashboard_resolve_url( $dash ) : bina_get_service_provider_dashboard_url(),
-			'browse_projects'  => bina_dashboard_resolve_url( $s['url_browse_projects']['url'] ?? '/service-provider/browse-projects' ),
-			'my_projects'      => bina_dashboard_resolve_url( $s['url_my_projects']['url'] ?? '/service-provider/my-projects' ),
-			'profile'          => bina_dashboard_resolve_url( $s['url_profile']['url'] ?? '/service-provider/profile' ),
-			'subscription'     => bina_dashboard_resolve_url( $s['url_subscription']['url'] ?? '/service-provider/subscription' ),
-			'offers'           => bina_dashboard_resolve_url( $s['url_offers']['url'] ?? '/service-provider/offers' ),
-			'chat'             => bina_dashboard_resolve_url( $s['url_chat']['url'] ?? '/service-provider-chat' ),
-			'conflicts'        => bina_dashboard_resolve_url( $s['url_conflicts']['url'] ?? '/service-provider/conflicts' ),
-			'payments'         => bina_dashboard_resolve_url( $s['url_payments']['url'] ?? '/service-provider/payments' ),
-			'notifications'    => bina_dashboard_resolve_url( $s['url_notifications']['url'] ?? '/service-provider/notifications' ),
-			'verification'     => bina_dashboard_resolve_url( $s['url_verification']['url'] ?? '/service-provider/profile' ),
-		);
+		$urls = bina_get_service_provider_portal_urls( $s );
 
 		$logo_url = ! empty( $s['logo']['url'] ) ? $s['logo']['url'] : '';
 		$help_url = bina_dashboard_resolve_url( $s['help_url']['url'] ?? 'https://wa.me/966590000474' );

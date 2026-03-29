@@ -6,18 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class bina_Service_Provider_Chat_Shell_Widget extends Widget_Base {
+class bina_Service_Provider_Browse_Projects_Widget extends Widget_Base {
 
 	public function get_name() {
-		return 'bina_service_provider_chat_shell';
+		return 'bina_service_provider_browse_projects';
 	}
 
 	public function get_title() {
-		return __( 'Service Provider — المحادثات', 'bina' );
+		return __( 'Service Provider — تصفح المشاريع', 'bina' );
 	}
 
 	public function get_icon() {
-		return 'eicon-comments';
+		return 'eicon-post-list';
 	}
 
 	public function get_categories() {
@@ -40,10 +40,18 @@ class bina_Service_Provider_Chat_Shell_Widget extends Widget_Base {
 		$this->add_control( 'url_profile', array( 'label' => __( 'الملف الشخصي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-profile' ) ) );
 		$this->add_control( 'url_subscription', array( 'label' => __( 'الاشتراك', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-subscription' ) ) );
 		$this->add_control( 'url_offers', array( 'label' => __( 'عروضي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-offers' ) ) );
-		$this->add_control( 'url_chat', array( 'label' => __( 'المحادثات (هذه الصفحة)', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-chat' ) ) );
+		$this->add_control( 'url_chat', array( 'label' => __( 'المحادثات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-chat' ) ) );
 		$this->add_control( 'url_conflicts', array( 'label' => __( 'النزاعات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-conflicts' ) ) );
 		$this->add_control( 'url_payments', array( 'label' => __( 'المدفوعات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-payments' ) ) );
 		$this->add_control( 'url_notifications', array( 'label' => __( 'الإشعارات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-notifications' ) ) );
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'sec_misc',
+			array(
+				'label' => __( 'أخرى', 'bina' ),
+			)
+		);
 		$this->add_control(
 			'logo',
 			array(
@@ -57,6 +65,16 @@ class bina_Service_Provider_Chat_Shell_Widget extends Widget_Base {
 				'label'   => __( 'رابط المساعدة', 'bina' ),
 				'type'    => Controls_Manager::URL,
 				'default' => array( 'url' => 'https://wa.me/966590000474' ),
+			)
+		);
+		$this->add_control(
+			'per_page',
+			array(
+				'label'   => __( 'عدد المشاريع في الصفحة', 'bina' ),
+				'type'    => Controls_Manager::NUMBER,
+				'min'     => 4,
+				'max'     => 48,
+				'default' => 12,
 			)
 		);
 		$this->end_controls_section();
@@ -87,25 +105,21 @@ class bina_Service_Provider_Chat_Shell_Widget extends Widget_Base {
 			return;
 		}
 
-		$urls = bina_get_service_provider_portal_urls( $s );
-
+		$urls     = bina_get_service_provider_portal_urls( $s );
 		$logo_url = ! empty( $s['logo']['url'] ) ? $s['logo']['url'] : '';
 		$help_url = bina_dashboard_resolve_url( $s['help_url']['url'] ?? 'https://wa.me/966590000474' );
 		$stats    = bina_get_service_provider_dashboard_stats( $user->ID );
 
-		$chat_base = $urls['chat'];
-		$project_id = isset( $_GET['project_id'] ) ? absint( $_GET['project_id'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-		$inbox_ids = bina_get_project_ids_for_messages_inbox( $user->ID );
-
-		$thread_allowed = false;
-		if ( $project_id > 0 ) {
-			$thread_allowed = bina_user_can_access_project_messages( $user->ID, $project_id );
+		$paged   = (int) get_query_var( 'paged' );
+		if ( $paged < 1 ) {
+			$paged = (int) get_query_var( 'page' );
 		}
-
-		if ( $project_id > 0 && $thread_allowed ) {
-			bina_enqueue_project_messages_script();
+		if ( $paged < 1 ) {
+			$paged = 1;
 		}
+		$per_page = isset( $s['per_page'] ) ? max( 4, min( 48, (int) $s['per_page'] ) ) : 12;
+
+		$projects_query = bina_query_browseable_projects_for_provider( $user->ID, $per_page, $paged );
 
 		require_once get_template_directory() . '/inc/partials/service-provider-chat-layout.php';
 
@@ -116,15 +130,11 @@ class bina_Service_Provider_Chat_Shell_Widget extends Widget_Base {
 				'stats'      => $stats,
 				'logo_url'   => $logo_url,
 				'help_url'   => $help_url,
-				'active_nav' => 'chat',
+				'active_nav' => 'browse',
 			)
 		);
 
-		$portal_role       = 'provider';
-		$chat_base_url     = $chat_base;
-		$inbox_project_ids = $inbox_ids;
-
-		include get_template_directory() . '/inc/partials/bina-project-chat-app.php';
+		include get_template_directory() . '/inc/partials/service-provider-browse-projects-app.php';
 
 		bina_render_service_provider_chat_layout_end();
 	}

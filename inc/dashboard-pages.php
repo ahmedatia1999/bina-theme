@@ -23,6 +23,38 @@ function bina_get_theme_auto_pages() {
 			'title' => __( 'لوحة تحكم مقدم الخدمة', 'bina' ),
 		),
 		array(
+			'slug'  => 'service-provider-browse-projects',
+			'title' => __( 'تصفح المشاريع — مقدم الخدمة', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-my-projects',
+			'title' => __( 'مشاريعي — مقدم الخدمة', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-profile',
+			'title' => __( 'الملف الشخصي — مقدم الخدمة', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-subscription',
+			'title' => __( 'الاشتراك — مقدم الخدمة', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-offers',
+			'title' => __( 'عروضي — مقدم الخدمة', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-conflicts',
+			'title' => __( 'النزاعات — مقدم الخدمة', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-payments',
+			'title' => __( 'المدفوعات — مقدم الخدمة', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-notifications',
+			'title' => __( 'الإشعارات — مقدم الخدمة', 'bina' ),
+		),
+		array(
 			'slug'  => 'customer-my-projects',
 			'title' => __( 'مشاريعي', 'bina' ),
 		),
@@ -145,6 +177,122 @@ function bina_get_customer_chat_url() {
  */
 function bina_get_service_provider_chat_url() {
 	return bina_get_page_url_by_slug( bina_service_provider_chat_page_slug() );
+}
+
+function bina_service_provider_browse_projects_page_slug() {
+	return 'service-provider-browse-projects';
+}
+
+function bina_get_service_provider_browse_projects_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_browse_projects_page_slug() );
+}
+
+function bina_service_provider_my_projects_page_slug() {
+	return 'service-provider-my-projects';
+}
+
+function bina_get_service_provider_my_projects_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_my_projects_page_slug() );
+}
+
+function bina_service_provider_profile_page_slug() {
+	return 'service-provider-profile';
+}
+
+function bina_get_service_provider_profile_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_profile_page_slug() );
+}
+
+function bina_service_provider_subscription_page_slug() {
+	return 'service-provider-subscription';
+}
+
+function bina_get_service_provider_subscription_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_subscription_page_slug() );
+}
+
+function bina_service_provider_offers_page_slug() {
+	return 'service-provider-offers';
+}
+
+function bina_get_service_provider_offers_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_offers_page_slug() );
+}
+
+function bina_service_provider_conflicts_page_slug() {
+	return 'service-provider-conflicts';
+}
+
+function bina_get_service_provider_conflicts_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_conflicts_page_slug() );
+}
+
+function bina_service_provider_payments_page_slug() {
+	return 'service-provider-payments';
+}
+
+function bina_get_service_provider_payments_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_payments_page_slug() );
+}
+
+function bina_service_provider_notifications_page_slug() {
+	return 'service-provider-notifications';
+}
+
+function bina_get_service_provider_notifications_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_notifications_page_slug() );
+}
+
+/**
+ * Service provider portal URLs (pages created by theme) with optional Elementor overrides.
+ *
+ * @param array<string,mixed>|null $settings Elementor widget settings (url_* controls).
+ * @return array<string,string>
+ */
+function bina_get_service_provider_portal_urls( $settings = null ) {
+	$urls = array(
+		'dashboard'       => bina_get_service_provider_dashboard_url(),
+		'browse_projects' => bina_get_service_provider_browse_projects_url(),
+		'my_projects'     => bina_get_service_provider_my_projects_url(),
+		'profile'         => bina_get_service_provider_profile_url(),
+		'subscription'    => bina_get_service_provider_subscription_url(),
+		'offers'          => bina_get_service_provider_offers_url(),
+		'chat'            => bina_get_service_provider_chat_url(),
+		'conflicts'       => bina_get_service_provider_conflicts_url(),
+		'payments'        => bina_get_service_provider_payments_url(),
+		'notifications'   => bina_get_service_provider_notifications_url(),
+		'verification'    => bina_get_service_provider_profile_url() . '#verification',
+	);
+
+	if ( is_array( $settings ) ) {
+		$dash = isset( $settings['url_dashboard']['url'] ) ? trim( (string) $settings['url_dashboard']['url'] ) : '';
+		if ( $dash !== '' ) {
+			$urls['dashboard'] = bina_dashboard_resolve_url( $dash );
+		}
+		$map = array(
+			'url_browse_projects' => 'browse_projects',
+			'url_my_projects'     => 'my_projects',
+			'url_profile'         => 'profile',
+			'url_subscription'    => 'subscription',
+			'url_offers'          => 'offers',
+			'url_chat'            => 'chat',
+			'url_conflicts'       => 'conflicts',
+			'url_payments'        => 'payments',
+			'url_notifications'   => 'notifications',
+		);
+		foreach ( $map as $ctrl => $key ) {
+			$u = isset( $settings[ $ctrl ]['url'] ) ? trim( (string) $settings[ $ctrl ]['url'] ) : '';
+			if ( $u !== '' ) {
+				$urls[ $key ] = bina_dashboard_resolve_url( $u );
+			}
+		}
+		$ver = isset( $settings['url_verification']['url'] ) ? trim( (string) $settings['url_verification']['url'] ) : '';
+		if ( $ver !== '' ) {
+			$urls['verification'] = bina_dashboard_resolve_url( $ver );
+		}
+	}
+
+	return apply_filters( 'bina_service_provider_portal_urls', $urls );
 }
 
 function bina_get_customer_conflicts_url() {

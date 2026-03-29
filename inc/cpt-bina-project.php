@@ -350,6 +350,37 @@ function bina_get_recent_browseable_projects_for_provider( $user_id, $limit = 5 
 }
 
 /**
+ * Paginated marketplace query for service provider "browse" screen.
+ *
+ * @param int $user_id   Provider user ID.
+ * @param int $per_page  Posts per page.
+ * @param int $paged     Page number.
+ * @return WP_Query
+ */
+function bina_query_browseable_projects_for_provider( $user_id, $per_page = 12, $paged = 1 ) {
+	$user_id   = (int) $user_id;
+	$per_page  = max( 1, (int) $per_page );
+	$paged     = max( 1, (int) $paged );
+	if ( $user_id < 1 ) {
+		return new WP_Query( array( 'post__in' => array( 0 ) ) );
+	}
+
+	return new WP_Query(
+		array(
+			'post_type'              => 'bina_project',
+			'post_status'            => 'publish',
+			'author__not_in'         => array( $user_id ),
+			'posts_per_page'         => $per_page,
+			'paged'                  => $paged,
+			'orderby'                => 'modified',
+			'order'                  => 'DESC',
+			'meta_query'             => bina_get_browseable_projects_meta_query_for_provider( $user_id ),
+			'update_post_meta_cache' => true,
+		)
+	);
+}
+
+/**
  * Status breakdown for browseable pool (provider dashboard).
  *
  * @param int $user_id Provider user ID.

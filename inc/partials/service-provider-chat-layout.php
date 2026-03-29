@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *   @type array   $stats
  *   @type string  $logo_url
  *   @type string  $help_url
- *   @type string  $active_nav dashboard|chat
+ *   @type string  $active_nav dashboard|browse|my_projects|profile|subscription|offers|chat|conflicts|payments|notifications
  * }
  * @return void
  */
@@ -79,15 +79,15 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 					<ul class="flex w-full min-w-0 flex-col gap-1 text-sm">
 						<?php
 						$nav_item( 'dashboard', $active, $urls['dashboard'] ?? '#', __( 'لوحة التحكم', 'bina' ) );
-						$nav_item( 'x', $active, $urls['browse_projects'] ?? '#', __( 'تصفح المشاريع', 'bina' ) );
-						$nav_item( 'x', $active, $urls['my_projects'] ?? '#', __( 'مشاريعي', 'bina' ) );
-						$nav_item( 'x', $active, $urls['profile'] ?? '#', __( 'الملف الشخصي', 'bina' ) );
-						$nav_item( 'x', $active, $urls['subscription'] ?? '#', __( 'الاشتراك', 'bina' ) );
-						$nav_item( 'x', $active, $urls['offers'] ?? '#', __( 'عروضي', 'bina' ) );
+						$nav_item( 'browse', $active, $urls['browse_projects'] ?? '#', __( 'تصفح المشاريع', 'bina' ) );
+						$nav_item( 'my_projects', $active, $urls['my_projects'] ?? '#', __( 'مشاريعي', 'bina' ) );
+						$nav_item( 'profile', $active, $urls['profile'] ?? '#', __( 'الملف الشخصي', 'bina' ) );
+						$nav_item( 'subscription', $active, $urls['subscription'] ?? '#', __( 'الاشتراك', 'bina' ) );
+						$nav_item( 'offers', $active, $urls['offers'] ?? '#', __( 'عروضي', 'bina' ) );
 						$nav_item( 'chat', $active, $urls['chat'] ?? '#', __( 'المحادثات', 'bina' ) );
-						$nav_item( 'x', $active, $urls['conflicts'] ?? '#', __( 'النزاعات', 'bina' ) );
-						$nav_item( 'x', $active, $urls['payments'] ?? '#', __( 'المدفوعات', 'bina' ) );
-						$nav_item( 'x', $active, $urls['notifications'] ?? '#', __( 'الإشعارات', 'bina' ) );
+						$nav_item( 'conflicts', $active, $urls['conflicts'] ?? '#', __( 'النزاعات', 'bina' ) );
+						$nav_item( 'payments', $active, $urls['payments'] ?? '#', __( 'المدفوعات', 'bina' ) );
+						$nav_item( 'notifications', $active, $urls['notifications'] ?? '#', __( 'الإشعارات', 'bina' ) );
 						?>
 					</ul>
 					<div class="mt-auto pt-2">
