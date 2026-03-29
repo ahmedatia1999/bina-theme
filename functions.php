@@ -39,6 +39,11 @@
         'theme-scripts.php',
         'theme-widgets.php',
         'theme-customizer.php',
+        'dashboard-helpers.php',
+        'dashboard-pages.php',
+        'admin-bar.php',
+        'cpt-bina-project.php',
+        'ajax-bina-project.php',
     );
 
     foreach ( $inc_files as $file ) {
@@ -302,21 +307,7 @@
     add_action('wp_ajax_nopriv_bina_get_cities', 'bina_get_cities_ajax');
 
     function bina_get_cities_ajax() {
-        // Simple starter list. Replace later with DB-driven source if needed.
-        $cities = array(
-            array('value' => 'riyadh', 'label' => 'الرياض'),
-            array('value' => 'jeddah', 'label' => 'جدة'),
-            array('value' => 'makkah', 'label' => 'مكة المكرمة'),
-            array('value' => 'madinah', 'label' => 'المدينة المنورة'),
-            array('value' => 'dammam', 'label' => 'الدمام'),
-            array('value' => 'khobar', 'label' => 'الخبر'),
-            array('value' => 'taif', 'label' => 'الطائف'),
-            array('value' => 'abha', 'label' => 'أبها'),
-            array('value' => 'tabuk', 'label' => 'تبوك'),
-            array('value' => 'buraydah', 'label' => 'بريدة'),
-        );
-
-        wp_send_json_success($cities);
+        wp_send_json_success( bina_get_cities_for_select() );
     }
 
     add_action('wp_ajax_bina_register_user', 'bina_register_user_ajax');
@@ -415,8 +406,8 @@
         wp_set_auth_cookie($user_id);
 
         $redirect_url = ($role_to_set === 'service_provider')
-            ? home_url('/service-provider/dashboard')
-            : home_url('/customer/dashboard');
+            ? bina_get_service_provider_dashboard_url()
+            : bina_get_customer_dashboard_url();
 
         wp_send_json_success(array(
             'user_id' => $user_id,
@@ -516,9 +507,9 @@
 
         $redirect_url = home_url('/');
         if ($account_type === 'service_provider' || in_array('service_provider', (array) $user->roles, true)) {
-            $redirect_url = home_url('/service-provider/dashboard');
+            $redirect_url = bina_get_service_provider_dashboard_url();
         } elseif ($account_type === 'customer' || in_array('customer', (array) $user->roles, true)) {
-            $redirect_url = home_url('/customer/dashboard');
+            $redirect_url = bina_get_customer_dashboard_url();
         }
 
         wp_send_json_success(array(

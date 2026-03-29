@@ -4,13 +4,27 @@ if (!defined('ABSPATH')) exit;
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class bina_Forgot_Password_Form_Widget extends Widget_Base {
-    public function get_name() { return 'bina_forgot_password_form'; }
-    public function get_title() { return __('Forgot Password Form (Static)', 'bina'); }
-    public function get_icon() { return 'eicon-lock-user'; }
-    public function get_categories() { return ['general']; }
+class bina_Forgot_Password_Form_Widget extends Widget_Base
+{
+    public function get_name()
+    {
+        return 'bina_forgot_password_form';
+    }
+    public function get_title()
+    {
+        return __('Forgot Password Form (Static)', 'bina');
+    }
+    public function get_icon()
+    {
+        return 'eicon-lock-user';
+    }
+    public function get_categories()
+    {
+        return ['general'];
+    }
 
-    protected function _register_controls() {
+    protected function _register_controls()
+    {
         $this->start_controls_section('sec_content', ['label' => __('Content', 'bina')]);
         $this->add_control('title', ['label' => __('Title', 'bina'), 'type' => Controls_Manager::TEXT, 'default' => 'استعادة كلمة المرور']);
         $this->add_control('desc', ['label' => __('Description', 'bina'), 'type' => Controls_Manager::TEXTAREA, 'default' => 'أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور']);
@@ -23,25 +37,35 @@ class bina_Forgot_Password_Form_Widget extends Widget_Base {
         $this->end_controls_section();
     }
 
-    protected function render() {
+    protected function render()
+    {
         $s = $this->get_settings_for_display();
         wp_enqueue_script('bina-forgot-password-js', get_template_directory_uri() . '/assets/js/forgot-password.js', array(), filemtime(get_template_directory() . '/assets/js/forgot-password.js'), true);
         $nonce = wp_create_nonce('bina_forgot_password_nonce');
-        ?>
+?>
         <div class="relative min-h-svh">
             <header class="absolute top-0 left-0 right-0 z-10 flex h-16 shrink-0 items-center justify-end px-4 md:px-6">
                 <div class="flex items-center gap-3">
                     <button data-slot="dropdown-menu-trigger" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[&gt;svg]:px-3" type="button" aria-haspopup="menu" aria-expanded="false" data-state="closed">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-languages h-4 w-4"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-languages h-4 w-4">
+                            <path d="m5 8 6 6"></path>
+                            <path d="m4 14 6-6 2-3"></path>
+                            <path d="M2 5h12"></path>
+                            <path d="M7 2h1"></path>
+                            <path d="m22 22-5-10-5 10"></path>
+                            <path d="M14 18h6"></path>
+                        </svg>
                     </button>
                     <button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9 relative overflow-hidden transition-all" aria-label="Switch to light theme" type="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon h-[1.2rem] w-[1.2rem]"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon h-[1.2rem] w-[1.2rem]">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                        </svg>
                     </button>
                 </div>
             </header>
             <main class="min-h-svh">
                 <div class="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-                    <div class="w-full max-w-sm">
+                    <div class="w-full max-w-sm" style="max-width: 600px;">
                         <div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm w-full max-w-md">
                             <div data-slot="card-header" class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 text-center">
                                 <h1 class="text-2xl font-bold"><?php echo esc_html($s['title'] ?? ''); ?></h1>
@@ -71,7 +95,6 @@ class bina_Forgot_Password_Form_Widget extends Widget_Base {
                 </div>
             </main>
         </div>
-        <?php
+<?php
     }
 }
-
