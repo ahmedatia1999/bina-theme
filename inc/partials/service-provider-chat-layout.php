@@ -131,15 +131,15 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 						<a href="<?php echo esc_url( $help_url ); ?>" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-md p-2 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"><?php esc_html_e( 'الحصول على المساعدة', 'bina' ); ?></a>
 					</div>
 				</div>
-				<div class="flex flex-col gap-2 p-2 overflow-hidden border-t border-white/10">
-					<div class="flex w-full items-center gap-2 rounded-md p-2 text-left text-sm">
-						<span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted"><?php echo $u_init; ?></span>
-						<div class="grid min-w-0 flex-1 text-left leading-tight">
-							<span class="truncate font-medium"><?php echo esc_html( $u_name ); ?></span>
-							<span class="text-muted-foreground truncate text-xs"><?php echo esc_html( $u_email ); ?></span>
+				<div class="flex flex-col gap-2 p-3 border-t border-white/10 bg-black/20">
+					<div class="flex w-full items-center gap-2 rounded-md text-sm min-w-0">
+						<span class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white font-medium"><?php echo $u_init; ?></span>
+						<div class="grid min-w-0 flex-1 text-start leading-tight">
+							<span class="truncate font-medium text-white"><?php echo esc_html( $u_name ); ?></span>
+							<span class="text-white/60 truncate text-xs"><?php echo esc_html( $u_email ); ?></span>
 						</div>
 					</div>
-					<a class="rounded-md p-2 text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent" href="<?php echo esc_url( $logout_url_sp ); ?>"><?php esc_html_e( 'تسجيل الخروج', 'bina' ); ?></a>
+					<a class="block rounded-md py-2 px-2 text-sm text-white/70 hover:text-white hover:bg-white/10 text-start" href="<?php echo esc_url( $logout_url_sp ); ?>"><?php esc_html_e( 'تسجيل الخروج', 'bina' ); ?></a>
 				</div>
 			</div>
 		</div>

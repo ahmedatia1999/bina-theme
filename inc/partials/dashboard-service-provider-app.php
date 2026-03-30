@@ -19,12 +19,36 @@ $browse_status_counts   = isset( $browse_status_counts ) && is_array( $browse_st
 $recent_market_projects = isset( $recent_market_projects ) && is_array( $recent_market_projects ) ? $recent_market_projects : array();
 $st_labels_sp           = bina_get_project_status_labels();
 $logout_url_sp          = wp_logout_url( $urls['dashboard'] );
+$verification_url       = add_query_arg( 'section', 'verification', isset( $urls['profile'] ) ? $urls['profile'] : '' ) . '#verification';
 
 $u_name  = bina_dashboard_user_display_name( $user );
 $u_email = $user->user_email;
 $u_init  = esc_html( bina_dashboard_user_initial( $user ) );
 
 $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] : 0;
+
+$verification_status_raw = strtolower( trim( (string) get_user_meta( $user->ID, 'bina_verification_status', true ) ) );
+$verification_state      = 'unverified';
+$verification_title      = __( 'غير موثق', 'bina' );
+$verification_message    = __( 'أكمل توثيق حسابك لزيادة الثقة', 'bina' );
+$verification_badge      = 'bg-amber-100 text-amber-800';
+
+if ( in_array( $verification_status_raw, array( 'verified', 'approved', 'active' ), true ) ) {
+	$verification_state   = 'verified';
+	$verification_title   = __( 'موثق', 'bina' );
+	$verification_message = __( 'حسابك موثق ويمكن للعملاء رؤية حالة التوثيق.', 'bina' );
+	$verification_badge   = 'bg-emerald-100 text-emerald-800';
+} elseif ( in_array( $verification_status_raw, array( 'pending', 'in_review', 'under_review', 'submitted' ), true ) ) {
+	$verification_state   = 'pending';
+	$verification_title   = __( 'قيد المراجعة', 'bina' );
+	$verification_message = __( 'تم استلام طلب التوثيق وجارٍ مراجعته.', 'bina' );
+	$verification_badge   = 'bg-blue-100 text-blue-800';
+} elseif ( in_array( $verification_status_raw, array( 'rejected', 'declined' ), true ) ) {
+	$verification_state   = 'rejected';
+	$verification_title   = __( 'مرفوض', 'bina' );
+	$verification_message = __( 'تم رفض طلب التوثيق. راجع البيانات ثم أعد الإرسال.', 'bina' );
+	$verification_badge   = 'bg-rose-100 text-rose-800';
+}
 ?>
 <style>
 @media (max-width: 767px) {
@@ -119,15 +143,15 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 						<a href="<?php echo esc_url( $help_url ); ?>" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-md p-2 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"><?php esc_html_e( 'الحصول على المساعدة', 'bina' ); ?></a>
 					</div>
 				</div>
-				<div class="flex flex-col gap-2 p-2 overflow-hidden border-t border-white/10">
-					<div class="flex w-full items-center gap-2 rounded-md p-2 text-left text-sm">
-						<span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted"><?php echo $u_init; ?></span>
-						<div class="grid min-w-0 flex-1 text-left leading-tight">
-							<span class="truncate font-medium"><?php echo esc_html( $u_name ); ?></span>
-							<span class="text-muted-foreground truncate text-xs"><?php echo esc_html( $u_email ); ?></span>
+				<div class="flex flex-col gap-2 p-3 border-t border-white/10 bg-black/20">
+					<div class="flex w-full items-center gap-2 rounded-md text-sm min-w-0">
+						<span class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white font-medium"><?php echo $u_init; ?></span>
+						<div class="grid min-w-0 flex-1 text-start leading-tight">
+							<span class="truncate font-medium text-white"><?php echo esc_html( $u_name ); ?></span>
+							<span class="text-white/60 truncate text-xs"><?php echo esc_html( $u_email ); ?></span>
 						</div>
 					</div>
-					<a class="rounded-md p-2 text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent" href="<?php echo esc_url( $logout_url_sp ); ?>"><?php esc_html_e( 'تسجيل الخروج', 'bina' ); ?></a>
+					<a class="block rounded-md py-2 px-2 text-sm text-white/70 hover:text-white hover:bg-white/10 text-start" href="<?php echo esc_url( $logout_url_sp ); ?>"><?php esc_html_e( 'تسجيل الخروج', 'bina' ); ?></a>
 				</div>
 			</div>
 		</div>
@@ -169,9 +193,15 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 							<span class="text-2xl font-bold tabular-nums"><?php echo (int) $stats['browse_projects_count']; ?></span>
 						</div>
 					</a>
-					<a href="<?php echo esc_url( $urls['verification'] ); ?>" class="block bg-card text-card-foreground rounded-xl border py-6 px-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50">
-						<div class="font-semibold text-base"><?php esc_html_e( 'التوثيق', 'bina' ); ?></div>
-						<p class="text-muted-foreground text-sm mt-1"><?php esc_html_e( 'أكمل توثيق حسابك لزيادة الثقة', 'bina' ); ?></p>
+					<a href="<?php echo esc_url( $verification_url ); ?>" class="block bg-card text-card-foreground rounded-xl border py-6 px-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50">
+						<div class="flex items-center justify-between gap-2">
+							<div class="font-semibold text-base"><?php esc_html_e( 'التوثيق', 'bina' ); ?></div>
+							<span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium <?php echo esc_attr( $verification_badge ); ?>"><?php echo esc_html( $verification_title ); ?></span>
+						</div>
+						<p class="text-muted-foreground text-sm mt-1"><?php echo esc_html( $verification_message ); ?></p>
+						<?php if ( 'verified' !== $verification_state ) : ?>
+							<span class="mt-3 inline-flex text-xs font-medium text-primary"><?php esc_html_e( 'استكمال التوثيق', 'bina' ); ?></span>
+						<?php endif; ?>
 					</a>
 					<a href="<?php echo esc_url( $urls['subscription'] ); ?>" class="block bg-card text-card-foreground rounded-xl border py-6 px-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50">
 						<div class="font-semibold text-base"><?php esc_html_e( 'الاشتراك', 'bina' ); ?></div>
