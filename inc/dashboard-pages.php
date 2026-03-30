@@ -43,10 +43,6 @@ function bina_get_theme_auto_pages() {
 			'title' => __( 'عروضي — مقدم الخدمة', 'bina' ),
 		),
 		array(
-			'slug'  => 'service-provider-conflicts',
-			'title' => __( 'النزاعات — مقدم الخدمة', 'bina' ),
-		),
-		array(
 			'slug'  => 'service-provider-payments',
 			'title' => __( 'المدفوعات — مقدم الخدمة', 'bina' ),
 		),
@@ -73,10 +69,6 @@ function bina_get_theme_auto_pages() {
 		array(
 			'slug'  => 'service-provider-chat',
 			'title' => __( 'محادثات مقدم الخدمة', 'bina' ),
-		),
-		array(
-			'slug'  => 'customer-conflicts',
-			'title' => __( 'النزاعات', 'bina' ),
 		),
 		array(
 			'slug'  => 'customer-notifications',
@@ -111,10 +103,6 @@ function bina_customer_chat_page_slug() {
 
 function bina_service_provider_chat_page_slug() {
 	return 'service-provider-chat';
-}
-
-function bina_customer_conflicts_page_slug() {
-	return 'customer-conflicts';
 }
 
 function bina_customer_notifications_page_slug() {
@@ -219,14 +207,6 @@ function bina_get_service_provider_offers_url() {
 	return bina_get_page_url_by_slug( bina_service_provider_offers_page_slug() );
 }
 
-function bina_service_provider_conflicts_page_slug() {
-	return 'service-provider-conflicts';
-}
-
-function bina_get_service_provider_conflicts_url() {
-	return bina_get_page_url_by_slug( bina_service_provider_conflicts_page_slug() );
-}
-
 function bina_service_provider_payments_page_slug() {
 	return 'service-provider-payments';
 }
@@ -258,7 +238,6 @@ function bina_get_service_provider_portal_urls( $settings = null ) {
 		'subscription'    => bina_get_service_provider_subscription_url(),
 		'offers'          => bina_get_service_provider_offers_url(),
 		'chat'            => bina_get_service_provider_chat_url(),
-		'conflicts'       => bina_get_service_provider_conflicts_url(),
 		'payments'        => bina_get_service_provider_payments_url(),
 		'notifications'   => bina_get_service_provider_notifications_url(),
 		'verification'    => bina_get_service_provider_profile_url() . '#verification',
@@ -276,7 +255,6 @@ function bina_get_service_provider_portal_urls( $settings = null ) {
 			'url_subscription'    => 'subscription',
 			'url_offers'          => 'offers',
 			'url_chat'            => 'chat',
-			'url_conflicts'       => 'conflicts',
 			'url_payments'        => 'payments',
 			'url_notifications'   => 'notifications',
 		);
@@ -293,10 +271,6 @@ function bina_get_service_provider_portal_urls( $settings = null ) {
 	}
 
 	return apply_filters( 'bina_service_provider_portal_urls', $urls );
-}
-
-function bina_get_customer_conflicts_url() {
-	return bina_get_page_url_by_slug( bina_customer_conflicts_page_slug() );
 }
 
 function bina_get_customer_notifications_url() {

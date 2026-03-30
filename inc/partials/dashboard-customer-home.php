@@ -88,21 +88,6 @@ if ( ! isset( $st_labels ) || ! is_array( $st_labels ) ) {
 				</div>
 			</div>
 		</a>
-		<a class="block group" href="<?php echo esc_url( $urls['conflicts'] ); ?>">
-			<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border/80 py-6 shadow-sm ring-1 ring-border/30 h-full transition-all hover:shadow-md hover:border-primary/40 hover:ring-primary/20">
-				<div class="px-6 pb-3">
-					<div class="flex items-center gap-3">
-						<div class="rounded-lg bg-primary/10 p-2 ring-1 ring-primary/20 group-hover:bg-primary/15">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5 text-primary"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
-						</div>
-						<div class="flex-1">
-							<div class="font-semibold text-base"><?php esc_html_e( 'النزاعات', 'bina' ); ?></div>
-							<p class="text-muted-foreground mt-1 text-sm"><?php esc_html_e( 'إدارة نزاعات المشاريع', 'bina' ); ?></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</a>
 	</div>
 	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
 		<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border/80 py-6 shadow-sm ring-1 ring-border/25 h-full">

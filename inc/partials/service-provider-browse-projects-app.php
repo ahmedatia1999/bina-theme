@@ -32,6 +32,9 @@ $st_labels = bina_get_project_status_labels();
 			while ( $projects_query->have_posts() ) :
 				$projects_query->the_post();
 				$pid      = get_the_ID();
+				$chat_url = function_exists( 'bina_get_service_provider_chat_url' )
+					? add_query_arg( 'project_id', (int) $pid, bina_get_service_provider_chat_url() )
+					: '';
 				$city_raw = (string) get_post_meta( $pid, '_bina_city', true );
 				$city_l   = $city_raw;
 				foreach ( bina_get_cities_for_select() as $c ) {
@@ -58,6 +61,13 @@ $st_labels = bina_get_project_status_labels();
 					</div>
 					<?php if ( has_excerpt() || get_the_content() ) : ?>
 						<p class="text-sm text-muted-foreground mt-2 line-clamp-3"><?php echo esc_html( wp_strip_all_tags( get_the_excerpt() ? get_the_excerpt() : wp_trim_words( get_the_content(), 30 ) ) ); ?></p>
+					<?php endif; ?>
+					<?php if ( $chat_url ) : ?>
+						<div class="mt-3">
+							<a class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium" href="<?php echo esc_url( $chat_url ); ?>">
+								<?php esc_html_e( 'مراسلة العميل', 'bina' ); ?>
+							</a>
+						</div>
 					<?php endif; ?>
 				</li>
 				<?php

@@ -50,24 +50,70 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 							<a class="flex w-full items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm" href="<?php echo esc_url( $urls['dashboard'] ); ?>">
 								<?php if ( $logo_url ) : ?>
 									<img alt="" class="h-9 w-9 shrink-0 rounded-sm object-cover" src="<?php echo esc_url( $logo_url ); ?>" width="36" height="36" loading="lazy" />
+								<?php else : ?>
+									<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/20 text-primary font-bold text-sm ring-1 ring-primary/30"><?php esc_html_e( 'ب', 'bina' ); ?></span>
 								<?php endif; ?>
 								<span class="min-w-0 flex-1 truncate text-lg font-semibold"><?php esc_html_e( 'بناء', 'bina' ); ?></span>
 							</a>
 						</li>
 					</ul>
 				</div>
-				<div class="flex min-h-0 flex-1 flex-col gap-2 overflow-auto p-2">
-					<ul class="flex w-full min-w-0 flex-col gap-1 text-sm">
-						<li><a class="flex items-center gap-2 rounded-md p-2 bg-sidebar-accent font-medium text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['dashboard'] ); ?>"><?php esc_html_e( 'لوحة التحكم', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['browse_projects'] ); ?>"><?php esc_html_e( 'تصفح المشاريع', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['my_projects'] ); ?>"><?php esc_html_e( 'مشاريعي', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['profile'] ); ?>"><?php esc_html_e( 'الملف الشخصي', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['subscription'] ); ?>"><?php esc_html_e( 'الاشتراك', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['offers'] ); ?>"><?php esc_html_e( 'عروضي', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['chat'] ); ?>"><?php esc_html_e( 'المحادثات', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['conflicts'] ); ?>"><?php esc_html_e( 'النزاعات', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['payments'] ); ?>"><?php esc_html_e( 'المدفوعات', 'bina' ); ?></a></li>
-						<li><a class="flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['notifications'] ); ?>"><?php esc_html_e( 'الإشعارات', 'bina' ); ?></a></li>
+				<div class="flex min-h-0 flex-1 flex-col gap-1 overflow-auto py-2 px-2">
+					<ul class="flex w-full min-w-0 flex-col gap-0.5 text-sm">
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm bg-sidebar-accent font-medium text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['dashboard'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M12 13m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M13.45 11.55l2.05 -2.05"></path><path d="M6.4 20a9 9 0 1 1 11.2 0z"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'لوحة التحكم', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['browse_projects'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M10.5 4a6.5 6.5 0 1 0 3.5 11.5L21 21"></path><path d="M10.5 4a6.5 6.5 0 0 1 0 13"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'تصفح المشاريع', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['my_projects'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'مشاريعي', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['profile'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'الملف الشخصي', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['subscription'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><rect width="18" height="14" x="3" y="6" rx="2"></rect><path d="M3 10h18"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'الاشتراك', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['offers'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M20.59 13.41 17 17H7l-4 4V7l4-4h10l3 3z"></path><path d="M8 8h8v8H8z"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'عروضي', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['chat'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"></path><path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'المحادثات', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['payments'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M2 8h20v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"></path><path d="M2 8l3-5h14l3 5"></path><path d="M12 12v4"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'المدفوعات', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['notifications'] ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'الإشعارات', 'bina' ); ?></span>
+							</a>
+						</li>
 					</ul>
 					<div class="mt-auto pt-2">
 						<a href="<?php echo esc_url( $help_url ); ?>" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 rounded-md p-2 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"><?php esc_html_e( 'الحصول على المساعدة', 'bina' ); ?></a>
@@ -96,9 +142,13 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 			<div class="flex items-center gap-3">
 				<a class="relative inline-flex items-center justify-center rounded-md border bg-background shadow-xs hover:bg-accent size-9" href="<?php echo esc_url( $urls['notifications'] ); ?>" aria-label="<?php esc_attr_e( 'الإشعارات', 'bina' ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path><path d="M9 17v1a3 3 0 0 0 6 0v-1"></path></svg>
-					<?php if ( ! empty( $stats['notifications_bell'] ) ) : ?>
-						<span class="absolute top-1 end-1 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center"><?php echo (int) $stats['notifications_bell']; ?></span>
-					<?php endif; ?>
+					<?php
+					$initial_unread = ! empty( $stats['notifications_bell'] ) ? (int) $stats['notifications_bell'] : 0;
+					?>
+					<span
+						data-bina-unread-notifications-bell
+						class="absolute bottom-0.5 end-1 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center <?php echo $initial_unread > 0 ? '' : 'hidden'; ?>"
+					><?php echo (int) $initial_unread; ?></span>
 				</a>
 			</div>
 		</header>
@@ -174,7 +224,7 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 					</div>
 					<div class="bg-card rounded-xl border py-6 px-6 shadow-sm">
 						<div class="text-sm text-muted-foreground"><?php esc_html_e( 'الإشعارات غير المقروءة', 'bina' ); ?></div>
-						<div class="text-2xl font-bold mt-2 tabular-nums"><?php echo (int) $stats['unread_notifications']; ?></div>
+						<div class="text-2xl font-bold mt-2 tabular-nums" data-bina-unread-notifications-card><?php echo (int) $stats['unread_notifications']; ?></div>
 					</div>
 				</div>
 

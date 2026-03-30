@@ -72,14 +72,6 @@ class bina_Customer_Dashboard_Widget extends Widget_Base {
 				'default'     => array( 'url' => '/customer-notifications' ),
 			)
 		);
-		$this->add_control(
-			'url_conflicts',
-			array(
-				'label'       => __( 'النزاعات', 'bina' ),
-				'type'        => Controls_Manager::URL,
-				'default'     => array( 'url' => '/customer-conflicts' ),
-			)
-		);
 		$this->end_controls_section();
 
 		$this->start_controls_section(

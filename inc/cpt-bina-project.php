@@ -86,7 +86,8 @@ function bina_register_project_cpt() {
 			),
 			'public'              => false,
 			'show_ui'             => true,
-			'show_in_menu'        => true,
+			// Hide default CPT menu: we use a custom admin screen instead.
+			'show_in_menu'        => false,
 			'menu_position'       => 26,
 			'menu_icon'           => 'dashicons-hammer',
 			'capability_type'     => array( 'bina_project', 'bina_projects' ),

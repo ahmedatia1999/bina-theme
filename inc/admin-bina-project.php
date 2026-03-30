@@ -42,6 +42,42 @@ function bina_admin_save_assigned_provider_from_detail() {
 add_action( 'admin_init', 'bina_admin_save_assigned_provider_from_detail' );
 
 /**
+ * Save project status from admin detail screen.
+ *
+ * @return void
+ */
+function bina_admin_save_project_status_from_detail() {
+	if ( empty( $_POST['bina_save_project_status'] ) || empty( $_POST['post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return;
+	}
+	$post_id = absint( $_POST['post_id'] );
+	if ( $post_id < 1 ) {
+		return;
+	}
+	$nonce_key = 'bina_project_status_nonce_' . $post_id;
+	if ( ! isset( $_POST[ $nonce_key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return;
+	}
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $nonce_key ] ) ), 'bina_project_status_' . $post_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	$new_status = isset( $_POST['bina_project_status'] ) ? sanitize_text_field( wp_unslash( $_POST['bina_project_status'] ) ) : '';
+	$allowed    = array_keys( bina_get_project_status_labels() );
+	if ( ! in_array( $new_status, $allowed, true ) ) {
+		return;
+	}
+
+	update_post_meta( $post_id, '_bina_project_status', $new_status );
+	wp_safe_redirect( admin_url( 'admin.php?page=bina-project-detail&post_id=' . $post_id . '&status_saved=1' ) );
+	exit;
+}
+add_action( 'admin_init', 'bina_admin_save_project_status_from_detail' );
+
+/**
  * Hidden submenu page — opened when editing a project (see redirect).
  *
  * @return void
@@ -177,6 +213,10 @@ function bina_render_admin_project_detail_page() {
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'تم حفظ مقدم الخدمة المعيّن.', 'bina' ) . '</p></div>';
 	}
 
+	if ( isset( $_GET['status_saved'] ) && (string) $_GET['status_saved'] === '1' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'تم تحديث حالة المشروع.', 'bina' ) . '</p></div>';
+	}
+
 	echo '<div class="bina-admin-project-grid">';
 
 	echo '<div class="bina-admin-card">';
@@ -208,7 +248,23 @@ function bina_render_admin_project_detail_page() {
 	echo '<div class="bina-admin-card">';
 	echo '<h2>' . esc_html__( 'حالة المشروع', 'bina' ) . '</h2>';
 	echo '<p><span class="bina-admin-badge">' . esc_html( $status_l ) . '</span></p>';
-	echo '<p class="description">' . esc_html__( 'لتغيير الحالة استخدم المحرر الافتراضي أو أدواتك المخصصة إن وُجدت.', 'bina' ) . '</p>';
+	echo '<p class="description">' . esc_html__( 'غيّر الحالة مباشرة من هنا.', 'bina' ) . '</p>';
+	echo '<form method="post" action="' . esc_url( admin_url( 'admin.php' ) ) . '">';
+	echo '<input type="hidden" name="page" value="bina-project-detail" />';
+	echo '<input type="hidden" name="post_id" value="' . esc_attr( (string) $post_id ) . '" />';
+	echo '<input type="hidden" name="bina_save_project_status" value="1" />';
+
+	$nonce_key = 'bina_project_status_nonce_' . $post_id;
+	wp_nonce_field( 'bina_project_status_' . $post_id, $nonce_key );
+
+	echo '<p><label for="bina_project_status_select">' . esc_html__( 'الحالة', 'bina' ) . '</label></p>';
+	echo '<select name="bina_project_status" id="bina_project_status_select" class="regular-text" style="max-width:100%;">';
+	foreach ( $labels as $k => $lab ) {
+		echo '<option value="' . esc_attr( (string) $k ) . '"' . selected( $status, $k, false ) . '>' . esc_html( $lab ) . '</option>';
+	}
+	echo '</select>';
+	echo '<p class="submit"><button type="submit" class="button button-primary">' . esc_html__( 'حفظ الحالة', 'bina' ) . '</button></p>';
+	echo '</form>';
 	echo '</div>';
 
 	echo '<div class="bina-admin-card bina-admin-card--wide">';

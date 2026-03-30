@@ -12,6 +12,7 @@
   const ajaxurl = cfg.ajaxurl || window.ajaxurl || "/wp-admin/admin-ajax.php";
   const nonce = cfg.nonce || "";
   const currentUserId = parseInt(String(cfg.currentUserId || "0"), 10) || 0;
+  const portalRole = String(root.getAttribute("data-bina-portal-role") || "");
 
   const scrollEl = root.querySelector("[data-bina-thread-scroll]");
   const listEl = root.querySelector("[data-bina-thread-messages]");
@@ -22,6 +23,26 @@
 
   let maxId = 0;
   let pollTimer = null;
+  let isFetching = false;
+
+  function roleLabel(role) {
+    switch (String(role || "")) {
+      case "customer":
+        return "عميل";
+      case "service_provider":
+        return "مزود خدمة";
+      case "admin":
+        return "إدارة";
+      default:
+        return "";
+    }
+  }
+
+  function mineLabel() {
+    if (portalRole === "provider") return "أنت (مزود خدمة)";
+    if (portalRole === "customer") return "أنت (عميل)";
+    return "أنت";
+  }
 
   function appendMessages(items, replace) {
     if (!listEl) return;
@@ -47,14 +68,26 @@
       wrap.className =
         "flex " + (mine ? "justify-end" : "justify-start");
       wrap.setAttribute("data-msg-id", String(id));
+
+      const meta = document.createElement("div");
+      meta.className =
+        "mb-1 text-[11px] text-muted-foreground " +
+        (mine ? "text-end" : "text-start");
+      const rl = mine ? mineLabel() : roleLabel(m.sender_role);
+      meta.textContent = rl || (mine ? "أنت" : "");
+
       const bubble = document.createElement("div");
       bubble.className =
-        "max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap break-words " +
+        "max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap break-words shadow-sm ring-1 ring-border/20 " +
         (mine
           ? "bg-primary text-primary-foreground rounded-br-sm"
           : "bg-muted text-foreground rounded-bl-sm");
       bubble.textContent = m.body || "";
-      wrap.appendChild(bubble);
+      const stack = document.createElement("div");
+      stack.className = "max-w-[85%]";
+      if (meta.textContent) stack.appendChild(meta);
+      stack.appendChild(bubble);
+      wrap.appendChild(stack);
       listEl.appendChild(wrap);
     });
     if (scrollEl) {
@@ -63,6 +96,8 @@
   }
 
   function fetchMessages() {
+    if (isFetching) return Promise.resolve();
+    isFetching = true;
     const body = new URLSearchParams();
     body.set("action", "bina_get_thread_messages");
     body.set("nonce", nonce);
@@ -87,7 +122,10 @@
           appendMessages(msgs, false);
         }
       })
-      .catch(function () {});
+      .catch(function () {})
+      .finally(function () {
+        isFetching = false;
+      });
   }
 
   function sendMessage(text) {
@@ -128,7 +166,14 @@
   }
 
   fetchMessages();
-  pollTimer = window.setInterval(fetchMessages, 25000);
+  pollTimer = window.setInterval(fetchMessages, 4000);
+
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) fetchMessages();
+  });
+  window.addEventListener("focus", function () {
+    fetchMessages();
+  });
 
   if (form) {
     form.addEventListener("submit", function (e) {

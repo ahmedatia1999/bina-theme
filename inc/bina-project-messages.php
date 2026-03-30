@@ -33,6 +33,25 @@ function bina_user_can_access_project_messages( $user_id, $project_id ) {
 	if ( $assigned > 0 && $assigned === $user_id ) {
 		return true;
 	}
+	// Allow service provider to initiate a conversation on a browseable project
+	// (first message will auto-assign the provider to the project).
+	$u = get_userdata( $user_id );
+	if ( $u && bina_user_is_service_provider( $u ) && $assigned < 1 && function_exists( 'bina_get_browseable_projects_meta_query_for_provider' ) ) {
+		$st = get_post_status( $project_id );
+		if ( $st === 'publish' && (int) $post->post_author !== $user_id ) {
+			$meta = bina_get_browseable_projects_meta_query_for_provider( $user_id );
+			$ok   = false;
+			if ( is_array( $meta ) && isset( $meta['relation'] ) && $meta['relation'] === 'OR' ) {
+				$cur = get_post_meta( $project_id, '_bina_project_status', true );
+				if ( $cur === '' || $cur === 'pending' || $cur === 'active' ) {
+					$ok = true;
+				}
+			}
+			if ( $ok ) {
+				return true;
+			}
+		}
+	}
 	if ( user_can( $user_id, 'manage_options' ) ) {
 		return true;
 	}

@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *   @type array   $stats
  *   @type string  $logo_url
  *   @type string  $help_url
- *   @type string  $active_nav dashboard|browse|my_projects|profile|subscription|offers|chat|conflicts|payments|notifications
+ *   @type string  $active_nav dashboard|browse|my_projects|profile|subscription|offers|chat|payments|notifications
  * }
  * @return void
  */
@@ -39,10 +39,46 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 
 	$nav_item = static function ( $key, $current, $url, $label ) {
 		$is   = ( $current === $key );
+		$base = 'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm';
 		$cls  = $is
-			? 'flex items-center gap-2 rounded-md p-2 bg-sidebar-accent font-medium text-sidebar-accent-foreground'
-			: 'flex items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground';
-		echo '<li><a class="' . esc_attr( $cls ) . '" href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a></li>';
+			? $base . ' bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+			: $base . ' hover:bg-sidebar-accent hover:text-sidebar-accent-foreground';
+
+		$icon = '';
+		switch ( (string) $key ) {
+			case 'dashboard':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M12 13m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M13.45 11.55l2.05 -2.05"></path><path d="M6.4 20a9 9 0 1 1 11.2 0z"></path></svg>';
+				break;
+			case 'browse':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M10.5 4a6.5 6.5 0 1 0 3.5 11.5L21 21"></path><path d="M10.5 4a6.5 6.5 0 0 1 0 13"></path></svg>';
+				break;
+			case 'my_projects':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path></svg>';
+				break;
+			case 'profile':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+				break;
+			case 'subscription':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><rect width="18" height="14" x="3" y="6" rx="2"></rect><path d="M3 10h18"></path></svg>';
+				break;
+			case 'offers':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M20.59 13.41 17 17H7l-4 4V7l4-4h10l3 3z"></path><path d="M8 8h8v8H8z"></path></svg>';
+				break;
+			case 'chat':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"></path><path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2"></path></svg>';
+				break;
+			case 'payments':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M2 8h20v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"></path><path d="M2 8l3-5h14l3 5"></path><path d="M12 12v4"></path></svg>';
+				break;
+			case 'notifications':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>';
+				break;
+			default:
+				$icon = '';
+				break;
+		}
+
+		echo '<li><a class="' . esc_attr( $cls ) . '" href="' . esc_url( $url ) . '">' . $icon . '<span class="truncate leading-none">' . esc_html( $label ) . '</span></a></li>';
 	};
 	?>
 <style>
@@ -69,14 +105,16 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 							<a class="flex w-full items-center gap-2 rounded-md p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm" href="<?php echo esc_url( $urls['dashboard'] ?? '' ); ?>">
 								<?php if ( $logo_url ) : ?>
 									<img alt="" class="h-9 w-9 shrink-0 rounded-sm object-cover" src="<?php echo esc_url( $logo_url ); ?>" width="36" height="36" loading="lazy" />
+								<?php else : ?>
+									<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/20 text-primary font-bold text-sm ring-1 ring-primary/30"><?php esc_html_e( 'ب', 'bina' ); ?></span>
 								<?php endif; ?>
 								<span class="min-w-0 flex-1 truncate text-lg font-semibold"><?php esc_html_e( 'بناء', 'bina' ); ?></span>
 							</a>
 						</li>
 					</ul>
 				</div>
-				<div class="flex min-h-0 flex-1 flex-col gap-2 overflow-auto p-2">
-					<ul class="flex w-full min-w-0 flex-col gap-1 text-sm">
+				<div class="flex min-h-0 flex-1 flex-col gap-1 overflow-auto py-2 px-2">
+					<ul class="flex w-full min-w-0 flex-col gap-0.5 text-sm">
 						<?php
 						$nav_item( 'dashboard', $active, $urls['dashboard'] ?? '#', __( 'لوحة التحكم', 'bina' ) );
 						$nav_item( 'browse', $active, $urls['browse_projects'] ?? '#', __( 'تصفح المشاريع', 'bina' ) );
@@ -85,7 +123,6 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 						$nav_item( 'subscription', $active, $urls['subscription'] ?? '#', __( 'الاشتراك', 'bina' ) );
 						$nav_item( 'offers', $active, $urls['offers'] ?? '#', __( 'عروضي', 'bina' ) );
 						$nav_item( 'chat', $active, $urls['chat'] ?? '#', __( 'المحادثات', 'bina' ) );
-						$nav_item( 'conflicts', $active, $urls['conflicts'] ?? '#', __( 'النزاعات', 'bina' ) );
 						$nav_item( 'payments', $active, $urls['payments'] ?? '#', __( 'المدفوعات', 'bina' ) );
 						$nav_item( 'notifications', $active, $urls['notifications'] ?? '#', __( 'الإشعارات', 'bina' ) );
 						?>
@@ -117,9 +154,13 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 			<div class="flex items-center gap-3">
 				<a class="relative inline-flex items-center justify-center rounded-md border bg-background shadow-xs hover:bg-accent size-9" href="<?php echo esc_url( $urls['notifications'] ?? '#' ); ?>" aria-label="<?php esc_attr_e( 'الإشعارات', 'bina' ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path><path d="M9 17v1a3 3 0 0 0 6 0v-1"></path></svg>
-					<?php if ( ! empty( $stats['notifications_bell'] ) ) : ?>
-						<span class="absolute top-1 end-1 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center"><?php echo (int) $stats['notifications_bell']; ?></span>
-					<?php endif; ?>
+					<?php
+					$initial_unread = ! empty( $stats['notifications_bell'] ) ? (int) $stats['notifications_bell'] : 0;
+					?>
+					<span
+						data-bina-unread-notifications-bell
+						class="absolute bottom-0.5 end-1 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center <?php echo $initial_unread > 0 ? '' : 'hidden'; ?>"
+					><?php echo (int) $initial_unread; ?></span>
 				</a>
 			</div>
 		</header>

@@ -107,12 +107,6 @@ function bina_render_customer_portal_shell_start( $args ) {
 							</a>
 						</li>
 						<li>
-							<a class="<?php echo esc_attr( bina_customer_portal_sidebar_nav_class( 'conflicts', $active_nav ) ); ?>" href="<?php echo esc_url( $urls['conflicts'] ); ?>">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M12 9v4"></path><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path><path d="M12 16h.01"></path></svg>
-								<span class="truncate leading-none"><?php esc_html_e( 'النزاعات', 'bina' ); ?></span>
-							</a>
-						</li>
-						<li>
 							<a class="<?php echo esc_attr( bina_customer_portal_sidebar_nav_class( 'notifications', $active_nav ) ); ?>" href="<?php echo esc_url( $urls['notifications'] ); ?>">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
 								<span class="truncate leading-none"><?php esc_html_e( 'الإشعارات', 'bina' ); ?></span>
@@ -150,9 +144,13 @@ function bina_render_customer_portal_shell_start( $args ) {
 			<div class="flex items-center gap-2 shrink-0">
 				<a class="relative inline-flex items-center justify-center rounded-lg text-sm font-medium border border-border/80 bg-card shadow-sm hover:bg-accent hover:text-accent-foreground size-9 transition-colors" href="<?php echo esc_url( $urls['notifications'] ); ?>" aria-label="<?php esc_attr_e( 'الإشعارات', 'bina' ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path><path d="M9 17v1a3 3 0 0 0 6 0v-1"></path></svg>
-					<?php if ( ! empty( $stats['notifications_unread'] ) ) : ?>
-						<span class="absolute top-0.5 end-0.5 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center font-medium"><?php echo (int) $stats['notifications_unread']; ?></span>
-					<?php endif; ?>
+					<?php
+					$initial_unread = ! empty( $stats['notifications_unread'] ) ? (int) $stats['notifications_unread'] : 0;
+					?>
+					<span
+						data-bina-unread-notifications-bell
+						class="absolute bottom-0.5 end-0.5 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center font-medium <?php echo $initial_unread > 0 ? '' : 'hidden'; ?>"
+					><?php echo (int) $initial_unread; ?></span>
 				</a>
 			</div>
 		</header>

@@ -57,7 +57,6 @@ function bina_get_customer_portal_default_urls() {
 		'my_projects'        => bina_get_customer_my_projects_url(),
 		'my_projects_create' => bina_get_customer_create_project_url(),
 		'chat'               => bina_get_customer_chat_url(),
-		'conflicts'          => bina_get_customer_conflicts_url(),
 		'notifications'      => bina_get_customer_notifications_url(),
 	);
 }
@@ -81,7 +80,6 @@ function bina_get_customer_portal_urls( $settings = null ) {
 			'url_my_projects_create' => 'my_projects_create',
 			'url_chat'               => 'chat',
 			'url_notifications'      => 'notifications',
-			'url_conflicts'          => 'conflicts',
 		);
 		foreach ( $map as $ctrl => $key ) {
 			$u = isset( $settings[ $ctrl ]['url'] ) ? trim( (string) $settings[ $ctrl ]['url'] ) : '';
@@ -115,6 +113,28 @@ function bina_customer_portal_enqueue_shell_assets() {
 		filemtime( $script_path ),
 		true
 	);
+
+	// Notifications bell (unread counter) — optional if JS file exists.
+	$bjs_path = get_template_directory() . '/assets/js/bina-notifications-bell.js';
+	if ( file_exists( $bjs_path ) ) {
+		wp_enqueue_script(
+			'bina-notifications-bell',
+			get_template_directory_uri() . '/assets/js/bina-notifications-bell.js',
+			array(),
+			filemtime( $bjs_path ),
+			true
+		);
+		wp_localize_script(
+			'bina-notifications-bell',
+			'binaNotificationsBell',
+			array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'bina_notifications' ),
+				'pollMs'  => 8000,
+			)
+		);
+	}
+
 	$done = true;
 }
 

@@ -73,8 +73,8 @@ function register_new_widgets($widgets_manager)
     require_once(__DIR__ . '/widget-service-provider-chat-shell.php');
     require_once(__DIR__ . '/widget-service-provider-browse-projects.php');
     require_once(__DIR__ . '/widget-service-provider-stub-shell.php');
-    require_once(__DIR__ . '/widget-customer-conflicts-shell.php');
     require_once(__DIR__ . '/widget-customer-notifications-shell.php');
+    require_once(__DIR__ . '/widget-service-provider-notifications-shell.php');
     require_once(__DIR__ . '/widget-partners-marquee.php');
     require_once(__DIR__ . '/widget-services.php');
     require_once(__DIR__ . '/widget-why-us.php');
@@ -154,8 +154,8 @@ function register_new_widgets($widgets_manager)
     $widgets_manager->register(new \bina_Service_Provider_Chat_Shell_Widget());
     $widgets_manager->register(new \bina_Service_Provider_Browse_Projects_Widget());
     $widgets_manager->register(new \bina_Service_Provider_Stub_Shell_Widget());
-    $widgets_manager->register(new \bina_Customer_Conflicts_Shell_Widget());
     $widgets_manager->register(new \bina_Customer_Notifications_Shell_Widget());
+    $widgets_manager->register(new \bina_Service_Provider_Notifications_Shell_Widget());
     $widgets_manager->register(new \bina_Partners_Marquee_Widget());
     $widgets_manager->register(new \bina_Services_Widget());
     $widgets_manager->register(new \bina_Why_Us_Widget());

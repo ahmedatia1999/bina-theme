@@ -111,6 +111,10 @@ class bina_Service_Provider_Dashboard_Widget extends Widget_Base {
 			return;
 		}
 
+		if ( function_exists( 'bina_customer_portal_enqueue_shell_assets' ) ) {
+			bina_customer_portal_enqueue_shell_assets();
+		}
+
 		$urls = bina_get_service_provider_portal_urls( $s );
 
 		$logo_url = ! empty( $s['logo']['url'] ) ? $s['logo']['url'] : '';

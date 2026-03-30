@@ -44,10 +44,13 @@
         'admin-bar.php',
         'cpt-bina-project.php',
         'bina-project-meta-helpers.php',
+        'admin-bina-project-admin.php',
+        'bina-notifications-db.php',
         'bina-messages-db.php',
         'bina-project-messages.php',
         'ajax-bina-project.php',
         'ajax-bina-messages.php',
+        'ajax-bina-notifications.php',
         'admin-bina-project.php',
     );
 
