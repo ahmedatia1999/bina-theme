@@ -128,6 +128,7 @@ function bina_render_admin_project_overview_page() {
 		'providers' => __( 'مقدمو الخدمة', 'bina' ),
 		'payments' => __( 'المدفوعات', 'bina' ),
 		'messages' => __( 'رسائل المشروع', 'bina' ),
+		'disputes' => __( 'النزاعات', 'bina' ),
 	);
 
 	echo '<h2 class="nav-tab-wrapper">';
@@ -179,9 +180,155 @@ function bina_render_admin_project_overview_page() {
 		echo '</div>';
 		return;
 	}
+	if ( $tab === 'disputes' ) {
+		bina_render_admin_disputes_tab();
+		echo '</div>';
+		return;
+	}
 
 	echo '<p>' . esc_html__( 'تبويب غير صالح.', 'bina' ) . '</p>';
 	echo '</div>';
+}
+
+function bina_admin_disputes_handle_actions() {
+	if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	if ( empty( $_POST['bina_dispute_action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		return;
+	}
+	$action = sanitize_text_field( wp_unslash( $_POST['bina_dispute_action'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$did    = isset( $_POST['dispute_id'] ) ? absint( wp_unslash( $_POST['dispute_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$nonce  = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+	if ( $did < 1 || ! wp_verify_nonce( $nonce, 'bina_dispute_action_' . $did ) ) {
+		return;
+	}
+	if ( ! function_exists( 'bina_dispute_update_status' ) ) {
+		return;
+	}
+	if ( $action === 'close' ) {
+		bina_dispute_update_status( $did, 'closed' );
+	} elseif ( $action === 'reopen' ) {
+		bina_dispute_update_status( $did, 'open' );
+	}
+	wp_safe_redirect( admin_url( 'admin.php?page=bina-project-admin&tab=disputes&updated=1' ) );
+	exit;
+}
+add_action( 'admin_init', 'bina_admin_disputes_handle_actions', 9 );
+
+function bina_render_admin_disputes_tab() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		echo '<p>' . esc_html__( 'غير مصرح.', 'bina' ) . '</p>';
+		return;
+	}
+	echo '<h2>' . esc_html__( 'النزاعات', 'bina' ) . '</h2>';
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['updated'] ) ) {
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'تم التحديث.', 'bina' ) . '</p></div>';
+	}
+
+	$status = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( ! in_array( $status, array( '', 'open', 'closed' ), true ) ) {
+		$status = '';
+	}
+	$dispute_id = isset( $_GET['dispute_id'] ) ? absint( wp_unslash( $_GET['dispute_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+	echo '<p class="description">' . esc_html__( 'قائمة الشكاوى المرسلة من العملاء أو مقدمي الخدمة على المشاريع.', 'bina' ) . '</p>';
+
+	$base = admin_url( 'admin.php?page=bina-project-admin&tab=disputes' );
+	echo '<p style="margin:12px 0;">';
+	echo '<a class="button ' . ( $status === '' ? 'button-primary' : '' ) . '" href="' . esc_url( $base ) . '">' . esc_html__( 'الكل', 'bina' ) . '</a> ';
+	echo '<a class="button ' . ( $status === 'open' ? 'button-primary' : '' ) . '" href="' . esc_url( add_query_arg( 'status', 'open', $base ) ) . '">' . esc_html__( 'مفتوح', 'bina' ) . '</a> ';
+	echo '<a class="button ' . ( $status === 'closed' ? 'button-primary' : '' ) . '" href="' . esc_url( add_query_arg( 'status', 'closed', $base ) ) . '">' . esc_html__( 'مغلق', 'bina' ) . '</a> ';
+	echo '</p>';
+
+	if ( $dispute_id > 0 && function_exists( 'bina_dispute_get' ) ) {
+		$d = bina_dispute_get( $dispute_id );
+		if ( $d ) {
+			$project_id = (int) $d['project_id'];
+			$project    = get_post( $project_id );
+			$customer   = get_userdata( (int) $d['customer_id'] );
+			$provider   = (int) $d['provider_id'] ? get_userdata( (int) $d['provider_id'] ) : null;
+
+			echo '<div class="postbox" style="max-width:900px;"><div class="postbox-header"><h3 class="hndle">';
+			echo esc_html__( 'تفاصيل النزاع', 'bina' );
+			echo '</h3></div><div class="inside">';
+
+			echo '<p><strong>' . esc_html__( 'المشروع:', 'bina' ) . '</strong> ';
+			echo $project ? esc_html( $project->post_title ) : '#' . esc_html( (string) $project_id );
+			echo '</p>';
+			echo '<p><strong>' . esc_html__( 'العميل:', 'bina' ) . '</strong> ' . esc_html( $customer ? $customer->display_name . ' (' . $customer->user_email . ')' : '-' ) . '</p>';
+			echo '<p><strong>' . esc_html__( 'مقدم الخدمة:', 'bina' ) . '</strong> ' . esc_html( $provider ? $provider->display_name . ' (' . $provider->user_email . ')' : '-' ) . '</p>';
+			echo '<p><strong>' . esc_html__( 'من:', 'bina' ) . '</strong> ' . esc_html( $d['created_by'] ) . '</p>';
+			echo '<p><strong>' . esc_html__( 'الحالة:', 'bina' ) . '</strong> ' . esc_html( $d['status'] ) . '</p>';
+			echo '<p><strong>' . esc_html__( 'التاريخ:', 'bina' ) . '</strong> ' . esc_html( $d['created_at'] ) . '</p>';
+			echo '<hr />';
+			echo '<div style="white-space:pre-wrap; border:1px solid #e5e7eb; background:#fff; padding:12px; border-radius:8px;">' . esc_html( $d['message'] ) . '</div>';
+
+			echo '<p style="margin-top:14px;"><a class="button" href="' . esc_url( $base ) . '">' . esc_html__( 'رجوع للقائمة', 'bina' ) . '</a></p>';
+			echo '</div></div>';
+			return;
+		}
+	}
+
+	$args = array( 'limit' => 100 );
+	if ( $status !== '' ) {
+		$args['status'] = $status;
+	}
+	$rows = function_exists( 'bina_disputes_fetch' ) ? bina_disputes_fetch( $args ) : array();
+
+	echo '<table class="widefat striped" style="max-width:1200px;">';
+	echo '<thead><tr>';
+	echo '<th>' . esc_html__( '#', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'المشروع', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'العميل', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'مقدم الخدمة', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'من', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'الحالة', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'الرسالة', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'إجراءات', 'bina' ) . '</th>';
+	echo '</tr></thead><tbody>';
+
+	if ( empty( $rows ) ) {
+		echo '<tr><td colspan="8">' . esc_html__( 'لا توجد نزاعات.', 'bina' ) . '</td></tr>';
+	} else {
+		foreach ( $rows as $d ) {
+			$project = get_post( (int) $d['project_id'] );
+			$c       = get_userdata( (int) $d['customer_id'] );
+			$p       = (int) $d['provider_id'] ? get_userdata( (int) $d['provider_id'] ) : null;
+			$excerpt = mb_substr( (string) $d['message'], 0, 80 );
+
+			$view = add_query_arg( 'dispute_id', (int) $d['id'], $base );
+
+			echo '<tr>';
+			echo '<td>' . (int) $d['id'] . '</td>';
+			echo '<td>' . esc_html( $project ? $project->post_title : ( '#' . (int) $d['project_id'] ) ) . '</td>';
+			echo '<td>' . esc_html( $c ? $c->display_name : '-' ) . '</td>';
+			echo '<td>' . esc_html( $p ? $p->display_name : '-' ) . '</td>';
+			echo '<td>' . esc_html( (string) $d['created_by'] ) . '</td>';
+			echo '<td>' . esc_html( (string) $d['status'] ) . '</td>';
+			echo '<td>' . esc_html( $excerpt ) . '</td>';
+			echo '<td>';
+			echo '<a class="button button-small" href="' . esc_url( $view ) . '">' . esc_html__( 'عرض', 'bina' ) . '</a> ';
+			echo '<form method="post" style="display:inline-block; margin:0 0 0 6px;">';
+			wp_nonce_field( 'bina_dispute_action_' . (int) $d['id'] );
+			echo '<input type="hidden" name="dispute_id" value="' . esc_attr( (string) (int) $d['id'] ) . '" />';
+			if ( (string) $d['status'] === 'open' ) {
+				echo '<input type="hidden" name="bina_dispute_action" value="close" />';
+				echo '<button type="submit" class="button button-small">' . esc_html__( 'إغلاق', 'bina' ) . '</button>';
+			} else {
+				echo '<input type="hidden" name="bina_dispute_action" value="reopen" />';
+				echo '<button type="submit" class="button button-small">' . esc_html__( 'إعادة فتح', 'bina' ) . '</button>';
+			}
+			echo '</form>';
+			echo '</td>';
+			echo '</tr>';
+		}
+	}
+
+	echo '</tbody></table>';
 }
 
 /**

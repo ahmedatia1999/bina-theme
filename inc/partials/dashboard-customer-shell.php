@@ -31,7 +31,7 @@ function bina_customer_portal_sidebar_nav_class( $nav_key, $active_nav ) {
  *   @type string  $logo_url
  *   @type string  $help_url
  *   @type array   $stats
- *   @type string  $active_nav dashboard|profile|my_projects|chat|notifications
+ *   @type string  $active_nav dashboard|profile|my_projects|chat|disputes|notifications
  * }
  * @return void
  */
@@ -98,6 +98,12 @@ function bina_render_customer_portal_shell_start( $args ) {
 							<a class="<?php echo esc_attr( bina_customer_portal_sidebar_nav_class( 'profile', $active_nav ) ); ?>" href="<?php echo esc_url( $urls['profile'] ?? bina_get_customer_profile_url() ); ?>">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path></svg>
 								<span class="truncate leading-none"><?php esc_html_e( 'الملف الشخصي', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="<?php echo esc_attr( bina_customer_portal_sidebar_nav_class( 'disputes', $active_nav ) ); ?>" href="<?php echo esc_url( $urls['disputes'] ?? '#' ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M12 3v6"></path><path d="M12 15v6"></path><path d="M5 12h14"></path><path d="M7 7l10 10"></path><path d="M7 17l10-10"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'النزاعات', 'bina' ); ?></span>
 							</a>
 						</li>
 						<li>

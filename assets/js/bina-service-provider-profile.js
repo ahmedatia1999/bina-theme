@@ -50,7 +50,15 @@
 			const ok = !!(res && res.success);
 			if (msg) msg.textContent = ok ? 'تم الحفظ' : (res?.data?.message || 'تعذر الحفظ');
 			if (ok) {
-				window.setTimeout(() => window.location.reload(), 700);
+				window.setTimeout(() => {
+					try {
+						const u = new URL(window.location.href);
+						u.searchParams.set('_', String(Date.now()));
+						window.location.href = u.toString();
+					} catch (e) {
+						window.location.reload();
+					}
+				}, 700);
 			}
 		});
 	});

@@ -64,6 +64,9 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 			case 'chat':
 				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"></path><path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2"></path></svg>';
 				break;
+			case 'conflicts':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M12 3v6"></path><path d="M12 15v6"></path><path d="M5 12h14"></path><path d="M7 7l10 10"></path><path d="M7 17l10-10"></path></svg>';
+				break;
 			case 'payments':
 				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M2 8h20v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8z"></path><path d="M2 8l3-5h14l3 5"></path><path d="M12 12v4"></path></svg>';
 				break;
@@ -117,6 +120,7 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 						$nav_item( 'browse', $active, $urls['browse_projects'] ?? '#', __( 'تصفح المشاريع', 'bina' ) );
 						$nav_item( 'my_projects', $active, $urls['my_projects'] ?? '#', __( 'مشاريعي', 'bina' ) );
 						$nav_item( 'profile', $active, $urls['profile'] ?? '#', __( 'الملف الشخصي', 'bina' ) );
+						$nav_item( 'conflicts', $active, $urls['conflicts'] ?? '#', __( 'النزاعات', 'bina' ) );
 						$nav_item( 'offers', $active, $urls['offers'] ?? '#', __( 'عروضي', 'bina' ) );
 						$nav_item( 'chat', $active, $urls['chat'] ?? '#', __( 'المحادثات', 'bina' ) );
 						$nav_item( 'payments', $active, $urls['payments'] ?? '#', __( 'المدفوعات', 'bina' ) );

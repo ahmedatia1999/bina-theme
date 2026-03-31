@@ -88,6 +88,23 @@ if ( ! isset( $st_labels ) || ! is_array( $st_labels ) ) {
 				</div>
 			</div>
 		</a>
+		<a class="block group" href="<?php echo esc_url( $urls['disputes'] ?? '#' ); ?>">
+			<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border/80 py-6 shadow-sm ring-1 ring-border/30 h-full transition-all hover:shadow-md hover:border-primary/40 hover:ring-primary/20">
+				<div class="px-6 pb-3">
+					<div class="flex items-start justify-between">
+						<div class="flex items-center gap-3">
+							<div class="rounded-lg bg-primary/10 p-2 ring-1 ring-primary/20 group-hover:bg-primary/15">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5 text-primary"><path d="M12 3v6"></path><path d="M12 15v6"></path><path d="M5 12h14"></path><path d="M7 7l10 10"></path><path d="M7 17l10-10"></path></svg>
+							</div>
+							<div class="flex-1">
+								<div class="font-semibold text-base"><?php esc_html_e( 'النزاعات', 'bina' ); ?></div>
+								<p class="text-muted-foreground mt-1 text-sm"><?php esc_html_e( 'تقديم شكوى على مشروع', 'bina' ); ?></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</a>
 	</div>
 	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
 		<div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border border-border/80 py-6 shadow-sm ring-1 ring-border/25 h-full">

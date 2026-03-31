@@ -78,6 +78,14 @@ function bina_get_theme_auto_pages() {
 			'slug'  => 'customer-notifications',
 			'title' => __( 'الإشعارات', 'bina' ),
 		),
+		array(
+			'slug'  => 'customer-disputes',
+			'title' => __( 'النزاعات — العميل', 'bina' ),
+		),
+		array(
+			'slug'  => 'service-provider-conflicts',
+			'title' => __( 'النزاعات — مقدم الخدمة', 'bina' ),
+		),
 	);
 }
 
@@ -115,6 +123,14 @@ function bina_service_provider_chat_page_slug() {
 
 function bina_customer_notifications_page_slug() {
 	return 'customer-notifications';
+}
+
+function bina_customer_disputes_page_slug() {
+	return 'customer-disputes';
+}
+
+function bina_service_provider_conflicts_page_slug() {
+	return 'service-provider-conflicts';
 }
 
 /**
@@ -250,6 +266,7 @@ function bina_get_service_provider_portal_urls( $settings = null ) {
 		'subscription'    => bina_get_service_provider_subscription_url(),
 		'offers'          => bina_get_service_provider_offers_url(),
 		'chat'            => bina_get_service_provider_chat_url(),
+		'conflicts'       => bina_get_service_provider_conflicts_url(),
 		'payments'        => bina_get_service_provider_payments_url(),
 		'notifications'   => bina_get_service_provider_notifications_url(),
 		'verification'    => bina_get_service_provider_profile_url() . '#verification',
@@ -267,6 +284,7 @@ function bina_get_service_provider_portal_urls( $settings = null ) {
 			'url_subscription'    => 'subscription',
 			'url_offers'          => 'offers',
 			'url_chat'            => 'chat',
+			'url_conflicts'       => 'conflicts',
 			'url_payments'        => 'payments',
 			'url_notifications'   => 'notifications',
 		);
@@ -287,6 +305,14 @@ function bina_get_service_provider_portal_urls( $settings = null ) {
 
 function bina_get_customer_notifications_url() {
 	return bina_get_page_url_by_slug( bina_customer_notifications_page_slug() );
+}
+
+function bina_get_customer_disputes_url() {
+	return bina_get_page_url_by_slug( bina_customer_disputes_page_slug() );
+}
+
+function bina_get_service_provider_conflicts_url() {
+	return bina_get_page_url_by_slug( bina_service_provider_conflicts_page_slug() );
 }
 
 /**
@@ -418,3 +444,134 @@ function bina_service_provider_profile_page_fallback_content( $content ) {
 	return (string) ob_get_clean();
 }
 add_filter( 'the_content', 'bina_service_provider_profile_page_fallback_content', 20 );
+
+function bina_customer_disputes_page_fallback_content( $content ) {
+	if ( ! is_singular( 'page' ) || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+	$post = get_post();
+	if ( ! $post instanceof WP_Post || $post->post_name !== bina_customer_disputes_page_slug() ) {
+		return $content;
+	}
+
+	ob_start();
+	if ( ! is_user_logged_in() ) {
+		echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'يجب تسجيل الدخول.', 'bina' ) . '</p>';
+		return (string) ob_get_clean();
+	}
+	$user = wp_get_current_user();
+	if ( ! bina_user_is_customer( $user ) ) {
+		echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'هذه الصفحة للعملاء فقط.', 'bina' ) . '</p>';
+		return (string) ob_get_clean();
+	}
+
+	bina_customer_portal_enqueue_shell_assets();
+	$urls  = bina_get_customer_portal_urls();
+	$stats = bina_get_customer_dashboard_stats( $user->ID );
+
+	$js = get_template_directory() . '/assets/js/bina-disputes.js';
+	if ( file_exists( $js ) ) {
+		wp_enqueue_script( 'bina-disputes', get_template_directory_uri() . '/assets/js/bina-disputes.js', array(), filemtime( $js ), true );
+	}
+
+	$projects = ( new WP_Query(
+		array(
+			'post_type'              => 'bina_project',
+			'post_status'            => array( 'publish', 'pending', 'draft' ),
+			'author'                 => (int) $user->ID,
+			'posts_per_page'         => 200,
+			'orderby'                => 'modified',
+			'order'                  => 'DESC',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+		)
+	) )->posts;
+
+	bina_render_customer_portal_shell_start(
+		array(
+			'user'       => $user,
+			'urls'       => $urls,
+			'logo_url'   => '',
+			'help_url'   => bina_dashboard_resolve_url( 'https://wa.me/966590000474' ),
+			'stats'      => $stats,
+			'active_nav' => 'disputes',
+		)
+	);
+
+	include get_template_directory() . '/inc/partials/customer-disputes-app.php';
+	bina_render_customer_portal_shell_end();
+
+	return (string) ob_get_clean();
+}
+add_filter( 'the_content', 'bina_customer_disputes_page_fallback_content', 20 );
+
+function bina_service_provider_conflicts_page_fallback_content( $content ) {
+	if ( ! is_singular( 'page' ) || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+	$post = get_post();
+	if ( ! $post instanceof WP_Post || $post->post_name !== bina_service_provider_conflicts_page_slug() ) {
+		return $content;
+	}
+
+	ob_start();
+	if ( ! is_user_logged_in() ) {
+		echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'يجب تسجيل الدخول.', 'bina' ) . '</p>';
+		return (string) ob_get_clean();
+	}
+	$user = wp_get_current_user();
+	if ( ! bina_user_is_service_provider( $user ) ) {
+		echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'هذه الصفحة لمقدمي الخدمة فقط.', 'bina' ) . '</p>';
+		return (string) ob_get_clean();
+	}
+
+	if ( function_exists( 'bina_customer_portal_enqueue_shell_assets' ) ) {
+		bina_customer_portal_enqueue_shell_assets();
+	}
+
+	$urls  = bina_get_service_provider_portal_urls();
+	$stats = bina_get_service_provider_dashboard_stats( $user->ID );
+
+	$js = get_template_directory() . '/assets/js/bina-disputes.js';
+	if ( file_exists( $js ) ) {
+		wp_enqueue_script( 'bina-disputes', get_template_directory_uri() . '/assets/js/bina-disputes.js', array(), filemtime( $js ), true );
+	}
+
+	$projects = ( new WP_Query(
+		array(
+			'post_type'              => 'bina_project',
+			'post_status'            => array( 'publish', 'pending', 'draft' ),
+			'posts_per_page'         => 200,
+			'orderby'                => 'modified',
+			'order'                  => 'DESC',
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'meta_query'             => array(
+				array(
+					'key'     => '_bina_assigned_provider_id',
+					'value'   => (int) $user->ID,
+					'compare' => '=',
+					'type'    => 'NUMERIC',
+				),
+			),
+		)
+	) )->posts;
+
+	require_once get_template_directory() . '/inc/partials/service-provider-chat-layout.php';
+	bina_render_service_provider_chat_layout_start(
+		array(
+			'user'       => $user,
+			'urls'       => $urls,
+			'stats'      => $stats,
+			'logo_url'   => '',
+			'help_url'   => bina_dashboard_resolve_url( 'https://wa.me/966590000474' ),
+			'active_nav' => 'conflicts',
+		)
+	);
+
+	include get_template_directory() . '/inc/partials/service-provider-disputes-app.php';
+	bina_render_service_provider_chat_layout_end();
+
+	return (string) ob_get_clean();
+}
+add_filter( 'the_content', 'bina_service_provider_conflicts_page_fallback_content', 20 );

@@ -25,8 +25,23 @@ class bina_Customer_Profile_Widget extends Widget_Base {
 
 	protected function render() {
 		bina_customer_portal_enqueue_shell_assets();
-		wp_enqueue_script( 'bina-customer-profile', get_template_directory_uri() . '/assets/js/bina-customer-profile.js', array(), '1.0.0', true );
-		wp_enqueue_script( 'bina-customer-payments', get_template_directory_uri() . '/assets/js/bina-customer-payments.js', array(), '1.0.0', true );
+		$profile_js = get_template_directory() . '/assets/js/bina-customer-profile.js';
+		$pay_js     = get_template_directory() . '/assets/js/bina-customer-payments.js';
+
+		wp_enqueue_script(
+			'bina-customer-profile',
+			get_template_directory_uri() . '/assets/js/bina-customer-profile.js',
+			array(),
+			file_exists( $profile_js ) ? filemtime( $profile_js ) : null,
+			true
+		);
+		wp_enqueue_script(
+			'bina-customer-payments',
+			get_template_directory_uri() . '/assets/js/bina-customer-payments.js',
+			array(),
+			file_exists( $pay_js ) ? filemtime( $pay_js ) : null,
+			true
+		);
 
 		if ( ! is_user_logged_in() ) {
 			echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'يجب تسجيل الدخول.', 'bina' ) . '</p>';

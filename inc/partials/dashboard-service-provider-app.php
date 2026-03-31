@@ -211,6 +211,17 @@ if ( in_array( $verification_status_raw, array( 'verified', 'approved', 'active'
 					</a>
 				</div>
 
+				<div class="grid gap-4 md:grid-cols-2">
+					<a href="<?php echo esc_url( $urls['conflicts'] ?? '#' ); ?>" class="block bg-card rounded-xl border py-6 px-6 shadow-sm hover:border-primary/50">
+						<div class="font-semibold"><?php esc_html_e( 'النزاعات', 'bina' ); ?></div>
+						<p class="text-muted-foreground text-sm mt-1"><?php esc_html_e( 'تقديم شكوى على مشروع', 'bina' ); ?></p>
+					</a>
+					<a href="<?php echo esc_url( $urls['my_projects'] ?? '#' ); ?>" class="block bg-card rounded-xl border py-6 px-6 shadow-sm hover:border-primary/50">
+						<div class="font-semibold"><?php esc_html_e( 'مشاريعي', 'bina' ); ?></div>
+						<p class="text-muted-foreground text-sm mt-1"><?php esc_html_e( 'عرض مشاريعك المسندة', 'bina' ); ?></p>
+					</a>
+				</div>
+
 				<div class="grid gap-4 md:grid-cols-3">
 					<div class="bg-card rounded-xl border py-6 px-6 shadow-sm">
 						<div class="text-sm text-muted-foreground"><?php esc_html_e( 'إجمالي العروض', 'bina' ); ?></div>

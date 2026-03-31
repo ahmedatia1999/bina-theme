@@ -80,10 +80,114 @@
 
   if (!form) return;
 
+  const uploadingEl = root.querySelector("[data-bina-uploading]");
+
+  function fileKey(f) {
+    return [f.name, f.size, f.lastModified].join(":");
+  }
+
+  function rebuildInputFiles(input, files) {
+    try {
+      const dt = new DataTransfer();
+      files.forEach((f) => dt.items.add(f));
+      input.files = dt.files;
+    } catch (e) {
+      // If DataTransfer unsupported, fall back to native input behavior.
+    }
+  }
+
+  function isImageFile(f) {
+    const t = String(f.type || "");
+    if (t.indexOf("image/") === 0) return true;
+    const n = String(f.name || "").toLowerCase();
+    return n.endsWith(".jpg") || n.endsWith(".jpeg") || n.endsWith(".png") || n.endsWith(".webp") || n.endsWith(".gif");
+  }
+
+  function isPdfFile(f) {
+    const t = String(f.type || "");
+    if (t === "application/pdf") return true;
+    const n = String(f.name || "").toLowerCase();
+    return n.endsWith(".pdf");
+  }
+
+  function renderPreviews(kind, input, files, container) {
+    if (!container) return;
+    container.innerHTML = "";
+    files.forEach((f, idx) => {
+      const wrap = document.createElement("div");
+      wrap.className = "relative h-16 w-16 overflow-hidden rounded-md border bg-background";
+
+      if (isImageFile(f)) {
+        const img = document.createElement("img");
+        img.className = "h-16 w-16 object-cover";
+        img.alt = f.name || "";
+        wrap.appendChild(img);
+        const url = URL.createObjectURL(f);
+        img.src = url;
+        img.onload = () => {
+          try { URL.revokeObjectURL(url); } catch (e) {}
+        };
+      } else {
+        const box = document.createElement("div");
+        box.className = "h-16 w-16 flex items-center justify-center text-[10px] text-muted-foreground p-1 text-center";
+        box.textContent = isPdfFile(f) ? "PDF" : "FILE";
+        wrap.appendChild(box);
+      }
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "absolute -top-2 -start-2 h-6 w-6 rounded-full bg-destructive text-white text-xs leading-none flex items-center justify-center shadow";
+      btn.textContent = "×";
+      btn.setAttribute("aria-label", "remove");
+      btn.addEventListener("click", () => {
+        files.splice(idx, 1);
+        rebuildInputFiles(input, files);
+        renderPreviews(kind, input, files, container);
+      });
+      wrap.appendChild(btn);
+
+      container.appendChild(wrap);
+    });
+  }
+
+  function wireFilePreview(kind, inputId, containerSelector) {
+    const input = form.querySelector(inputId);
+    const container = root.querySelector(containerSelector);
+    if (!input || !container) return;
+
+    const state = { files: [] };
+
+    input.addEventListener("change", () => {
+      const next = Array.from(input.files || []);
+      if (!next.length) return;
+
+      const map = new Map(state.files.map((f) => [fileKey(f), f]));
+      next.forEach((f) => map.set(fileKey(f), f));
+      state.files = Array.from(map.values()).slice(0, 15);
+
+      rebuildInputFiles(input, state.files);
+      renderPreviews(kind, input, state.files, container);
+    });
+
+    // If browser keeps chosen files on back/forward cache, render once.
+    const existing = Array.from(input.files || []);
+    if (existing.length) {
+      state.files = existing.slice(0, 15);
+      renderPreviews(kind, input, state.files, container);
+    }
+  }
+
+  wireFilePreview("plans", "#bina-plans-files", '[data-bina-file-previews="plans"]');
+  wireFilePreview("photos", "#bina-site-photos-files", '[data-bina-file-previews="photos"]');
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     const btn = form.querySelector('[type="submit"]');
     if (btn) btn.disabled = true;
+    if (uploadingEl) {
+      uploadingEl.classList.remove("hidden");
+      uploadingEl.classList.add("inline-flex");
+    }
 
     const mode = form.getAttribute("data-bina-mode") || "create";
     const fd = new FormData();
@@ -157,6 +261,10 @@
       })
       .finally(function () {
         if (btn) btn.disabled = false;
+        if (uploadingEl) {
+          uploadingEl.classList.add("hidden");
+          uploadingEl.classList.remove("inline-flex");
+        }
       });
   });
 })();

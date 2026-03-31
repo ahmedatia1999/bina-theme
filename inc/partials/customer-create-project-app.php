@@ -174,6 +174,10 @@ $has_photos_yes = ( $def( 'has_photos' ) === 'نعم' );
 						<label class="text-sm font-medium" for="bina-plans-files"><?php esc_html_e( 'رفع مخططات (PDF أو صور)', 'bina' ); ?></label>
 						<p class="text-xs text-muted-foreground"><?php esc_html_e( 'حد أقصى 15 ملفًا، 5 ميجابايت لكل ملف — PDF، JPG، PNG، WebP', 'bina' ); ?></p>
 						<input class="block w-full text-sm file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground" type="file" id="bina-plans-files" name="bina_plans[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/*">
+						<div class="mt-3">
+							<p class="text-xs font-medium text-muted-foreground"><?php esc_html_e( 'الملفات الجديدة (قبل الحفظ)', 'bina' ); ?></p>
+							<div class="mt-2 flex flex-wrap gap-2" data-bina-file-previews="plans"></div>
+						</div>
 						<?php if ( $is_edit && ! empty( $plans_attachment_ids ) ) : ?>
 							<div class="mt-3 space-y-2">
 								<p class="text-xs font-medium text-muted-foreground"><?php esc_html_e( 'المرفقات الحالية (يمكنك إضافة المزيد)', 'bina' ); ?></p>
@@ -203,6 +207,10 @@ $has_photos_yes = ( $def( 'has_photos' ) === 'نعم' );
 						<label class="text-sm font-medium" for="bina-site-photos-files"><?php esc_html_e( 'رفع صور الموقع', 'bina' ); ?></label>
 						<p class="text-xs text-muted-foreground"><?php esc_html_e( 'حد أقصى 15 صورة، 5 ميجابايت لكل ملف — JPG، PNG، WebP، GIF', 'bina' ); ?></p>
 						<input class="block w-full text-sm file:me-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground" type="file" id="bina-site-photos-files" name="bina_site_photos[]" multiple accept=".jpg,.jpeg,.png,.webp,.gif,image/*">
+						<div class="mt-3">
+							<p class="text-xs font-medium text-muted-foreground"><?php esc_html_e( 'الصور الجديدة (قبل الحفظ)', 'bina' ); ?></p>
+							<div class="mt-2 flex flex-wrap gap-2" data-bina-file-previews="photos"></div>
+						</div>
 						<?php if ( $is_edit && ! empty( $site_photos_attachment_ids ) ) : ?>
 							<div class="mt-3 flex flex-wrap gap-2">
 								<?php foreach ( $site_photos_attachment_ids as $aid ) : ?>
@@ -219,9 +227,15 @@ $has_photos_yes = ( $def( 'has_photos' ) === 'نعم' );
 					</div>
 
 					<div class="pt-2">
-						<button type="submit" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-10 px-8 text-sm font-medium w-full sm:w-auto">
-							<?php echo $is_edit ? esc_html__( 'حفظ التعديلات', 'bina' ) : esc_html__( 'حفظ وإنشاء المشروع', 'bina' ); ?>
-						</button>
+						<div class="flex flex-col sm:flex-row sm:items-center gap-3">
+							<button type="submit" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-10 px-8 text-sm font-medium w-full sm:w-auto">
+								<?php echo $is_edit ? esc_html__( 'حفظ التعديلات', 'bina' ) : esc_html__( 'حفظ وإنشاء المشروع', 'bina' ); ?>
+							</button>
+							<div class="hidden items-center gap-2 text-sm text-muted-foreground" data-bina-uploading>
+								<span class="inline-flex h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-muted-foreground"></span>
+								<span><?php esc_html_e( 'جارٍ رفع الملفات...', 'bina' ); ?></span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

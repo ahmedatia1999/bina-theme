@@ -50,7 +50,7 @@ class bina_Footer_Widget extends Widget_Base {
             [
                 'label' => __('Logo Alt', 'bina'),
                 'type' => Controls_Manager::TEXT,
-                'default' => __('بناء  - Bina Center', 'bina'),
+                'default' => __('بناء  - Bina Service', 'bina'),
             ]
         );
 

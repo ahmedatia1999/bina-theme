@@ -70,7 +70,20 @@ function bina_ajax_save_payout_methods() {
 		update_user_meta( $user_id, 'bina_payout_stc_phone', $stc_phone );
 	}
 
-	wp_send_json_success( array( 'ok' => 1 ) );
+	// Return confirmed saved values (avoid UI showing stale/empty after refresh).
+	$saved = array(
+		'bank_holder' => (string) get_user_meta( $user_id, 'bina_payout_bank_holder', true ),
+		'bank_name'   => (string) get_user_meta( $user_id, 'bina_payout_bank_name', true ),
+		'bank_iban'   => (string) get_user_meta( $user_id, 'bina_payout_bank_iban', true ),
+		'stc_phone'   => (string) get_user_meta( $user_id, 'bina_payout_stc_phone', true ),
+	);
+
+	wp_send_json_success(
+		array(
+			'ok'    => 1,
+			'saved' => $saved,
+		)
+	);
 }
 add_action( 'wp_ajax_bina_save_payout_methods', 'bina_ajax_save_payout_methods' );
 

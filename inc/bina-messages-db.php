@@ -24,7 +24,7 @@ function bina_messages_db_table_name() {
  */
 function bina_messages_maybe_install() {
 	$ver = get_option( 'bina_messages_db_version', '0' );
-	if ( $ver === '1' ) {
+	if ( $ver === '2' ) {
 		return;
 	}
 	global $wpdb;
@@ -35,6 +35,7 @@ function bina_messages_maybe_install() {
 		project_id bigint(20) unsigned NOT NULL,
 		sender_id bigint(20) unsigned NOT NULL,
 		body longtext NOT NULL,
+		meta longtext NULL,
 		created_at datetime NOT NULL,
 		PRIMARY KEY  (id),
 		KEY project_created (project_id, created_at),
@@ -44,6 +45,6 @@ function bina_messages_maybe_install() {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	dbDelta( $sql );
 
-	update_option( 'bina_messages_db_version', '1', false );
+	update_option( 'bina_messages_db_version', '2', false );
 }
 add_action( 'init', 'bina_messages_maybe_install', 3 );

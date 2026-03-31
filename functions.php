@@ -50,12 +50,14 @@
         'bina-proposals-db.php',
         'bina-milestones-db.php',
         'bina-wallet-db.php',
+        'bina-disputes-db.php',
         'bina-project-messages.php',
         'ajax-bina-project.php',
         'ajax-bina-messages.php',
         'ajax-bina-notifications.php',
         'ajax-bina-proposals.php',
         'ajax-bina-wallet.php',
+        'ajax-bina-disputes.php',
         'ajax-bina-service-provider-profile.php',
         'ajax-bina-customer-payments.php',
         'ajax-bina-customer-profile.php',
@@ -1118,4 +1120,7 @@
     add_action('elementor/element/section/section_advanced/after_section_end', 'bina_visibility_control', 10, 2);
     
     //////////////////////////header + footer  ///////////////////////////////////////
+    
+    add_filter('wpcf7_autop_or_not', '__return_false');
+    
     

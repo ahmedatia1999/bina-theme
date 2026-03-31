@@ -115,13 +115,13 @@ function bina_messages_fetch_for_project( $project_id, $since_id = 0 ) {
 	}
 	if ( $since_id > 0 ) {
 		$sql = $wpdb->prepare(
-			"SELECT id, project_id, sender_id, body, created_at FROM {$table} WHERE project_id = %d AND id > %d ORDER BY id ASC LIMIT 500",
+			"SELECT id, project_id, sender_id, body, meta, created_at FROM {$table} WHERE project_id = %d AND id > %d ORDER BY id ASC LIMIT 500",
 			$project_id,
 			$since_id
 		);
 	} else {
 		$sql = $wpdb->prepare(
-			"SELECT id, project_id, sender_id, body, created_at FROM {$table} WHERE project_id = %d ORDER BY id ASC LIMIT 500",
+			"SELECT id, project_id, sender_id, body, meta, created_at FROM {$table} WHERE project_id = %d ORDER BY id ASC LIMIT 500",
 			$project_id
 		);
 	}
@@ -135,13 +135,20 @@ function bina_messages_fetch_for_project( $project_id, $since_id = 0 ) {
  * @param string $body       Message body.
  * @return array<string,mixed>|WP_Error
  */
-function bina_messages_insert( $project_id, $sender_id, $body ) {
+function bina_messages_insert( $project_id, $sender_id, $body, $meta = null ) {
 	global $wpdb;
 	$table      = bina_messages_db_table_name();
 	$project_id = (int) $project_id;
 	$sender_id  = (int) $sender_id;
 	$body       = sanitize_textarea_field( (string) $body );
-	if ( $body === '' ) {
+	$meta_json  = null;
+	if ( is_array( $meta ) ) {
+		$meta_json = wp_json_encode( $meta, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+	} elseif ( is_string( $meta ) && $meta !== '' ) {
+		$meta_json = $meta;
+	}
+
+	if ( $body === '' && ( ! is_string( $meta_json ) || $meta_json === '' ) ) {
 		return new WP_Error( 'bina_msg_empty', __( 'الرسالة فارغة.', 'bina' ) );
 	}
 	if ( strlen( $body ) > 8000 ) {
@@ -154,9 +161,10 @@ function bina_messages_insert( $project_id, $sender_id, $body ) {
 			'project_id' => $project_id,
 			'sender_id'  => $sender_id,
 			'body'       => $body,
+			'meta'       => $meta_json,
 			'created_at' => $now,
 		),
-		array( '%d', '%d', '%s', '%s' )
+		array( '%d', '%d', '%s', '%s', '%s' )
 	);
 	if ( ! $r ) {
 		return new WP_Error( 'bina_msg_db', __( 'تعذر حفظ الرسالة.', 'bina' ) );
@@ -167,6 +175,7 @@ function bina_messages_insert( $project_id, $sender_id, $body ) {
 		'project_id' => $project_id,
 		'sender_id'  => $sender_id,
 		'body'       => $body,
+		'meta'       => $meta_json,
 		'created_at' => $now,
 	);
 }

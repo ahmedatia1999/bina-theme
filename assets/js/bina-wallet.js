@@ -58,11 +58,32 @@
 					if (msg) {
 						msg.textContent = ok ? 'تم الحفظ' : (res?.data?.message || 'تعذر الحفظ');
 					}
+					if (ok && res?.data?.saved) {
+						const saved = res.data.saved || {};
+						if (kind === 'bank') {
+							const v1 = String(saved.bank_holder || '');
+							const v2 = String(saved.bank_name || '');
+							const v3 = String(saved.bank_iban || '');
+							const i1 = form.querySelector('input[name="bank_holder"]');
+							const i2 = form.querySelector('input[name="bank_name"]');
+							const i3 = form.querySelector('input[name="bank_iban"]');
+							if (i1) i1.value = v1;
+							if (i2) i2.value = v2;
+							if (i3) i3.value = v3;
+						}
+						if (kind === 'stc') {
+							const v = String(saved.stc_phone || '');
+							const i = form.querySelector('input[name="stc_phone"]');
+							if (i) i.value = v;
+						}
+					}
 					// Ensure the refreshed HTML reflects saved user_meta.
 					if (ok) {
 						setTimeout(() => {
 							try {
-								window.location.reload();
+								const u = new URL(window.location.href);
+								u.searchParams.set('_', String(Date.now()));
+								window.location.href = u.toString();
 							} catch (e) {}
 						}, 700);
 					}

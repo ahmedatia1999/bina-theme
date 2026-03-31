@@ -94,12 +94,19 @@ $thread_url = $project_id > 0 ? add_query_arg( 'project_id', $project_id, $chat_
 				<p class="text-center text-sm text-muted-foreground py-8" data-bina-thread-empty><?php esc_html_e( 'لا رسائل بعد. ابدأ المحادثة.', 'bina' ); ?></p>
 				<div class="flex flex-col gap-3" data-bina-thread-messages hidden></div>
 			</div>
-			<form class="border-t p-3 bg-muted/10 flex gap-2 items-end" data-bina-thread-form>
+			<form class="border-t p-3 bg-muted/10 flex flex-col gap-2" data-bina-thread-form>
+				<div class="flex gap-2 items-end">
 				<label class="sr-only" for="bina-thread-input"><?php esc_html_e( 'رسالة', 'bina' ); ?></label>
 				<textarea id="bina-thread-input" rows="2" class="flex-1 min-h-[44px] max-h-32 rounded-md border border-input bg-transparent px-3 py-2 text-sm resize-y" placeholder="<?php esc_attr_e( 'اكتب رسالتك…', 'bina' ); ?>" data-bina-thread-input></textarea>
+				<label class="inline-flex shrink-0 items-center justify-center rounded-md border border-border/80 bg-background hover:bg-accent h-10 w-10 cursor-pointer" title="<?php esc_attr_e( 'إرفاق ملفات', 'bina' ); ?>">
+					<input type="file" class="hidden" multiple data-bina-thread-files accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar" />
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5"><path d="M21.44 11.05 12.25 20.24a5 5 0 0 1-7.07-7.07L14.1 4.25a3.5 3.5 0 0 1 4.95 4.95l-8.49 8.49a2 2 0 0 1-2.83-2.83l8.13-8.13"></path></svg>
+				</label>
 				<button type="submit" class="inline-flex shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-10 px-4 text-sm font-medium disabled:opacity-50" data-bina-thread-send>
 					<?php esc_html_e( 'إرسال', 'bina' ); ?>
 				</button>
+				</div>
+				<div class="hidden flex-wrap gap-2" data-bina-thread-previews></div>
 			</form>
 		</div>
 	<?php endif; ?>

@@ -59,6 +59,7 @@ function bina_get_customer_portal_default_urls() {
 		'my_projects_create' => bina_get_customer_create_project_url(),
 		'chat'               => bina_get_customer_chat_url(),
 		'notifications'      => bina_get_customer_notifications_url(),
+		'disputes'           => function_exists( 'bina_get_customer_disputes_url' ) ? bina_get_customer_disputes_url() : home_url( '/customer-disputes/' ),
 	);
 }
 
@@ -82,6 +83,7 @@ function bina_get_customer_portal_urls( $settings = null ) {
 			'url_my_projects_create' => 'my_projects_create',
 			'url_chat'               => 'chat',
 			'url_notifications'      => 'notifications',
+			'url_disputes'           => 'disputes',
 		);
 		foreach ( $map as $ctrl => $key ) {
 			$u = isset( $settings[ $ctrl ]['url'] ) ? trim( (string) $settings[ $ctrl ]['url'] ) : '';
