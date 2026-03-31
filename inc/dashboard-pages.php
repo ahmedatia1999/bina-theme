@@ -358,3 +358,63 @@ function bina_ensure_dashboard_pages_on_init_for_admins() {
 add_action( 'init', 'bina_ensure_dashboard_pages_on_init_for_admins', 30 );
 
 require_once get_template_directory() . '/inc/partials/dashboard-customer-shell.php';
+
+/**
+ * Render a fallback app for service-provider-profile page if content is empty.
+ * This prevents blank pages when Elementor content is not configured.
+ *
+ * @param string $content Page content.
+ * @return string
+ */
+function bina_service_provider_profile_page_fallback_content( $content ) {
+	if ( ! is_singular( 'page' ) || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+
+	$post = get_post();
+	if ( ! $post instanceof WP_Post || $post->post_name !== bina_service_provider_profile_page_slug() ) {
+		return $content;
+	}
+
+	ob_start();
+
+	if ( ! is_user_logged_in() ) {
+		echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'يجب تسجيل الدخول لعرض الملف الشخصي.', 'bina' ) . '</p>';
+		return (string) ob_get_clean();
+	}
+
+	$user = wp_get_current_user();
+	if ( ! bina_user_is_service_provider( $user ) ) {
+		echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'هذه الصفحة مخصصة لمقدمي الخدمة.', 'bina' ) . '</p>';
+		return (string) ob_get_clean();
+	}
+
+	if ( function_exists( 'bina_customer_portal_enqueue_shell_assets' ) ) {
+		bina_customer_portal_enqueue_shell_assets();
+	}
+
+	$urls     = bina_get_service_provider_portal_urls();
+	$stats    = bina_get_service_provider_dashboard_stats( $user->ID );
+	$logo_url = '';
+	$help_url = bina_dashboard_resolve_url( 'https://wa.me/966590000474' );
+
+	require_once get_template_directory() . '/inc/partials/service-provider-chat-layout.php';
+
+	bina_render_service_provider_chat_layout_start(
+		array(
+			'user'       => $user,
+			'urls'       => $urls,
+			'stats'      => $stats,
+			'logo_url'   => $logo_url,
+			'help_url'   => $help_url,
+			'active_nav' => 'profile',
+		)
+	);
+
+	include get_template_directory() . '/inc/partials/service-provider-profile-app.php';
+
+	bina_render_service_provider_chat_layout_end();
+
+	return (string) ob_get_clean();
+}
+add_filter( 'the_content', 'bina_service_provider_profile_page_fallback_content', 20 );
