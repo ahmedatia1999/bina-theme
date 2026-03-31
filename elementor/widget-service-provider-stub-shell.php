@@ -193,7 +193,17 @@ class bina_Service_Provider_Stub_Shell_Widget extends Widget_Base {
 		} elseif ( $active === 'payments' ) {
 			include get_template_directory() . '/inc/partials/service-provider-wallet-payments-app.php';
 		} elseif ( $active === 'profile' ) {
-			include get_template_directory() . '/inc/partials/service-provider-wallet-payout-methods-app.php';
+			$profile_js = get_template_directory() . '/assets/js/bina-service-provider-profile.js';
+			if ( file_exists( $profile_js ) ) {
+				wp_enqueue_script(
+					'bina-service-provider-profile',
+					get_template_directory_uri() . '/assets/js/bina-service-provider-profile.js',
+					array(),
+					filemtime( $profile_js ),
+					true
+				);
+			}
+			include get_template_directory() . '/inc/partials/service-provider-profile-app.php';
 		} else {
 			$heading = isset( $s['heading'] ) ? (string) $s['heading'] : '';
 			$desc    = isset( $s['description'] ) ? (string) $s['description'] : '';

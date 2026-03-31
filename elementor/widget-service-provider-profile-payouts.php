@@ -77,6 +77,17 @@ class bina_Service_Provider_Profile_Payouts_Widget extends Widget_Base {
 			);
 		}
 
+		$profile_js = get_template_directory() . '/assets/js/bina-service-provider-profile.js';
+		if ( file_exists( $profile_js ) ) {
+			wp_enqueue_script(
+				'bina-service-provider-profile',
+				get_template_directory_uri() . '/assets/js/bina-service-provider-profile.js',
+				array(),
+				filemtime( $profile_js ),
+				true
+			);
+		}
+
 		$wallet_js = get_template_directory() . '/assets/js/bina-wallet.js';
 		if ( file_exists( $wallet_js ) ) {
 			wp_enqueue_script(
@@ -120,7 +131,7 @@ class bina_Service_Provider_Profile_Payouts_Widget extends Widget_Base {
 			)
 		);
 
-		include get_template_directory() . '/inc/partials/service-provider-wallet-payout-methods-app.php';
+		include get_template_directory() . '/inc/partials/service-provider-profile-app.php';
 
 		bina_render_service_provider_chat_layout_end();
 	}

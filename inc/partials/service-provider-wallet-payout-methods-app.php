@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $user   = isset( $user ) && $user instanceof WP_User ? $user : wp_get_current_user();
 $nonce  = wp_create_nonce( 'bina_wallet' );
 $ajaxurl = admin_url( 'admin-ajax.php' );
+$embedded = isset( $bina_payout_embedded ) && true === $bina_payout_embedded;
 
 $bank_holder = (string) get_user_meta( $user->ID, 'bina_payout_bank_holder', true );
 $bank_iban   = (string) get_user_meta( $user->ID, 'bina_payout_bank_iban', true );
@@ -19,18 +20,20 @@ $bank_name   = (string) get_user_meta( $user->ID, 'bina_payout_bank_name', true 
 $stc_phone   = (string) get_user_meta( $user->ID, 'bina_payout_stc_phone', true );
 ?>
 
-<div class="space-y-6 w-full max-w-3xl mx-auto" data-bina-wallet data-ajaxurl="<?php echo esc_url( $ajaxurl ); ?>" data-nonce="<?php echo esc_attr( $nonce ); ?>">
-	<div>
-		<h1 class="text-2xl sm:text-3xl font-bold tracking-tight"><?php esc_html_e( 'طرق الاستلام', 'bina' ); ?></h1>
-		<p class="text-muted-foreground mt-1"><?php esc_html_e( 'أضف طرق استلام أموالك عند طلب السحب.', 'bina' ); ?></p>
-	</div>
+<div class="<?php echo $embedded ? 'space-y-4 w-full min-w-0' : 'space-y-6 w-full max-w-3xl mx-auto'; ?>" data-bina-wallet data-ajaxurl="<?php echo esc_url( $ajaxurl ); ?>" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+	<?php if ( ! $embedded ) : ?>
+		<div>
+			<h1 class="text-2xl sm:text-3xl font-bold tracking-tight"><?php esc_html_e( 'طرق الاستلام', 'bina' ); ?></h1>
+			<p class="text-muted-foreground mt-1"><?php esc_html_e( 'أضف طرق استلام أموالك عند طلب السحب.', 'bina' ); ?></p>
+		</div>
+	<?php endif; ?>
 
 	<div class="rounded-2xl border border-border/80 bg-card shadow-sm overflow-hidden">
 		<div class="px-4 py-3 border-b border-border/80 bg-muted/20 text-sm font-medium">
-			<?php esc_html_e( 'بيانات الحساب وطرق الاستلام', 'bina' ); ?>
+			<?php esc_html_e( 'طرق الاستلام', 'bina' ); ?>
 		</div>
-		<div class="p-4">
-			<div class="rounded-xl border border-border/70 bg-background p-4 mb-4">
+		<div class="p-4 space-y-4">
+			<div class="rounded-xl border border-border/70 bg-background p-4">
 				<div class="font-medium mb-3"><?php esc_html_e( 'بيانات الحساب', 'bina' ); ?></div>
 				<div class="grid gap-3 sm:grid-cols-2">
 					<div class="space-y-2">
@@ -44,7 +47,7 @@ $stc_phone   = (string) get_user_meta( $user->ID, 'bina_payout_stc_phone', true 
 				</div>
 			</div>
 
-			<div class="grid gap-4 md:grid-cols-2">
+			<div class="space-y-4">
 				<div class="rounded-xl border border-border/70 bg-background p-4">
 					<div class="font-medium mb-3"><?php esc_html_e( 'تحويل بنكي', 'bina' ); ?></div>
 					<form class="space-y-3" data-bina-payout-form data-bina-payout-kind="bank">

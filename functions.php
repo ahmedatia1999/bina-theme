@@ -56,6 +56,7 @@
         'ajax-bina-notifications.php',
         'ajax-bina-proposals.php',
         'ajax-bina-wallet.php',
+        'ajax-bina-service-provider-profile.php',
         'ajax-bina-customer-payments.php',
         'ajax-bina-customer-profile.php',
         'ajax-bina-milestones.php',
