@@ -19,6 +19,10 @@ function bina_get_theme_auto_pages() {
 			'title' => __( 'لوحة تحكم العميل', 'bina' ),
 		),
 		array(
+			'slug'  => 'customer-profile',
+			'title' => __( 'الملف الشخصي — العميل', 'bina' ),
+		),
+		array(
 			'slug'  => 'service-provider-dashboard',
 			'title' => __( 'لوحة تحكم مقدم الخدمة', 'bina' ),
 		),
@@ -81,6 +85,10 @@ function bina_customer_dashboard_page_slug() {
 	return 'customer-dashboard';
 }
 
+function bina_customer_profile_page_slug() {
+	return 'customer-profile';
+}
+
 function bina_service_provider_dashboard_page_slug() {
 	return 'service-provider-dashboard';
 }
@@ -123,6 +131,10 @@ function bina_get_page_url_by_slug( $slug ) {
 
 function bina_get_customer_dashboard_url() {
 	return bina_get_page_url_by_slug( bina_customer_dashboard_page_slug() );
+}
+
+function bina_get_customer_profile_url() {
+	return bina_get_page_url_by_slug( bina_customer_profile_page_slug() );
 }
 
 function bina_get_service_provider_dashboard_url() {

@@ -101,10 +101,7 @@ class bina_Customer_Project_Details_Widget extends Widget_Base {
 			}
 		}
 		$reminder = get_post_meta( $project_id, '_bina_reminder', true );
-		$st_key   = get_post_meta( $project_id, '_bina_project_status', true );
-		if ( $st_key === '' ) {
-			$st_key = 'pending';
-		}
+		$st_key   = bina_get_project_status_meta( (int) $project_id );
 		$statuses = bina_get_project_status_labels();
 		$st_label = isset( $statuses[ $st_key ] ) ? $statuses[ $st_key ] : $st_key;
 
@@ -113,6 +110,11 @@ class bina_Customer_Project_Details_Widget extends Widget_Base {
 
 		$plans_attachment_ids       = bina_get_project_attachment_ids( $project_id, 'plans' );
 		$site_photos_attachment_ids = bina_get_project_attachment_ids( $project_id, 'site_photos' );
+		$proposals                  = function_exists( 'bina_proposals_fetch_for_project' ) ? bina_proposals_fetch_for_project( (int) $project_id ) : array();
+		$proposal_nonce             = wp_create_nonce( 'bina_proposals' );
+		$ajaxurl                    = admin_url( 'admin-ajax.php' );
+		$delete_nonce               = wp_create_nonce( 'bina_project' );
+		$my_projects_url            = function_exists( 'bina_get_customer_my_projects_url' ) ? bina_get_customer_my_projects_url() : $list_url;
 
 		$city = $city_disp;
 
@@ -122,6 +124,38 @@ class bina_Customer_Project_Details_Widget extends Widget_Base {
 		}
 
 		bina_customer_portal_enqueue_shell_assets();
+		$customer_props_js = get_template_directory() . '/assets/js/bina-customer-proposals.js';
+		if ( file_exists( $customer_props_js ) ) {
+			wp_enqueue_script(
+				'bina-customer-proposals',
+				get_template_directory_uri() . '/assets/js/bina-customer-proposals.js',
+				array(),
+				filemtime( $customer_props_js ),
+				true
+			);
+		}
+
+		$customer_delete_js = get_template_directory() . '/assets/js/bina-customer-project-delete.js';
+		if ( file_exists( $customer_delete_js ) ) {
+			wp_enqueue_script(
+				'bina-customer-project-delete',
+				get_template_directory_uri() . '/assets/js/bina-customer-project-delete.js',
+				array(),
+				filemtime( $customer_delete_js ),
+				true
+			);
+		}
+
+		$ms_js = get_template_directory() . '/assets/js/bina-milestones.js';
+		if ( file_exists( $ms_js ) ) {
+			wp_enqueue_script(
+				'bina-milestones',
+				get_template_directory_uri() . '/assets/js/bina-milestones.js',
+				array(),
+				filemtime( $ms_js ),
+				true
+			);
+		}
 		$urls     = bina_get_customer_portal_urls( null );
 		$stats    = bina_get_customer_dashboard_stats( $user->ID );
 		$help_url = bina_dashboard_resolve_url( 'https://wa.me/966590000474' );

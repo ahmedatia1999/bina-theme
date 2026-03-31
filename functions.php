@@ -47,10 +47,18 @@
         'admin-bina-project-admin.php',
         'bina-notifications-db.php',
         'bina-messages-db.php',
+        'bina-proposals-db.php',
+        'bina-milestones-db.php',
+        'bina-wallet-db.php',
         'bina-project-messages.php',
         'ajax-bina-project.php',
         'ajax-bina-messages.php',
         'ajax-bina-notifications.php',
+        'ajax-bina-proposals.php',
+        'ajax-bina-wallet.php',
+        'ajax-bina-customer-payments.php',
+        'ajax-bina-customer-profile.php',
+        'ajax-bina-milestones.php',
         'admin-bina-project.php',
     );
 

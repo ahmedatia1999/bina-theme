@@ -6,18 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class bina_Service_Provider_Browse_Projects_Widget extends Widget_Base {
+class bina_Service_Provider_My_Projects_Widget extends Widget_Base {
 
 	public function get_name() {
-		return 'bina_service_provider_browse_projects';
+		return 'bina_service_provider_my_projects';
 	}
 
 	public function get_title() {
-		return __( 'Service Provider — تصفح المشاريع', 'bina' );
+		return __( 'Service Provider — مشاريعي', 'bina' );
 	}
 
 	public function get_icon() {
-		return 'eicon-post-list';
+		return 'eicon-folder';
 	}
 
 	public function get_categories() {
@@ -31,25 +31,20 @@ class bina_Service_Provider_Browse_Projects_Widget extends Widget_Base {
 				'label' => __( 'روابط', 'bina' ),
 			)
 		);
+
 		$u = function ( $path ) {
 			return array( 'url' => $path );
 		};
+
 		$this->add_control( 'url_dashboard', array( 'label' => __( 'لوحة التحكم', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-dashboard' ) ) );
 		$this->add_control( 'url_browse_projects', array( 'label' => __( 'تصفح المشاريع', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-browse-projects' ) ) );
-		$this->add_control( 'url_my_projects', array( 'label' => __( 'مشاريعي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-my-projects' ) ) );
+		$this->add_control( 'url_my_projects', array( 'label' => __( 'مشاريعي (هذه الصفحة)', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-my-projects' ) ) );
 		$this->add_control( 'url_profile', array( 'label' => __( 'الملف الشخصي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-profile' ) ) );
 		$this->add_control( 'url_offers', array( 'label' => __( 'عروضي', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-offers' ) ) );
 		$this->add_control( 'url_chat', array( 'label' => __( 'المحادثات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-chat' ) ) );
 		$this->add_control( 'url_payments', array( 'label' => __( 'المدفوعات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-payments' ) ) );
 		$this->add_control( 'url_notifications', array( 'label' => __( 'الإشعارات', 'bina' ), 'type' => Controls_Manager::URL, 'default' => $u( '/service-provider-notifications' ) ) );
-		$this->end_controls_section();
 
-		$this->start_controls_section(
-			'sec_misc',
-			array(
-				'label' => __( 'أخرى', 'bina' ),
-			)
-		);
 		$this->add_control(
 			'logo',
 			array(
@@ -63,16 +58,6 @@ class bina_Service_Provider_Browse_Projects_Widget extends Widget_Base {
 				'label'   => __( 'رابط المساعدة', 'bina' ),
 				'type'    => Controls_Manager::URL,
 				'default' => array( 'url' => 'https://wa.me/966590000474' ),
-			)
-		);
-		$this->add_control(
-			'per_page',
-			array(
-				'label'   => __( 'عدد المشاريع في الصفحة', 'bina' ),
-				'type'    => Controls_Manager::NUMBER,
-				'min'     => 4,
-				'max'     => 48,
-				'default' => 12,
 			)
 		);
 		$this->end_controls_section();
@@ -92,13 +77,13 @@ class bina_Service_Provider_Browse_Projects_Widget extends Widget_Base {
 			);
 		}
 
-		$props_js = get_template_directory() . '/assets/js/bina-proposals.js';
-		if ( file_exists( $props_js ) ) {
+		$ms_js = get_template_directory() . '/assets/js/bina-milestones.js';
+		if ( file_exists( $ms_js ) ) {
 			wp_enqueue_script(
-				'bina-proposals',
-				get_template_directory_uri() . '/assets/js/bina-proposals.js',
+				'bina-milestones',
+				get_template_directory_uri() . '/assets/js/bina-milestones.js',
 				array(),
-				filemtime( $props_js ),
+				filemtime( $ms_js ),
 				true
 			);
 		}
@@ -123,19 +108,28 @@ class bina_Service_Provider_Browse_Projects_Widget extends Widget_Base {
 		$help_url = bina_dashboard_resolve_url( $s['help_url']['url'] ?? 'https://wa.me/966590000474' );
 		$stats    = bina_get_service_provider_dashboard_stats( $user->ID );
 
-		$paged   = (int) get_query_var( 'paged' );
-		if ( $paged < 1 ) {
-			$paged = (int) get_query_var( 'page' );
-		}
-		if ( $paged < 1 ) {
-			$paged = 1;
-		}
-		$per_page = isset( $s['per_page'] ) ? max( 4, min( 48, (int) $s['per_page'] ) ) : 12;
-
-		$projects_query = bina_query_browseable_projects_for_provider( $user->ID, $per_page, $paged );
+		$statuses = array( 'publish', 'pending', 'draft' );
+		$projects_query = new WP_Query(
+			array(
+				'post_type'              => 'bina_project',
+				'post_status'            => $statuses,
+				'posts_per_page'         => 50,
+				'orderby'                => 'modified',
+				'order'                  => 'DESC',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'meta_query'             => array(
+					array(
+						'key'     => '_bina_assigned_provider_id',
+						'value'   => (int) $user->ID,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					),
+				),
+			)
+		);
 
 		require_once get_template_directory() . '/inc/partials/service-provider-chat-layout.php';
-
 		bina_render_service_provider_chat_layout_start(
 			array(
 				'user'       => $user,
@@ -143,12 +137,13 @@ class bina_Service_Provider_Browse_Projects_Widget extends Widget_Base {
 				'stats'      => $stats,
 				'logo_url'   => $logo_url,
 				'help_url'   => $help_url,
-				'active_nav' => 'browse',
+				'active_nav' => 'my_projects',
 			)
 		);
 
-		include get_template_directory() . '/inc/partials/service-provider-browse-projects-app.php';
+		include get_template_directory() . '/inc/partials/service-provider-my-projects-app.php';
 
 		bina_render_service_provider_chat_layout_end();
 	}
 }
+

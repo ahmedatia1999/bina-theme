@@ -5,6 +5,7 @@
   const ajaxurl = app.getAttribute("data-ajaxurl") || "/wp-admin/admin-ajax.php";
   const nonce = app.getAttribute("data-nonce") || "";
   const chatBaseUrl = app.getAttribute("data-chat-base-url") || "";
+  const projectDetailBaseUrl = app.getAttribute("data-project-detail-base-url") || "";
   const pollMs = parseInt(app.getAttribute("data-poll-ms") || "8000", 10) || 8000;
 
   const unreadCountEl = document.querySelector("[data-bina-unread-count]");
@@ -18,6 +19,24 @@
     if (pid < 1) return chatBaseUrl || "/";
     const sep = chatBaseUrl.indexOf("?") > -1 ? "&" : "?";
     return chatBaseUrl + sep + "project_id=" + pid;
+  }
+
+  function projectDetailUrlForProject(projectId) {
+    const pid = parseInt(projectId, 10) || 0;
+    if (pid < 1) return projectDetailBaseUrl || chatBaseUrl || "/";
+    const base = projectDetailBaseUrl || "";
+    if (!base) return chatUrlForProject(pid);
+    const sep = base.indexOf("?") > -1 ? "&" : "?";
+    return base + sep + "project_id=" + pid;
+  }
+
+  function urlForNotification(n) {
+    const type = n && n.type ? String(n.type) : "";
+    const projectId = n && n.project_id ? String(n.project_id) : "0";
+    if (type === "proposal_new") return projectDetailUrlForProject(projectId);
+    if (type === "proposal_accepted") return projectDetailUrlForProject(projectId);
+    // Default: open chat thread.
+    return chatUrlForProject(projectId);
   }
 
   function formatCreatedAt(s) {
@@ -54,7 +73,7 @@
       const title = n.title ? String(n.title) : "إشعار";
       const body = n.body ? String(n.body) : "";
       const projectId = n.project_id ? String(n.project_id) : "0";
-      const url = chatUrlForProject(projectId);
+      const url = urlForNotification(n);
 
       const badge = isUnread
         ? '<span class="inline-flex items-center justify-center rounded-full bg-destructive px-2 py-0.5 text-[10px] text-white font-medium" style="margin-left:8px">جديد</span>'

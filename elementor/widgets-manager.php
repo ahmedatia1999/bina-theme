@@ -65,6 +65,7 @@ function register_new_widgets($widgets_manager)
     require_once(__DIR__ . '/widget-register-form.php');
     require_once(__DIR__ . '/widget-forgot-password-form.php');
     require_once(__DIR__ . '/widget-customer-dashboard.php');
+    require_once(__DIR__ . '/widget-customer-profile.php');
     require_once(__DIR__ . '/widget-service-provider-dashboard.php');
     require_once(__DIR__ . '/widget-customer-create-project.php');
     require_once(__DIR__ . '/widget-customer-my-projects.php');
@@ -72,7 +73,11 @@ function register_new_widgets($widgets_manager)
     require_once(__DIR__ . '/widget-customer-chat-shell.php');
     require_once(__DIR__ . '/widget-service-provider-chat-shell.php');
     require_once(__DIR__ . '/widget-service-provider-browse-projects.php');
+    require_once(__DIR__ . '/widget-service-provider-my-projects.php');
+    require_once(__DIR__ . '/widget-service-provider-offers.php');
     require_once(__DIR__ . '/widget-service-provider-stub-shell.php');
+    require_once(__DIR__ . '/widget-service-provider-payments-shell.php');
+    require_once(__DIR__ . '/widget-service-provider-profile-payouts.php');
     require_once(__DIR__ . '/widget-customer-notifications-shell.php');
     require_once(__DIR__ . '/widget-service-provider-notifications-shell.php');
     require_once(__DIR__ . '/widget-partners-marquee.php');
@@ -146,6 +151,7 @@ function register_new_widgets($widgets_manager)
     $widgets_manager->register(new \bina_Register_Form_Widget());
     $widgets_manager->register(new \bina_Forgot_Password_Form_Widget());
     $widgets_manager->register(new \bina_Customer_Dashboard_Widget());
+    $widgets_manager->register(new \bina_Customer_Profile_Widget());
     $widgets_manager->register(new \bina_Service_Provider_Dashboard_Widget());
     $widgets_manager->register(new \bina_Customer_Create_Project_Widget());
     $widgets_manager->register(new \bina_Customer_My_Projects_Widget());
@@ -153,7 +159,11 @@ function register_new_widgets($widgets_manager)
     $widgets_manager->register(new \bina_Customer_Chat_Shell_Widget());
     $widgets_manager->register(new \bina_Service_Provider_Chat_Shell_Widget());
     $widgets_manager->register(new \bina_Service_Provider_Browse_Projects_Widget());
+    $widgets_manager->register(new \bina_Service_Provider_My_Projects_Widget());
+    $widgets_manager->register(new \bina_Service_Provider_Offers_Widget());
     $widgets_manager->register(new \bina_Service_Provider_Stub_Shell_Widget());
+    $widgets_manager->register(new \bina_Service_Provider_Payments_Shell_Widget());
+    $widgets_manager->register(new \bina_Service_Provider_Profile_Payouts_Widget());
     $widgets_manager->register(new \bina_Customer_Notifications_Shell_Widget());
     $widgets_manager->register(new \bina_Service_Provider_Notifications_Shell_Widget());
     $widgets_manager->register(new \bina_Partners_Marquee_Widget());

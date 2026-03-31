@@ -41,6 +41,14 @@ class bina_Customer_Dashboard_Widget extends Widget_Base {
 			)
 		);
 		$this->add_control(
+			'url_profile',
+			array(
+				'label'       => __( 'الملف الشخصي', 'bina' ),
+				'type'        => Controls_Manager::URL,
+				'default'     => array( 'url' => '/customer-profile' ),
+			)
+		);
+		$this->add_control(
 			'url_my_projects',
 			array(
 				'label'       => __( 'مشاريعي', 'bina' ),

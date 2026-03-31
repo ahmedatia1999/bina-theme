@@ -54,6 +54,7 @@ function bina_dashboard_resolve_url( $url ) {
 function bina_get_customer_portal_default_urls() {
 	return array(
 		'dashboard'          => bina_get_customer_dashboard_url(),
+		'profile'            => bina_get_customer_profile_url(),
 		'my_projects'        => bina_get_customer_my_projects_url(),
 		'my_projects_create' => bina_get_customer_create_project_url(),
 		'chat'               => bina_get_customer_chat_url(),
@@ -76,6 +77,7 @@ function bina_get_customer_portal_urls( $settings = null ) {
 			$urls['dashboard'] = bina_dashboard_resolve_url( $dash );
 		}
 		$map = array(
+			'url_profile'            => 'profile',
 			'url_my_projects'        => 'my_projects',
 			'url_my_projects_create' => 'my_projects_create',
 			'url_chat'               => 'chat',

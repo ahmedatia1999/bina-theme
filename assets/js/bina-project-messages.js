@@ -25,23 +25,10 @@
   let pollTimer = null;
   let isFetching = false;
 
-  function roleLabel(role) {
-    switch (String(role || "")) {
-      case "customer":
-        return "عميل";
-      case "service_provider":
-        return "مزود خدمة";
-      case "admin":
-        return "إدارة";
-      default:
-        return "";
-    }
-  }
-
-  function mineLabel() {
-    if (portalRole === "provider") return "أنت (مزود خدمة)";
-    if (portalRole === "customer") return "أنت (عميل)";
-    return "أنت";
+  function displayNameForMessage(m) {
+    const name = m && m.sender_name ? String(m.sender_name).trim() : "";
+    if (name) return name;
+    return m && m.is_mine ? "أنت" : "";
   }
 
   function appendMessages(items, replace) {
@@ -73,8 +60,7 @@
       meta.className =
         "mb-1 text-[11px] text-muted-foreground " +
         (mine ? "text-end" : "text-start");
-      const rl = mine ? mineLabel() : roleLabel(m.sender_role);
-      meta.textContent = rl || (mine ? "أنت" : "");
+      meta.textContent = displayNameForMessage(m);
 
       const bubble = document.createElement("div");
       bubble.className =

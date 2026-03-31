@@ -85,12 +85,6 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 							</a>
 						</li>
 						<li>
-							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['subscription'] ); ?>">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><rect width="18" height="14" x="3" y="6" rx="2"></rect><path d="M3 10h18"></path></svg>
-								<span class="truncate leading-none"><?php esc_html_e( 'الاشتراك', 'bina' ); ?></span>
-							</a>
-						</li>
-						<li>
 							<a class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-start ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 h-8 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" href="<?php echo esc_url( $urls['offers'] ); ?>">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M20.59 13.41 17 17H7l-4 4V7l4-4h10l3 3z"></path><path d="M8 8h8v8H8z"></path></svg>
 								<span class="truncate leading-none"><?php esc_html_e( 'عروضي', 'bina' ); ?></span>
@@ -159,7 +153,7 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 					<p class="text-muted-foreground mt-1"><?php esc_html_e( 'نظرة عامة على عروضك ومشاريعك.', 'bina' ); ?></p>
 				</div>
 
-				<div class="grid gap-4 md:grid-cols-3">
+				<div class="grid gap-4 md:grid-cols-2">
 					<a href="<?php echo esc_url( $urls['browse_projects'] ); ?>" class="block bg-card text-card-foreground rounded-xl border py-6 px-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50">
 						<div class="flex items-start justify-between gap-3">
 							<div>
@@ -169,13 +163,9 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 							<span class="text-2xl font-bold tabular-nums"><?php echo (int) $stats['browse_projects_count']; ?></span>
 						</div>
 					</a>
-					<a href="<?php echo esc_url( $urls['verification'] ); ?>" class="block bg-card text-card-foreground rounded-xl border py-6 px-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50">
-						<div class="font-semibold text-base"><?php esc_html_e( 'التوثيق', 'bina' ); ?></div>
-						<p class="text-muted-foreground text-sm mt-1"><?php esc_html_e( 'أكمل توثيق حسابك لزيادة الثقة', 'bina' ); ?></p>
-					</a>
-					<a href="<?php echo esc_url( $urls['subscription'] ); ?>" class="block bg-card text-card-foreground rounded-xl border py-6 px-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50">
-						<div class="font-semibold text-base"><?php esc_html_e( 'الاشتراك', 'bina' ); ?></div>
-						<p class="text-muted-foreground text-sm mt-1"><?php esc_html_e( 'إدارة باقتك والفوترة', 'bina' ); ?></p>
+					<a href="<?php echo esc_url( $urls['payments'] ?? '#' ); ?>" class="block bg-card text-card-foreground rounded-xl border py-6 px-6 shadow-sm transition-all hover:shadow-md hover:border-primary/50">
+						<div class="font-semibold text-base"><?php esc_html_e( 'المدفوعات', 'bina' ); ?></div>
+						<p class="text-muted-foreground text-sm mt-1"><?php esc_html_e( 'الرصيد وطلبات السحب', 'bina' ); ?></p>
 					</a>
 				</div>
 
@@ -292,7 +282,7 @@ $rate = isset( $stats['acceptance_rate'] ) ? (float) $stats['acceptance_rate'] :
 										<li class="border-b border-border/60 pb-3 last:border-0 last:pb-0">
 											<div class="font-medium line-clamp-2"><?php echo esc_html( get_the_title( $mp ) ); ?></div>
 											<div class="flex flex-wrap items-center gap-2 mt-1 text-xs text-muted-foreground">
-												<span class="inline-flex rounded-md border px-1.5 py-0.5"><?php echo esc_html( $sl ); ?></span>
+												<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( $sl ); ?></span>
 												<?php if ( $city_l !== '' ) : ?>
 													<span><?php echo esc_html( $city_l ); ?></span>
 												<?php endif; ?>

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Sidebar nav link classes (active vs hover).
  *
- * @param string $nav_key   Nav id: dashboard, my_projects, chat, conflicts, notifications.
+ * @param string $nav_key   Nav id: dashboard, profile, my_projects, chat, notifications.
  * @param string $active_nav Current page nav id.
  * @return string
  */
@@ -31,7 +31,7 @@ function bina_customer_portal_sidebar_nav_class( $nav_key, $active_nav ) {
  *   @type string  $logo_url
  *   @type string  $help_url
  *   @type array   $stats
- *   @type string  $active_nav dashboard|my_projects|chat|conflicts|notifications
+ *   @type string  $active_nav dashboard|profile|my_projects|chat|notifications
  * }
  * @return void
  */
@@ -92,6 +92,12 @@ function bina_render_customer_portal_shell_start( $args ) {
 							<a class="<?php echo esc_attr( bina_customer_portal_sidebar_nav_class( 'dashboard', $active_nav ) ); ?>" href="<?php echo esc_url( $dash_url ); ?>">
 								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M12 13m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path><path d="M13.45 11.55l2.05 -2.05"></path><path d="M6.4 20a9 9 0 1 1 11.2 0z"></path></svg>
 								<span class="truncate leading-none"><?php esc_html_e( 'لوحة التحكم', 'bina' ); ?></span>
+							</a>
+						</li>
+						<li>
+							<a class="<?php echo esc_attr( bina_customer_portal_sidebar_nav_class( 'profile', $active_nav ) ); ?>" href="<?php echo esc_url( $urls['profile'] ?? bina_get_customer_profile_url() ); ?>">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path></svg>
+								<span class="truncate leading-none"><?php esc_html_e( 'الملف الشخصي', 'bina' ); ?></span>
 							</a>
 						</li>
 						<li>

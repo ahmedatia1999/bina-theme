@@ -183,7 +183,7 @@ if ( ! isset( $st_labels ) || ! is_array( $st_labels ) ) {
 							<li class="border-b border-border/60 pb-3 last:border-0 last:pb-0">
 								<a class="font-medium hover:underline line-clamp-2" href="<?php echo esc_url( $detail ); ?>"><?php echo esc_html( get_the_title( $rp ) ); ?></a>
 								<div class="flex flex-wrap items-center gap-2 mt-1 text-xs text-muted-foreground">
-									<span class="inline-flex rounded-md border px-1.5 py-0.5"><?php echo esc_html( $sl ); ?></span>
+									<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( $sl ); ?></span>
 									<?php if ( $ago !== '' ) : ?>
 										<span><?php echo esc_html( sprintf( /* translators: %s: human time */ __( 'آخر تحديث منذ %s', 'bina' ), $ago ) ); ?></span>
 									<?php endif; ?>

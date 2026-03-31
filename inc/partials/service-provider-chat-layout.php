@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *   @type array   $stats
  *   @type string  $logo_url
  *   @type string  $help_url
- *   @type string  $active_nav dashboard|browse|my_projects|profile|subscription|offers|chat|payments|notifications
+ *   @type string  $active_nav dashboard|browse|my_projects|profile|offers|chat|payments|notifications
  * }
  * @return void
  */
@@ -57,9 +57,6 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 				break;
 			case 'profile':
 				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-				break;
-			case 'subscription':
-				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><rect width="18" height="14" x="3" y="6" rx="2"></rect><path d="M3 10h18"></path></svg>';
 				break;
 			case 'offers':
 				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 size-4 opacity-90"><path d="M20.59 13.41 17 17H7l-4 4V7l4-4h10l3 3z"></path><path d="M8 8h8v8H8z"></path></svg>';
@@ -120,7 +117,6 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 						$nav_item( 'browse', $active, $urls['browse_projects'] ?? '#', __( 'تصفح المشاريع', 'bina' ) );
 						$nav_item( 'my_projects', $active, $urls['my_projects'] ?? '#', __( 'مشاريعي', 'bina' ) );
 						$nav_item( 'profile', $active, $urls['profile'] ?? '#', __( 'الملف الشخصي', 'bina' ) );
-						$nav_item( 'subscription', $active, $urls['subscription'] ?? '#', __( 'الاشتراك', 'bina' ) );
 						$nav_item( 'offers', $active, $urls['offers'] ?? '#', __( 'عروضي', 'bina' ) );
 						$nav_item( 'chat', $active, $urls['chat'] ?? '#', __( 'المحادثات', 'bina' ) );
 						$nav_item( 'payments', $active, $urls['payments'] ?? '#', __( 'المدفوعات', 'bina' ) );

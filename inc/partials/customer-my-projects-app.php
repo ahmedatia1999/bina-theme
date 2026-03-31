@@ -82,11 +82,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			while ( $q->have_posts() ) {
 				$q->the_post();
 				$pid    = get_the_ID();
-				$st_key = get_post_meta( $pid, '_bina_project_status', true );
-				if ( $st_key === '' ) {
-					$st_key = 'pending';
-				}
-				$st_label = isset( $statuses[ $st_key ] ) ? $statuses[ $st_key ] : $statuses['pending'];
+				$st_key   = bina_get_project_status_meta( (int) $pid );
+				$st_label = isset( $statuses[ $st_key ] ) ? $statuses[ $st_key ] : $st_key;
 				$cat      = get_post_meta( $pid, '_bina_category', true );
 				$rem      = get_post_meta( $pid, '_bina_reminder', true );
 				$link     = bina_get_customer_project_detail_url( $pid );

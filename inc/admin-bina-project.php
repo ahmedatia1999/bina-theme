@@ -174,7 +174,7 @@ function bina_render_admin_project_detail_page() {
 	$category  = (string) get_post_meta( $post_id, '_bina_category', true );
 	$reminder  = (string) get_post_meta( $post_id, '_bina_reminder', true );
 	$city      = (string) get_post_meta( $post_id, '_bina_city', true );
-	$status    = (string) get_post_meta( $post_id, '_bina_project_status', true );
+	$status    = bina_get_project_status_meta( (int) $post_id );
 	$labels    = bina_get_project_status_labels();
 	$status_l  = isset( $labels[ $status ] ) ? $labels[ $status ] : $status;
 

@@ -73,15 +73,6 @@ function bina_ajax_send_thread_message() {
 		wp_send_json_error( array( 'message' => __( 'غير مصرح.', 'bina' ) ), 403 );
 	}
 
-	// If a service provider is initiating chat on an unassigned project, auto-assign it.
-	$assigned = bina_get_project_assigned_provider_id( $project_id );
-	if ( $assigned < 1 ) {
-		$u = get_userdata( $user_id );
-		if ( $u && bina_user_is_service_provider( $u ) ) {
-			bina_set_project_assigned_provider_id( $project_id, $user_id );
-		}
-	}
-
 	$result = bina_messages_insert( $project_id, $user_id, $body );
 	if ( is_wp_error( $result ) ) {
 		wp_send_json_error( array( 'message' => $result->get_error_message() ), 400 );

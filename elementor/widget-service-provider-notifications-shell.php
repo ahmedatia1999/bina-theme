@@ -134,6 +134,7 @@ class bina_Service_Provider_Notifications_Shell_Widget extends Widget_Base {
 					data-ajaxurl="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
 					data-nonce="<?php echo esc_attr( wp_create_nonce( 'bina_notifications' ) ); ?>"
 					data-chat-base-url="<?php echo esc_url( bina_get_service_provider_chat_url() ); ?>"
+					data-project-detail-base-url="<?php echo esc_url( bina_get_service_provider_my_projects_url() ); ?>"
 					data-poll-ms="8000"
 				>
 					<div data-bina-notifications-list class="space-y-3">

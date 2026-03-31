@@ -2637,8 +2637,7 @@ body {
 }
 
 .py-0\.5 {
-    padding-top: .125rem;
-    padding-bottom: .125rem
+    padding: 0.25rem 0.5rem;
 }
 
 .py-1 {

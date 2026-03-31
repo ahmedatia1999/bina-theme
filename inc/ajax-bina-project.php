@@ -184,7 +184,7 @@ function bina_ajax_save_project() {
 	update_post_meta( $post_id, '_bina_category', $fields['category'] );
 	update_post_meta( $post_id, '_bina_reminder', $fields['reminder'] );
 	update_post_meta( $post_id, '_bina_city', $fields['city'] );
-	update_post_meta( $post_id, '_bina_project_status', 'pending' );
+	update_post_meta( $post_id, '_bina_project_status', 'open' );
 	update_post_meta( $post_id, '_bina_extra', bina_project_extra_to_json( $extra ) );
 
 	$new_plans  = bina_project_process_upload_field( $post_id, 'bina_plans', array( 'pdf', 'jpg', 'jpeg', 'png', 'webp' ) );

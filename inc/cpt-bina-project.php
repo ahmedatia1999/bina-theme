@@ -60,10 +60,10 @@ function bina_get_project_reminder_options() {
  */
 function bina_get_project_status_labels() {
 	return array(
-		'pending' => __( 'قيد الانتظار', 'bina' ),
-		'active'  => __( 'نشط', 'bina' ),
-		'done'    => __( 'مكتمل', 'bina' ),
-		'closed'  => __( 'مغلق', 'bina' ),
+		'open'        => __( 'مفتوح للعروض', 'bina' ),
+		'selected'    => __( 'تم اختيار مزود', 'bina' ),
+		'in_progress' => __( 'قيد التنفيذ', 'bina' ),
+		'completed'   => __( 'مكتمل', 'bina' ),
 	);
 }
 
@@ -178,8 +178,8 @@ function bina_customer_dashboard_stats_from_projects( $stats, $user_id ) {
 
 	$active = 0;
 	foreach ( $q->posts as $pid ) {
-		$st = get_post_meta( $pid, '_bina_project_status', true );
-		if ( $st === '' || $st === 'active' || $st === 'pending' ) {
+		$st = bina_get_project_status_meta( (int) $pid );
+		if ( $st === 'open' || $st === 'selected' || $st === 'in_progress' ) {
 			++$active;
 		}
 	}
@@ -197,11 +197,24 @@ add_filter( 'bina_customer_dashboard_stats', 'bina_customer_dashboard_stats_from
  * @return string
  */
 function bina_get_project_status_meta( $post_id ) {
-	$st = get_post_meta( $post_id, '_bina_project_status', true );
+	$st = (string) get_post_meta( (int) $post_id, '_bina_project_status', true );
 	if ( $st === '' ) {
-		return 'pending';
+		return 'open';
 	}
-	return (string) $st;
+
+	// Backward compatibility: old keys -> new keys.
+	switch ( $st ) {
+		case 'pending':
+			return 'open';
+		case 'active':
+			return 'in_progress';
+		case 'done':
+			return 'completed';
+		case 'closed':
+			return 'completed';
+		default:
+			return $st;
+	}
 }
 
 /**
@@ -271,27 +284,59 @@ function bina_get_customer_recent_projects( $user_id, $limit = 5 ) {
 }
 
 /**
- * Meta query: projects open for providers (not own, published, status pending/active or unset).
+ * Meta query: projects open for providers (not own, published, status open/unset).
  *
  * @param int $user_id Current user (excluded as author).
  * @return array<string,mixed>
  */
 function bina_get_browseable_projects_meta_query_for_provider( $user_id ) {
+	// Marketplace-visible projects:
+	// - status open/unset (also supports legacy pending)
+	// - not assigned to any provider yet
+	// - not locked by accepted proposal
 	return array(
-		'relation' => 'OR',
+		'relation' => 'AND',
 		array(
-			'key'     => '_bina_project_status',
-			'value'   => 'pending',
-			'compare' => '=',
+			'relation' => 'OR',
+			array(
+				'key'     => '_bina_project_status',
+				'value'   => 'open',
+				'compare' => '=',
+			),
+			array(
+				'key'     => '_bina_project_status',
+				'value'   => 'pending',
+				'compare' => '=',
+			),
+			array(
+				'key'     => '_bina_project_status',
+				'compare' => 'NOT EXISTS',
+			),
 		),
 		array(
-			'key'     => '_bina_project_status',
-			'value'   => 'active',
-			'compare' => '=',
+			'relation' => 'OR',
+			array(
+				'key'     => '_bina_assigned_provider_id',
+				'compare' => 'NOT EXISTS',
+			),
+			array(
+				'key'     => '_bina_assigned_provider_id',
+				'value'   => 0,
+				'compare' => '=',
+				'type'    => 'NUMERIC',
+			),
 		),
 		array(
-			'key'     => '_bina_project_status',
-			'compare' => 'NOT EXISTS',
+			'relation' => 'OR',
+			array(
+				'key'     => '_bina_market_locked',
+				'compare' => 'NOT EXISTS',
+			),
+			array(
+				'key'     => '_bina_market_locked',
+				'value'   => '0',
+				'compare' => '=',
+			),
 		),
 	);
 }
