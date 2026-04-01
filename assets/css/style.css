@@ -2074,7 +2074,7 @@ body {
 }
 
 .bg-green-500\/10 {
-    background-color: #000
+    background-color: #283f45
 }
 
 .bg-green-500\/15 {
@@ -2146,6 +2146,48 @@ body {
 .bg-red-50 {
     --tw-bg-opacity: 1;
     background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1))
+}
+
+/* Sticky footer: keep footer at bottom on short pages */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+}
+
+body>.main-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body>.main-wrapper>.site-header-shell {
+    flex: 0 0 auto;
+}
+
+body>.main-wrapper>#content {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+body>.main-wrapper>#content>main,
+body>.main-wrapper>#content>.site-content {
+    flex: 1 0 auto;
+}
+
+/* Footer content is rendered as the last child inside #content */
+body>.main-wrapper>#content> :last-child {
+    margin-top: auto;
+}
+
+/* Dashboard mini header controls: rendered inline in dashboard header */
+.bina-dashboard-top-mini {
+    flex: 0 0 auto;
 }
 
 .bg-red-500\/10 {
@@ -3460,6 +3502,14 @@ body {
 
 .running {
     animation-play-state: running
+}
+
+/* Smooth theme switch (applied briefly on toggle) */
+html.bina-theme-transition,
+html.bina-theme-transition * {
+    transition-property: background-color, color, border-color, box-shadow, fill, stroke, opacity;
+    transition-duration: 240ms;
+    transition-timing-function: ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4967,7 +5017,7 @@ body {
     }
 
     .md\:p-6 {
-        padding: 1.5rem
+        padding: 2.25rem
     }
 
     .md\:p-8 {
@@ -5682,7 +5732,8 @@ html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
 
 .bina-financing-cf7 .wpcf7-radio,
 .bina-financing-cf7 .wpcf7-checkbox {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     gap: .75rem;
 }
 
@@ -5733,7 +5784,7 @@ html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
     border-color: hsl(var(--primary) / .5);
 }
 
-.bina-financing-cf7 .wpcf7-list-item input:checked + .wpcf7-list-item-label {
+.bina-financing-cf7 .wpcf7-list-item input:checked+.wpcf7-list-item-label {
     color: hsl(var(--primary));
     font-weight: 700;
 }
@@ -5749,4 +5800,16 @@ html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
     padding: 0;
     border: 0;
     background: transparent;
+}
+
+.bina-contact-cf7 textarea {
+    width: 100% !important;
+    height: 150px !important;
+    padding: 10px !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 10px !important;
+    font-size: 16px !important;
+    font-family: 'Tajawal', sans-serif !important;
+    color: #000 !important;
+    resize: vertical !important;
 }

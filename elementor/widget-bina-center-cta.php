@@ -33,36 +33,6 @@ class bina_Bina_Service_CTA_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
-			'section_css',
-			array(
-				'label'       => __( 'كلاسات السكشن (اختياري)', 'bina' ),
-				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'py-20 bg-primary',
-				'default'     => 'py-20 bg-primary',
-			)
-		);
-
-		$this->add_control(
-			'heading_css',
-			array(
-				'label'       => __( 'كلاسات العنوان (اختياري)', 'bina' ),
-				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'text-primary-foreground',
-				'default'     => 'text-primary-foreground',
-			)
-		);
-
-		$this->add_control(
-			'description_css',
-			array(
-				'label'       => __( 'كلاسات الوصف (اختياري)', 'bina' ),
-				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'text-primary-foreground/80',
-				'default'     => 'text-primary-foreground/80',
-			)
-		);
-
-		$this->add_control(
 			'heading',
 			array(
 				'label'   => __( 'العنوان', 'bina' ),
@@ -111,18 +81,6 @@ class bina_Bina_Service_CTA_Widget extends Widget_Base {
 		$h   = isset( $s['heading'] ) ? (string) $s['heading'] : '';
 		$d   = isset( $s['description'] ) ? (string) $s['description'] : '';
 		$bt  = isset( $s['primary_button_text'] ) ? (string) $s['primary_button_text'] : '';
-		$sec_css = isset( $s['section_css'] ) ? trim( (string) $s['section_css'] ) : '';
-		$h_css   = isset( $s['heading_css'] ) ? trim( (string) $s['heading_css'] ) : '';
-		$d_css   = isset( $s['description_css'] ) ? trim( (string) $s['description_css'] ) : '';
-		if ( '' === $sec_css ) {
-			$sec_css = 'py-20 bg-primary';
-		}
-		if ( '' === $h_css ) {
-			$h_css = 'text-primary-foreground';
-		}
-		if ( '' === $d_css ) {
-			$d_css = 'text-primary-foreground/80';
-		}
 
 		$btn_target = '';
 		$btn_rel    = '';
@@ -131,11 +89,11 @@ class bina_Bina_Service_CTA_Widget extends Widget_Base {
 			$btn_rel    = ' rel="noopener noreferrer"';
 		}
 		?>
-		<section class="<?php echo esc_attr( $sec_css ); ?>">
+		<section class="py-20 bg-primary">
 			<div class="container-custom text-center">
 				<div>
-					<h2 class="text-3xl md:text-4xl font-bold <?php echo esc_attr( $h_css ); ?> mb-6"><?php echo esc_html( $h ); ?></h2>
-					<p class="<?php echo esc_attr( $d_css ); ?> mb-8 max-w-2xl mx-auto"><?php echo esc_html( $d ); ?></p>
+					<h2 class="text-3xl md:text-4xl font-bold text-primary-foreground mb-6"><?php echo esc_html( $h ); ?></h2>
+					<p class="text-primary-foreground/80 mb-8 max-w-2xl mx-auto"><?php echo esc_html( $d ); ?></p>
 					<a href="<?php echo $url; ?>"<?php echo $btn_target; ?><?php echo $btn_rel; ?> class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-11 rounded-md text-lg px-8 py-6">
 						<?php echo esc_html( $bt ); ?>
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left w-5 h-5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>

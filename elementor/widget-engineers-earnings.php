@@ -142,7 +142,7 @@ class bina_Engineers_Earnings_Widget extends Widget_Base {
                 <div class="" style="opacity: 1; transform: none;">
                     <div class="text-center mb-12">
                         <span class="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-                            <span class="w-4 h-4 inline-block mr-2 text-primary">
+                            <span class="w-4 h-4 inline-block ml-2 text-primary">
                                 <?php
                                 if (!empty($s['badge_icon'])) {
                                     Icons_Manager::render_icon($s['badge_icon'], ['aria-hidden' => 'true', 'class' => 'w-4 h-4']);

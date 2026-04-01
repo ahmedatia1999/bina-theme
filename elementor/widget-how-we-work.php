@@ -276,9 +276,7 @@ class bina_How_We_Work_Widget extends Widget_Base {
                                             <?php $this->render_feature_row($step['feature2_icon'] ?? [], $step['feature2_text'] ?? ''); ?>
                                             <?php $this->render_feature_row($step['feature3_icon'] ?? [], $step['feature3_text'] ?? ''); ?>
                                         </div>
-                                        <?php if ($idx < (count($steps) - 1)): ?>
-                                            <div class="hidden lg:block absolute top-1/2 -right-3 w-6 h-0.5 bg-border"></div>
-                                        <?php endif; ?>
+                                  
                                     </div>
                                 </div>
                             <?php endforeach; ?>

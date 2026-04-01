@@ -145,24 +145,13 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 		</div>
 	</div>
 	<main class="bg-background relative z-0 flex flex-1 min-h-0 min-w-0 w-full flex-col overflow-hidden border border-border/60 md:rounded-s-2xl md:shadow-sm">
-		<header class="sticky top-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between gap-2 border-b border-border/70 bg-background/90 px-3 sm:px-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
+		<header class="sticky top-0 z-20 relative flex h-14 sm:h-16 shrink-0 items-center justify-between gap-2 border-b border-border/70 bg-background/90 px-3 sm:px-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
 			<div class="flex items-center gap-2">
 				<button type="button" data-bina-dashboard-sidebar-trigger class="inline-flex md:hidden items-center justify-center rounded-md text-sm font-medium hover:bg-accent size-7" aria-label="<?php esc_attr_e( 'القائمة', 'bina' ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg>
 				</button>
 			</div>
-			<div class="flex items-center gap-3">
-				<a class="relative inline-flex items-center justify-center rounded-md border bg-background shadow-xs hover:bg-accent size-9" href="<?php echo esc_url( $urls['notifications'] ?? '#' ); ?>" aria-label="<?php esc_attr_e( 'الإشعارات', 'bina' ); ?>">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path><path d="M9 17v1a3 3 0 0 0 6 0v-1"></path></svg>
-					<?php
-					$initial_unread = ! empty( $stats['notifications_bell'] ) ? (int) $stats['notifications_bell'] : 0;
-					?>
-					<span
-						data-bina-unread-notifications-bell
-						class="absolute bottom-0.5 end-1 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center <?php echo $initial_unread > 0 ? '' : 'hidden'; ?>"
-					><?php echo (int) $initial_unread; ?></span>
-				</a>
-			</div>
+			<?php include get_template_directory() . '/inc/partials/dashboard-top-mini-header.php'; ?>
 		</header>
 		<div class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-3 sm:px-6 pb-8 pt-2">
 			<div class="mx-auto w-full max-w-6xl min-w-0 space-y-6 sm:space-y-8">

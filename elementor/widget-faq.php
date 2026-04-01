@@ -154,41 +154,48 @@ class bina_FAQ_Widget extends Widget_Base {
                                             $q = $it['question'] ?? '';
                                             $a = $it['answer'] ?? '';
                                             $open = (($it['open_by_default'] ?? '') === 'yes');
-                                            $state = $open ? 'open' : 'closed';
                                             $btn_id = 'bina-faq-' . $wid . '-btn-' . $i;
                                             $panel_id = 'bina-faq-' . $wid . '-panel-' . $i;
                                         ?>
-                                        <div data-state="<?php echo esc_attr($state); ?>" data-orientation="vertical"
-                                            class="bg-card border border-border rounded-xl px-4 md:px-6 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                                            <h3 data-orientation="vertical" data-state="<?php echo esc_attr($state); ?>" class="flex">
+                                        <div>
+                                            <div class="bg-card rounded-xl border border-border overflow-hidden">
                                                 <button
                                                     type="button"
+                                                    id="<?php echo esc_attr($btn_id); ?>"
                                                     aria-controls="<?php echo esc_attr($panel_id); ?>"
                                                     aria-expanded="<?php echo $open ? 'true' : 'false'; ?>"
-                                                    data-state="<?php echo esc_attr($state); ?>"
-                                                    data-orientation="vertical"
-                                                    id="<?php echo esc_attr($btn_id); ?>"
-                                                    class="flex flex-1 items-center justify-between transition-all [&amp;[data-state=open]&gt;svg]:rotate-180 text-sm md:text-base lg:text-lg font-semibold text-foreground hover:no-underline py-4 md:py-5 text-start"
-                                                    data-radix-collection-item=""
-                                                ><?php echo esc_html($q); ?><svg
-                                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200">
-                                                        <path d="m6 9 6 6 6-6"></path>
-                                                    </svg></button>
-                                            </h3>
-                                            <div
-                                                data-state="<?php echo esc_attr($state); ?>"
-                                                id="<?php echo esc_attr($panel_id); ?>"
-                                                <?php if (!$open): ?>hidden=""<?php endif; ?>
-                                                role="region"
-                                                aria-labelledby="<?php echo esc_attr($btn_id); ?>"
-                                                data-orientation="vertical"
-                                                class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down pt-0 text-sm md:text-base text-muted-foreground leading-relaxed"
-                                                style="--radix-accordion-content-height: var(--radix-collapsible-content-height); --radix-accordion-content-width: var(--radix-collapsible-content-width);"
-                                            >
-                                                <?php echo esc_html($a); ?>
+                                                    class="w-full px-6 py-4 flex items-center justify-between text-start"
+                                                    data-bina-faq-btn="<?php echo esc_attr($wid); ?>"
+                                                >
+                                                    <span class="font-semibold text-foreground"><?php echo esc_html($q); ?></span>
+                                                    <?php if ($open): ?>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="lucide lucide-chevron-up w-5 h-5 text-primary flex-shrink-0"
+                                                            data-bina-faq-ico="<?php echo esc_attr($wid); ?>"
+                                                        ><path d="m18 15-6-6-6 6"></path></svg>
+                                                    <?php else: ?>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                            class="lucide lucide-chevron-down w-5 h-5 text-muted-foreground flex-shrink-0"
+                                                            data-bina-faq-ico="<?php echo esc_attr($wid); ?>"
+                                                        ><path d="m6 9 6 6 6-6"></path></svg>
+                                                    <?php endif; ?>
+                                                </button>
+                                                <div
+                                                    id="<?php echo esc_attr($panel_id); ?>"
+                                                    role="region"
+                                                    aria-labelledby="<?php echo esc_attr($btn_id); ?>"
+                                                    class="overflow-hidden"
+                                                    style="height: <?php echo $open ? 'auto' : '0px'; ?>; transition: height 240ms ease;"
+                                                    data-bina-faq-panel="<?php echo esc_attr($wid); ?>"
+                                                >
+                                                    <div class="px-6 pb-4 text-muted-foreground text-sm md:text-base leading-relaxed">
+                                                        <?php echo esc_html($a); ?>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
@@ -197,6 +204,86 @@ class bina_FAQ_Widget extends Widget_Base {
                         </div>
                     </div>
                 </section>
+
+                <script>
+                (function () {
+                    var root = document.querySelector('[data-bina-faq="<?php echo esc_js($wid); ?>"]');
+                    if (!root) return;
+
+                    function setOpen(btn, panel, ico, open) {
+                        if (!btn || !panel) return;
+                        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+                        if (panel.__binaFaqOnEnd) {
+                            panel.removeEventListener('transitionend', panel.__binaFaqOnEnd);
+                            panel.__binaFaqOnEnd = null;
+                        }
+
+                        if (open) {
+                            panel.style.height = '0px';
+                            panel.offsetHeight; // reflow
+                            var target = panel.scrollHeight;
+                            requestAnimationFrame(function () {
+                                panel.style.height = target + 'px';
+                            });
+                            var onEnd = function (e) {
+                                if (e.propertyName !== 'height') return;
+                                panel.removeEventListener('transitionend', onEnd);
+                                panel.__binaFaqOnEnd = null;
+                                panel.style.height = 'auto';
+                            };
+                            panel.__binaFaqOnEnd = onEnd;
+                            panel.addEventListener('transitionend', onEnd);
+                        } else {
+                            var currentH = panel.scrollHeight;
+                            panel.style.height = currentH + 'px';
+                            panel.offsetHeight; // reflow
+                            requestAnimationFrame(function () {
+                                panel.style.height = '0px';
+                            });
+                        }
+
+                        if (ico) {
+                            ico.classList.remove(open ? 'lucide-chevron-down' : 'lucide-chevron-up');
+                            ico.classList.add(open ? 'lucide-chevron-up' : 'lucide-chevron-down');
+                            ico.classList.toggle('text-primary', !!open);
+                            ico.classList.toggle('text-muted-foreground', !open);
+                            var p = ico.querySelector('path');
+                            if (p) p.setAttribute('d', open ? 'm18 15-6-6-6 6' : 'm6 9 6 6 6-6');
+                        }
+                    }
+
+                    var btns = Array.prototype.slice.call(root.querySelectorAll('[data-bina-faq-btn="<?php echo esc_js($wid); ?>"]'));
+                    btns.forEach(function (btn) {
+                        var panelId = btn.getAttribute('aria-controls') || '';
+                        var panel = panelId ? root.querySelector('#' + CSS.escape(panelId)) : null;
+                        var ico = btn.querySelector('[data-bina-faq-ico="<?php echo esc_js($wid); ?>"]');
+                        if (!panel) return;
+
+                        // Normalize initial state: if open -> auto, else -> 0px
+                        var isOpen = btn.getAttribute('aria-expanded') === 'true';
+                        panel.style.transition = 'height 240ms ease';
+                        panel.style.height = isOpen ? 'auto' : '0px';
+
+                        btn.addEventListener('click', function () {
+                            var openNow = btn.getAttribute('aria-expanded') === 'true';
+                            if (openNow) {
+                                setOpen(btn, panel, ico, false);
+                                return;
+                            }
+                            // close others
+                            btns.forEach(function (b2) {
+                                if (b2 === btn) return;
+                                var pid2 = b2.getAttribute('aria-controls') || '';
+                                var p2 = pid2 ? root.querySelector('#' + CSS.escape(pid2)) : null;
+                                var i2 = b2.querySelector('[data-bina-faq-ico="<?php echo esc_js($wid); ?>"]');
+                                if (p2) setOpen(b2, p2, i2, false);
+                            });
+                            setOpen(btn, panel, ico, true);
+                        });
+                    });
+                })();
+                </script>
 
         <?php
     }

@@ -100,9 +100,26 @@ jQuery(function ($) {
         // init
         applyTheme(getInitialTheme());
 
+        let tHandle = null;
+        function withThemeTransition() {
+            try {
+                if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    return;
+                }
+            } catch (_) { }
+            try {
+                $html.addClass('bina-theme-transition');
+                if (tHandle) clearTimeout(tHandle);
+                tHandle = setTimeout(function () {
+                    $html.removeClass('bina-theme-transition');
+                }, 260);
+            } catch (_) { }
+        }
+
         $toggle.on('click', function () {
             const nowDark = !$html.hasClass('dark');
             const next = nowDark ? 'dark' : 'light';
+            withThemeTransition();
             applyTheme(next);
             try { localStorage.setItem(STORAGE_KEY, next); } catch (_) { }
         });

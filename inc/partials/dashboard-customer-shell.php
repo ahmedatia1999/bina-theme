@@ -146,25 +146,14 @@ function bina_render_customer_portal_shell_start( $args ) {
 		</div>
 	</div>
 	<main class="relative flex flex-1 min-h-0 min-w-0 w-full flex-col bg-background md:rounded-s-2xl md:ms-0 md:shadow-sm border border-border/60 overflow-hidden">
-		<header class="sticky top-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between gap-2 border-b border-border/70 bg-background/90 px-3 sm:px-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
+		<header class="sticky top-0 z-20 relative flex h-14 sm:h-16 shrink-0 items-center justify-between gap-2 border-b border-border/70 bg-background/90 px-3 sm:px-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
 			<div class="flex items-center gap-2 min-w-0">
 				<button type="button" data-bina-dashboard-sidebar-trigger class="inline-flex md:hidden items-center justify-center rounded-lg text-sm font-medium transition-colors hover:bg-muted size-9 shrink-0 border border-border/80" aria-label="<?php esc_attr_e( 'القائمة', 'bina' ); ?>">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg>
 				</button>
 				<span class="text-sm font-medium text-muted-foreground truncate hidden sm:inline"><?php esc_html_e( 'بوابة العميل', 'bina' ); ?></span>
 			</div>
-			<div class="flex items-center gap-2 shrink-0">
-				<a class="relative inline-flex items-center justify-center rounded-lg text-sm font-medium border border-border/80 bg-card shadow-sm hover:bg-accent hover:text-accent-foreground size-9 transition-colors" href="<?php echo esc_url( $urls['notifications'] ); ?>" aria-label="<?php esc_attr_e( 'الإشعارات', 'bina' ); ?>">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5"><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path><path d="M9 17v1a3 3 0 0 0 6 0v-1"></path></svg>
-					<?php
-					$initial_unread = ! empty( $stats['notifications_unread'] ) ? (int) $stats['notifications_unread'] : 0;
-					?>
-					<span
-						data-bina-unread-notifications-bell
-						class="absolute bottom-0.5 end-0.5 min-w-[1rem] h-4 px-1 rounded-full bg-destructive text-[10px] text-white flex items-center justify-center font-medium <?php echo $initial_unread > 0 ? '' : 'hidden'; ?>"
-					><?php echo (int) $initial_unread; ?></span>
-				</a>
-			</div>
+			<?php include get_template_directory() . '/inc/partials/dashboard-top-mini-header.php'; ?>
 		</header>
 		<div class="bina-portal-main-scroll flex-1 overflow-y-auto overflow-x-hidden">
 			<div class="mx-auto w-full max-w-6xl min-w-0 px-3 sm:px-6 py-6 sm:py-8 space-y-6">

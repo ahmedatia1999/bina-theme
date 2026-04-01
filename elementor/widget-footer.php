@@ -340,7 +340,7 @@ class bina_Footer_Widget extends Widget_Base {
 
             <footer class="bg-secondary text-secondary-foreground relative z-20 content-visibility-auto">
                 <div class="container-custom section-padding">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-8 lg:gap-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-8 lg:gap-12" style="display: flex; justify-content: space-between;">
                         <div class="lg:col-span-3 space-y-4">
                             <div class="flex items-center gap-2.5 [&_span]:text-white"><img src="<?php echo esc_url($logo_url); ?>"
                                     alt="<?php echo esc_attr($settings['logo_alt'] ?? ''); ?>" class="h-20 w-auto">

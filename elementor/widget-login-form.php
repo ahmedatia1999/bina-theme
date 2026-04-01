@@ -14,10 +14,10 @@ class bina_Login_Form_Widget extends Widget_Base {
     protected function _register_controls() {
         $this->start_controls_section('sec_content', ['label' => __('Content', 'bina')]);
         $this->add_control('title', ['label' => __('Title', 'bina'), 'type' => Controls_Manager::TEXT, 'default' => 'مرحباً بعودتك']);
-        $this->add_control('desc', ['label' => __('Description', 'bina'), 'type' => Controls_Manager::TEXT, 'default' => 'قم بتسجيل الدخول إلى حسابك في بناء سنتر']);
+        $this->add_control('desc', ['label' => __('Description', 'bina'), 'type' => Controls_Manager::TEXT, 'default' => 'قم بتسجيل الدخول إلى حسابك في بناء ']);
         $this->add_control('forgot_url', ['label' => __('Forgot Password URL', 'bina'), 'type' => Controls_Manager::URL, 'default' => ['url' => '/forgot-password']]);
         $this->add_control('register_url', ['label' => __('Register URL', 'bina'), 'type' => Controls_Manager::URL, 'default' => ['url' => '/register']]);
-        $this->add_control('terms_url', ['label' => __('Terms URL', 'bina'), 'type' => Controls_Manager::URL, 'default' => ['url' => '/terms-and-condition/']]);
+        $this->add_control('terms_url', ['label' => __('Terms URL', 'bina'), 'type' => Controls_Manager::URL, 'default' => ['url' => '/terms-conditions/']]);
         $this->add_control('privacy_url', ['label' => __('Privacy URL', 'bina'), 'type' => Controls_Manager::URL, 'default' => ['url' => '/privacy-policy/']]);
         $this->add_control('hero_image', [
             'label' => __('Side Image', 'bina'),
@@ -35,9 +35,9 @@ class bina_Login_Form_Widget extends Widget_Base {
         <div class="relative min-h-svh bina-login-widget">
             <header class="absolute top-0 left-0 right-0 z-10 flex h-16 shrink-0 items-center justify-end px-4 md:px-6">
                 <div class="flex items-center gap-3">
-                    <button data-slot="dropdown-menu-trigger" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[&gt;svg]:px-3" type="button" aria-haspopup="menu" aria-expanded="false" data-state="closed">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-languages h-4 w-4"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg>
-                    </button>
+                    <a href="<?php echo esc_url( function_exists('bina_trp_toggle_url') ? bina_trp_toggle_url() : home_url('/') ); ?>" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-3 py-2">
+                        <span class="text-xs font-semibold"><?php echo esc_html( function_exists('bina_trp_toggle_label') ? bina_trp_toggle_label() : 'EN' ); ?></span>
+                    </a>
                     <button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9 relative overflow-hidden transition-all" aria-label="Switch to light theme" type="button" style="padding: 5px !important;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon h-[1.2rem] w-[1.2rem]"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
                     </button>
@@ -74,7 +74,7 @@ class bina_Login_Form_Widget extends Widget_Base {
                                             <div role="group" data-slot="field" class="group/field flex w-full gap-3 flex-col">
                                                 <button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 w-full" type="submit">تسجيل الدخول</button>
                                             </div>
-                                            <p class="text-muted-foreground text-sm text-center">ليس لديك حساب؟ <a href="<?php echo esc_url($s['register_url']['url'] ?? '#'); ?>">سجل الآن</a></p>
+                                            <p class="text-muted-foreground text-sm text-center">ليس لديك حساب؟ <a class="text-primary" href="<?php echo esc_url($s['register_url']['url'] ?? '#'); ?>">سجل الآن</a></p>
                                         </div>
                                     </form>
                                     <div class="bg-muted relative hidden md:block">
@@ -84,9 +84,9 @@ class bina_Login_Form_Widget extends Widget_Base {
                             </div>
                             <p class="text-muted-foreground text-sm px-6 text-center">
                                 بالنقر على متابعة، أنت توافق على
-                                <a href="<?php echo esc_url($s['terms_url']['url'] ?? '#'); ?>">شروط الخدمة</a>
+                                <a class="text-primary" href="<?php echo esc_url($s['terms_url']['url'] ?? '#'); ?>">شروط الخدمة</a>
                                 و
-                                <a href="<?php echo esc_url($s['privacy_url']['url'] ?? '#'); ?>">سياسة الخصوصية</a>.
+                                <a class="text-primary" href="<?php echo esc_url($s['privacy_url']['url'] ?? '#'); ?>">سياسة الخصوصية</a>.
                             </p>
                         </div>
                     </div>

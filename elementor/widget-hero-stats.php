@@ -81,11 +81,36 @@ class bina_Hero_Stats_Widget extends Widget_Base {
         );
 
         $this->add_control(
+            'primary_button_url',
+            [
+                'label' => __('Primary Button Link', 'bina'),
+                'type' => Controls_Manager::URL,
+                'placeholder' => '/customer-create-project',
+                'default' => [
+                    'url' => '/customer-create-project',
+                ],
+            ]
+        );
+
+        $this->add_control(
             'secondary_button_text',
             [
                 'label' => __('Secondary Button Text', 'bina'),
                 'type' => Controls_Manager::TEXT,
                 'default' => __('تواصل معنا', 'bina'),
+            ]
+        );
+
+        $this->add_control(
+            'secondary_button_url',
+            [
+                'label' => __('Secondary Button Link', 'bina'),
+                'type' => Controls_Manager::URL,
+                'placeholder' => 'https://wa.me/966590000474',
+                'default' => [
+                    'url' => 'https://wa.me/966590000474',
+                    'is_external' => true,
+                ],
             ]
         );
 
@@ -139,6 +164,18 @@ class bina_Hero_Stats_Widget extends Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $stats = $settings['stats'] ?? [];
+
+        $primary_href = $settings['primary_button_url']['url'] ?? '';
+        $primary_href = function_exists('bina_dashboard_resolve_url') ? bina_dashboard_resolve_url($primary_href) : $primary_href;
+        $primary_href = $primary_href ? esc_url($primary_href) : '#';
+        $primary_target = !empty($settings['primary_button_url']['is_external']) ? ' target="_blank"' : '';
+        $primary_rel = !empty($settings['primary_button_url']['is_external']) ? ' rel="noopener noreferrer"' : '';
+
+        $secondary_href = $settings['secondary_button_url']['url'] ?? '';
+        $secondary_href = function_exists('bina_dashboard_resolve_url') ? bina_dashboard_resolve_url($secondary_href) : $secondary_href;
+        $secondary_href = $secondary_href ? esc_url($secondary_href) : '#';
+        $secondary_target = !empty($settings['secondary_button_url']['is_external']) ? ' target="_blank"' : '';
+        $secondary_rel = !empty($settings['secondary_button_url']['is_external']) ? ' rel="noopener noreferrer"' : '';
         ?>
 
                 <section class="relative py-8 md:py-12 lg:py-16 overflow-hidden bg-background">
@@ -396,21 +433,29 @@ class bina_Hero_Stats_Widget extends Widget_Base {
                                 </p>
                             </div>
                             <div class="" style="opacity: 1; transform: none;">
-                                <div class="flex flex-wrap gap-3 md:gap-4 justify-center"><button
-                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-11 rounded-md px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg group"><?php echo esc_html($settings['primary_button_text'] ?? ''); ?><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                <div class="flex flex-wrap gap-3 md:gap-4 justify-center">
+                                    <a href="<?php echo $primary_href; ?>"<?php echo $primary_target; ?><?php echo $primary_rel; ?>
+                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-11 rounded-md px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg group">
+                                        <?php echo esc_html($settings['primary_button_text'] ?? ''); ?>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
                                             class="lucide lucide-arrow-left w-5 h-5 group-hover:-translate-x-1 transition-transform">
                                             <path d="m12 19-7-7 7-7"></path>
                                             <path d="M19 12H5"></path>
-                                        </svg></button><button
-                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-11 rounded-md px-8 border-green-600 text-green-600 hover:bg-green-600 hover:text-white"><svg
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        </svg>
+                                    </a>
+                                    <a href="<?php echo $secondary_href; ?>"<?php echo $secondary_target; ?><?php echo $secondary_rel; ?>
+                                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-11 rounded-md px-8 border-green-600 text-green-600 hover:bg-green-600 hover:text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
                                             class="lucide lucide-message-circle w-5 h-5">
                                             <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                                        </svg><?php echo esc_html($settings['secondary_button_text'] ?? ''); ?></button></div>
+                                        </svg>
+                                        <?php echo esc_html($settings['secondary_button_text'] ?? ''); ?>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="mt-8 md:mt-12 lg:mt-16 px-2">

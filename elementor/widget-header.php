@@ -197,7 +197,7 @@ class bina_Header_Widget extends Widget_Base {
         $mobile_add_link = $settings['mobile_add_url']['url'] ?? '#';
         ?>
 
-        <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-4">
+        <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
             <div class="container-custom">
                 <nav class="flex items-center justify-between">
                     <a class="relative z-10" href="<?php echo esc_url($logo_link); ?>">
@@ -216,14 +216,14 @@ class bina_Header_Widget extends Widget_Base {
                     </div>
 
                     <div class="flex items-center gap-2 md:gap-3">
-                        <button class="flex items-center gap-1.5 px-2 md:px-3 py-2 rounded-lg transition-all hover:bg-muted text-foreground">
+                        <a href="<?php echo esc_url( function_exists('bina_trp_toggle_url') ? bina_trp_toggle_url() : home_url('/') ); ?>" class="flex items-center gap-1.5 px-2 md:px-3 py-2 rounded-lg transition-all hover:bg-muted text-foreground">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe w-4 h-4">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
                                 <path d="M2 12h20"></path>
                             </svg>
-                            <span class="text-sm font-medium"><?php echo esc_html($settings['lang_button_text']); ?></span>
-                        </button>
+                            <span class="text-sm font-medium"><?php echo esc_html( function_exists('bina_trp_toggle_label') ? bina_trp_toggle_label() : ($settings['lang_button_text'] ?? 'EN') ); ?></span>
+                        </a>
 
                         <div class="hidden lg:block">
                             <a href="<?php echo esc_url($login_link); ?>"

@@ -125,7 +125,7 @@ class bina_Bina_Materials_Steps_Cards_Widget extends Widget_Base {
 						$tx  = isset( $st['text'] ) ? (string) $st['text'] : '';
 						?>
 						<div>
-							<div class="bg-card rounded-2xl p-6 shadow-card border border-border/50 relative">
+							<div class="bg-card rounded-2xl p-8 shadow-card border border-border/50 relative">
 								<div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg"><?php echo esc_html( $num ); ?></div>
 								<div class="pt-8">
 									<h3 class="text-lg font-bold text-secondary mb-2"><?php echo esc_html( $h ); ?></h3>

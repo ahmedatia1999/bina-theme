@@ -18,6 +18,81 @@
     // hide language selector on login page
     add_filter('login_display_language_dropdown', '__return_false');
 
+    /**
+     * TranslatePress: quick toggle between default AR and EN.
+     * Assumes default language is Arabic (no prefix) and English is served under /en/.
+     */
+    function bina_trp_current_lang() {
+        $uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+        $path = wp_parse_url($uri, PHP_URL_PATH);
+        $path = is_string($path) ? $path : '';
+        return (strpos($path, '/en/') === 0 || $path === '/en') ? 'en' : 'ar';
+    }
+
+    function bina_trp_toggle_lang() {
+        return bina_trp_current_lang() === 'en' ? 'ar' : 'en';
+    }
+
+    function bina_trp_toggle_label() {
+        return strtoupper(bina_trp_toggle_lang());
+    }
+
+    function bina_trp_toggle_url() {
+        // Follow the proven approach: use ?lang=xx then redirect in template_redirect.
+        $scheme = is_ssl() ? 'https' : 'http';
+        $host = isset($_SERVER['HTTP_HOST']) ? (string) $_SERVER['HTTP_HOST'] : '';
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '/';
+        $current_url = $host !== '' ? ($scheme . '://' . $host . $request_uri) : home_url($request_uri);
+
+        return add_query_arg('lang', bina_trp_toggle_lang(), $current_url);
+    }
+
+    /**
+     * TranslatePress language toggle redirect (bina):
+     * - Arabic is default: https://bina.meawal.sa/<path>
+     * - English is prefixed: https://bina.meawal.sa/en/<path>
+     *
+     * Triggered via links like ?lang=en or ?lang=ar (see bina_trp_toggle_url()).
+     */
+    function bina_redirect_lang_param_for_translatepress() {
+        if (empty($_GET['lang'])) return;
+
+        $lang = sanitize_text_field(wp_unslash($_GET['lang']));
+        if ($lang !== 'en' && $lang !== 'ar') return;
+
+        $scheme = is_ssl() ? 'https' : 'http';
+        $host = isset($_SERVER['HTTP_HOST']) ? (string) $_SERVER['HTTP_HOST'] : '';
+        if ($host === '') return;
+
+        $uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '/';
+        $path = wp_parse_url($uri, PHP_URL_PATH);
+        $path = is_string($path) && $path !== '' ? $path : '/';
+
+        // Strip existing /en prefix from current path, then re-apply based on desired $lang.
+        if ($path === '/en') $path = '/';
+        if (strpos($path, '/en/') === 0) {
+            $path = substr($path, 3);
+            if ($path === '') $path = '/';
+        }
+
+        if ($lang === 'en') {
+            $path = '/en' . ($path === '/' ? '' : $path);
+        }
+
+        // Preserve other query args (except lang).
+        $args = $_GET;
+        unset($args['lang']);
+
+        $dest = $scheme . '://' . $host . $path;
+        if (!empty($args)) {
+            $dest = add_query_arg($args, $dest);
+        }
+
+        wp_safe_redirect($dest, 302);
+        exit;
+    }
+    add_action('template_redirect', 'bina_redirect_lang_param_for_translatepress', 0);
+
     require THEME_DIR . '/inc/transparent-header-option.php';
 
     function bina_sidebars() {

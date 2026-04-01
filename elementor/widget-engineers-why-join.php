@@ -55,16 +55,6 @@ class bina_Engineers_Why_Join_Widget extends Widget_Base {
             'type' => Controls_Manager::ICONS,
             'default' => ['value' => 'fas fa-briefcase', 'library' => 'fa-solid'],
         ]);
-        $repeater->add_control('icon_wrap_class', [
-            'label' => __('Icon Background Class', 'bina'),
-            'type' => Controls_Manager::TEXT,
-            'default' => 'bg-primary/15',
-        ]);
-        $repeater->add_control('icon_class', [
-            'label' => __('Icon Color Class', 'bina'),
-            'type' => Controls_Manager::TEXT,
-            'default' => 'text-primary',
-        ]);
         $repeater->add_control('icon_rotate', [
             'label' => __('Icon Rotate (deg)', 'bina'),
             'type' => Controls_Manager::TEXT,
@@ -89,40 +79,30 @@ class bina_Engineers_Why_Join_Widget extends Widget_Base {
             'default' => [
                 [
                     'icon' => ['value' => 'fas fa-briefcase', 'library' => 'fa-solid'],
-                    'icon_wrap_class' => 'bg-primary/15',
-                    'icon_class' => 'text-primary',
                     'icon_rotate' => '-2.80511',
                     'title' => 'مشاريع جاهزة وليست افتراضية',
                     'text' => 'تصلك مشاريع حقيقية من عملاء جادين يبحثون عن تنفيذ فعلي — لا إعلانات وهمية',
                 ],
                 [
                     'icon' => ['value' => 'fas fa-dollar-sign', 'library' => 'fa-solid'],
-                    'icon_wrap_class' => 'bg-white-500/15',
-                    'icon_class' => 'text-green-600',
                     'icon_rotate' => '-4.40803',
                     'title' => 'دخل إضافي بجانب عملك',
                     'text' => 'اربح عمولة على كل مشروع تُغلقه دون الحاجة لترك وظيفتك الأساسية',
                 ],
                 [
                     'icon' => ['value' => 'fas fa-network-wired', 'library' => 'fa-solid'],
-                    'icon_wrap_class' => 'bg-accent/15',
-                    'icon_class' => 'text-accent-foreground',
                     'icon_rotate' => '-4.99804',
                     'title' => 'توسّع شبكتك المهنية',
                     'text' => 'تواصل مع مقاولين وعملاء ومهندسين آخرين وابنِ علاقات مهنية قوية',
                 ],
                 [
                     'icon' => ['value' => 'fas fa-award', 'library' => 'fa-solid'],
-                    'icon_wrap_class' => 'bg-amber-500/15',
-                    'icon_class' => 'text-amber-600',
                     'icon_rotate' => '-4.09271',
                     'title' => 'عزّز سمعتك كمستشار موثوق',
                     'text' => 'كل مشروع ناجح يضيف لسجلك المهني ويعزز مكانتك في السوق',
                 ],
                 [
                     'icon' => ['value' => 'fas fa-shield-halved', 'library' => 'fa-solid'],
-                    'icon_wrap_class' => 'bg-purple-500/15',
-                    'icon_class' => 'text-purple-600',
                     'icon_rotate' => '-1.10152',
                     'title' => 'لا مسؤولية تعاقدية مباشرة',
                     'text' => 'المنصة أداة ربط فقط — لا تتحمل مسؤولية تنفيذ المشروع أو العقود مع المقاولين',
@@ -151,12 +131,12 @@ class bina_Engineers_Why_Join_Widget extends Widget_Base {
                     <?php foreach ($items as $item): ?>
                         <div class="" style="opacity: 1; transform: none;">
                             <div class="bg-card rounded-2xl p-6 shadow-card border border-border/50 h-full group" style="transform: none;">
-                                <div class="w-14 h-14 rounded-xl <?php echo esc_attr($item['icon_wrap_class'] ?? 'bg-primary/15'); ?> flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
+                                <div class="w-14 h-14 rounded-xl bg-muted/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
                                      style="transform: rotate(<?php echo esc_attr($item['icon_rotate'] ?? '-2.80511'); ?>deg);">
-                                    <span class="w-7 h-7 <?php echo esc_attr($item['icon_class'] ?? 'text-primary'); ?> block">
+                                    <span class="w-7 h-7 text-black block">
                                         <?php
                                         if (!empty($item['icon'])) {
-                                            Icons_Manager::render_icon($item['icon'], ['aria-hidden' => 'true', 'class' => 'w-7 h-7']);
+                                            Icons_Manager::render_icon($item['icon'], ['aria-hidden' => 'true', 'class' => 'w-7 h-7 text-black']);
                                         }
                                         ?>
                                     </span>
