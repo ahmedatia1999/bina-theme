@@ -23,8 +23,11 @@
       if (!item) return;
       const proposalId = item.getAttribute("data-proposal-id") || "";
       const msg = item.querySelector("[data-bina-proposal-action-msg]");
-      if (msg) msg.textContent = "جارٍ التنفيذ...";
+      if (btn.dataset.loading === "1") return;
+      btn.dataset.loading = "1";
+      if (msg) msg.textContent = "جارٍ قبول العرض...";
       btn.disabled = true;
+      btn.textContent = "جارٍ القبول...";
 
       try {
         const json = await post(ajaxUrl, {
@@ -35,23 +38,25 @@
         if (!json.success) {
           throw new Error((json.data && json.data.message) || "تعذر قبول العرض.");
         }
-        if (msg) msg.textContent = "";
-        btn.remove();
-        const ok = document.createElement("div");
-        ok.className = "text-sm text-emerald-700 font-medium";
-        ok.textContent = "تم قبول العرض";
-        item.appendChild(ok);
+        if (msg) msg.textContent = "تم قبول العرض، جارٍ تحديث الحالة...";
 
-        // Disable/hide other accept buttons (project is locked after acceptance).
+        // Keep loading state until refreshed with server-confirmed status.
         root.querySelectorAll("[data-bina-accept-proposal]").forEach((b) => {
           b.disabled = true;
+          b.dataset.loading = "1";
           b.classList.add("opacity-60", "cursor-not-allowed");
+          b.textContent = "جارٍ القبول...";
         });
 
-        window.setTimeout(() => window.location.reload(), 900);
+        const u = new URL(window.location.href);
+        u.searchParams.set("_", String(Date.now()));
+        window.location.replace(u.toString());
+        return;
       } catch (err) {
         if (msg) msg.textContent = (err && err.message) || "تعذر قبول العرض.";
+        btn.dataset.loading = "0";
         btn.disabled = false;
+        btn.textContent = "قبول العرض";
       }
     });
   }

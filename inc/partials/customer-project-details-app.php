@@ -171,6 +171,9 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 					$days        = isset( $row['duration_days'] ) ? (int) $row['duration_days'] : 0;
 					$plan_key    = isset( $row['plan_key'] ) ? (string) $row['plan_key'] : 'pay_at_completion';
 					$plan_label  = isset( $plan_labels[ $plan_key ] ) ? $plan_labels[ $plan_key ] : $plan_key;
+					$plan_meta_raw = isset( $row['plan_meta'] ) ? (string) $row['plan_meta'] : '';
+					$plan_meta     = json_decode( $plan_meta_raw, true );
+					$plan_items    = ( is_array( $plan_meta ) && ! empty( $plan_meta['items'] ) && is_array( $plan_meta['items'] ) ) ? $plan_meta['items'] : array();
 					$message     = isset( $row['message'] ) ? (string) $row['message'] : '';
 					?>
 					<li class="rounded-lg border border-border/70 p-4 space-y-2" data-bina-proposal-item data-proposal-id="<?php echo esc_attr( (string) $proposal_id ); ?>">
@@ -185,6 +188,29 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 						</div>
 						<?php if ( $message !== '' ) : ?>
 							<p class="text-muted-foreground"><?php echo esc_html( $message ); ?></p>
+						<?php endif; ?>
+						<?php if ( ! empty( $plan_items ) ) : ?>
+							<div class="rounded-md border border-border/60 bg-background/60 p-3 space-y-2">
+								<div class="text-xs font-medium"><?php esc_html_e( 'تفاصيل الدفعات', 'bina' ); ?></div>
+								<ul class="space-y-2">
+									<?php foreach ( $plan_items as $item ) : ?>
+										<?php
+										$it_title = isset( $item['title'] ) ? (string) $item['title'] : '';
+										$it_amount = isset( $item['amount'] ) ? (float) $item['amount'] : 0;
+										$it_desc = isset( $item['description'] ) ? (string) $item['description'] : '';
+										?>
+										<li class="rounded-md border border-border/50 bg-card p-2">
+											<div class="flex flex-wrap items-center justify-between gap-2">
+												<span class="text-xs font-medium"><?php echo esc_html( $it_title !== '' ? $it_title : __( 'دفعة', 'bina' ) ); ?></span>
+												<span class="text-xs text-muted-foreground"><?php echo esc_html( number_format_i18n( $it_amount, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></span>
+											</div>
+											<?php if ( $it_desc !== '' ) : ?>
+												<p class="text-xs text-muted-foreground mt-1"><?php echo esc_html( $it_desc ); ?></p>
+											<?php endif; ?>
+										</li>
+									<?php endforeach; ?>
+								</ul>
+							</div>
 						<?php endif; ?>
 						<?php if ( $status === 'pending' ) : ?>
 							<div class="flex items-center gap-3">

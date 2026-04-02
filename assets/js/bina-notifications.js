@@ -27,7 +27,7 @@
     const base = projectDetailBaseUrl || "";
     if (!base) return chatUrlForProject(pid);
     const sep = base.indexOf("?") > -1 ? "&" : "?";
-    return base + sep + "project_id=" + pid;
+    return base + sep + "project_id=" + pid + "&_r=" + Date.now();
   }
 
   function urlForNotification(n) {

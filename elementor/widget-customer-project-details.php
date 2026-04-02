@@ -69,6 +69,11 @@ class bina_Customer_Project_Details_Widget extends Widget_Base {
 			return;
 		}
 
+		// Project details contain frequently changing offer status; avoid serving stale cached HTML.
+		if ( ! headers_sent() ) {
+			nocache_headers();
+		}
+
 		$user = wp_get_current_user();
 		if ( ! bina_user_is_customer( $user ) ) {
 			echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'هذه الصفحة للعملاء فقط.', 'bina' ) . '</p>';
