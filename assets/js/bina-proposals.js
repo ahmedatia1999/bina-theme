@@ -249,17 +249,24 @@
         }
 
         form.dataset.submitted = "1";
-        if (msg) msg.textContent = (json.data && json.data.message) || "تم إرسال العرض.";
-        form.classList.add("hidden");
-        const openBtn = card.querySelector("[data-bina-proposal-open]");
-        const sentEl = card.querySelector("[data-bina-proposal-sent]");
-        if (openBtn) openBtn.classList.add("hidden");
-        if (sentEl) sentEl.classList.remove("hidden");
+        if (msg) msg.textContent = "تم إرسال العرض بنجاح، جارٍ تحديث الحالة...";
+        if (submit) {
+          submit.disabled = true;
+          submit.textContent = "جارٍ التحديث...";
+        }
+
+        // Keep loading until server-confirmed state is reflected after refresh.
+        const u = new URL(window.location.href);
+        u.searchParams.set("_", String(Date.now()));
+        window.location.replace(u.toString());
+        return;
       } catch (err) {
         if (msg) msg.textContent = err && err.message ? err.message : "تعذر إرسال العرض.";
       } finally {
-        form.dataset.submitting = "0";
-        if (submit && form.dataset.submitted !== "1") submit.disabled = false;
+        if (form.dataset.submitted !== "1") {
+          form.dataset.submitting = "0";
+          if (submit) submit.disabled = false;
+        }
       }
     });
 

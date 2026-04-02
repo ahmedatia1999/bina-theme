@@ -53,7 +53,7 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 >
 	<a class="inline-flex items-center gap-2 text-sm font-medium hover:bg-accent rounded-md px-1 py-2 mb-2" href="<?php echo esc_url( $list_url ); ?>">
 		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" style="transform:rotate(180deg)"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
-		<?php esc_html_e( 'Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù…Ø´Ø§Ø±ÙŠØ¹', 'bina' ); ?>
+		<?php esc_html_e( 'جميع المشاريع', 'bina' ); ?>
 	</a>
 
 	<div class="flex flex-wrap items-center gap-2">
@@ -68,12 +68,12 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 		<div class="flex items-center gap-2">
 			<?php if ( ! empty( $edit_url ) ) : ?>
 				<a class="inline-flex items-center justify-center gap-2 rounded-md border bg-background px-4 py-2 text-sm font-medium hover:bg-accent" href="<?php echo esc_url( $edit_url ); ?>">
-					<?php esc_html_e( 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹', 'bina' ); ?>
+					<?php esc_html_e( 'تعديل المشروع', 'bina' ); ?>
 				</a>
 			<?php endif; ?>
 			<?php if ( current_user_can( 'delete_post', $post->ID ) ) : ?>
 				<button type="button" class="inline-flex items-center justify-center gap-2 rounded-md border border-destructive/40 bg-background px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10" data-bina-delete-project>
-					<?php esc_html_e( 'Ø­Ø°Ù Ø§Ù„Ù…Ø´Ø±ÙˆØ¹', 'bina' ); ?>
+					<?php esc_html_e( 'حذف المشروع', 'bina' ); ?>
 				</button>
 			<?php endif; ?>
 		</div>
@@ -84,33 +84,33 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 	</div>
 
 	<div class="bg-card rounded-xl border p-6 space-y-4 text-sm">
-		<h2 class="font-semibold text-base"><?php esc_html_e( 'ØªÙØ§ØµÙŠÙ„ Ø¥Ø¶Ø§ÙÙŠØ©', 'bina' ); ?></h2>
+		<h2 class="font-semibold text-base"><?php esc_html_e( 'تفاصيل إضافية', 'bina' ); ?></h2>
 		<dl class="grid gap-3 sm:grid-cols-2">
 			<?php if ( $reminder !== '' ) : ?>
-				<div><dt class="text-muted-foreground"><?php esc_html_e( 'Ù…ÙˆØ¹Ø¯ Ø§Ù„ØªØ°ÙƒÙŠØ±', 'bina' ); ?></dt><dd><?php echo esc_html( $reminder ); ?></dd></div>
+				<div><dt class="text-muted-foreground"><?php esc_html_e( 'موعد التذكير', 'bina' ); ?></dt><dd><?php echo esc_html( $reminder ); ?></dd></div>
 			<?php endif; ?>
 			<?php if ( $city !== '' ) : ?>
-				<div><dt class="text-muted-foreground"><?php esc_html_e( 'Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©', 'bina' ); ?></dt><dd><?php echo esc_html( $city ); ?></dd></div>
+				<div><dt class="text-muted-foreground"><?php esc_html_e( 'المدينة', 'bina' ); ?></dt><dd><?php echo esc_html( $city ); ?></dd></div>
 			<?php endif; ?>
 			<?php if ( $neighborhood !== '' ) : ?>
-				<div><dt class="text-muted-foreground"><?php esc_html_e( 'Ø§Ù„Ø­ÙŠ', 'bina' ); ?></dt><dd><?php echo esc_html( $neighborhood ); ?></dd></div>
+				<div><dt class="text-muted-foreground"><?php esc_html_e( 'الحي', 'bina' ); ?></dt><dd><?php echo esc_html( $neighborhood ); ?></dd></div>
 			<?php endif; ?>
 			<?php if ( $street !== '' ) : ?>
-				<div><dt class="text-muted-foreground"><?php esc_html_e( 'Ø§Ù„Ø´Ø§Ø±Ø¹', 'bina' ); ?></dt><dd><?php echo esc_html( $street ); ?></dd></div>
+				<div><dt class="text-muted-foreground"><?php esc_html_e( 'الشارع', 'bina' ); ?></dt><dd><?php echo esc_html( $street ); ?></dd></div>
 			<?php endif; ?>
 			<?php if ( $start_timing !== '' ) : ?>
-				<div><dt class="text-muted-foreground"><?php esc_html_e( 'Ø§Ù„ØªÙˆÙ‚ÙŠØª Ø§Ù„Ù…ØªÙˆÙ‚Ø¹ Ù„Ù„Ø¨Ø¯Ø¡', 'bina' ); ?></dt><dd><?php echo esc_html( $start_timing ); ?></dd></div>
+				<div><dt class="text-muted-foreground"><?php esc_html_e( 'التوقيت المتوقع للبدء', 'bina' ); ?></dt><dd><?php echo esc_html( $start_timing ); ?></dd></div>
 			<?php endif; ?>
 			<?php if ( $has_plans !== '' ) : ?>
-				<div><dt class="text-muted-foreground"><?php esc_html_e( 'Ù…Ø®Ø·Ø·Ø§Øª Ù‡Ù†Ø¯Ø³ÙŠØ©', 'bina' ); ?></dt><dd><?php echo esc_html( $has_plans ); ?></dd></div>
+				<div><dt class="text-muted-foreground"><?php esc_html_e( 'مخططات هندسية', 'bina' ); ?></dt><dd><?php echo esc_html( $has_plans ); ?></dd></div>
 			<?php endif; ?>
 			<?php if ( $has_photos !== '' ) : ?>
-				<div><dt class="text-muted-foreground"><?php esc_html_e( 'ØµÙˆØ± Ù„Ù„Ù…ÙˆÙ‚Ø¹', 'bina' ); ?></dt><dd><?php echo esc_html( $has_photos ); ?></dd></div>
+				<div><dt class="text-muted-foreground"><?php esc_html_e( 'صور للموقع', 'bina' ); ?></dt><dd><?php echo esc_html( $has_photos ); ?></dd></div>
 			<?php endif; ?>
 		</dl>
 		<?php if ( ! empty( $plans_attachment_ids ) ) : ?>
 			<div class="mt-6 pt-4 border-t border-border/60">
-				<h3 class="text-sm font-semibold mb-3"><?php esc_html_e( 'Ù…Ø±ÙÙ‚Ø§Øª Ø§Ù„Ù…Ø®Ø·Ø·Ø§Øª', 'bina' ); ?></h3>
+				<h3 class="text-sm font-semibold mb-3"><?php esc_html_e( 'مرفقات المخططات', 'bina' ); ?></h3>
 				<ul class="flex flex-wrap gap-3">
 					<?php
 					foreach ( $plans_attachment_ids as $aid ) {
@@ -125,7 +125,7 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 						if ( $mime && strpos( $mime, 'image/' ) === 0 ) {
 							echo '<li class="rounded-lg border overflow-hidden max-w-[140px]">' . wp_get_attachment_image( $aid, 'medium', false, array( 'class' => 'w-full h-auto object-cover' ) ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						} else {
-							$title = get_the_title( $aid ) ? get_the_title( $aid ) : __( 'ØªØ­Ù…ÙŠÙ„', 'bina' );
+							$title = get_the_title( $aid ) ? get_the_title( $aid ) : __( 'تحميل', 'bina' );
 							echo '<li><a class="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted" href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $title ) . '</a></li>';
 						}
 					}
@@ -135,7 +135,7 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 		<?php endif; ?>
 		<?php if ( ! empty( $site_photos_attachment_ids ) ) : ?>
 			<div class="mt-6 pt-4 border-t border-border/60">
-				<h3 class="text-sm font-semibold mb-3"><?php esc_html_e( 'ØµÙˆØ± Ø§Ù„Ù…ÙˆÙ‚Ø¹ Ø§Ù„Ù…Ø±ÙÙˆØ¹Ø©', 'bina' ); ?></h3>
+				<h3 class="text-sm font-semibold mb-3"><?php esc_html_e( 'صور الموقع المرفوعة', 'bina' ); ?></h3>
 				<div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
 					<?php
 					foreach ( $site_photos_attachment_ids as $aid ) {
@@ -154,9 +154,9 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 	</div>
 
 	<div class="bg-card rounded-xl border p-6 space-y-4 text-sm">
-		<h2 class="font-semibold text-base"><?php esc_html_e( 'Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„Ù…Ù‚Ø¯Ù…Ø©', 'bina' ); ?></h2>
+		<h2 class="font-semibold text-base"><?php esc_html_e( 'العروض المقدمة', 'bina' ); ?></h2>
 		<?php if ( empty( $proposals ) ) : ?>
-			<p class="text-muted-foreground"><?php esc_html_e( 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¹Ø±ÙˆØ¶ Ø¹Ù„Ù‰ Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø­ØªÙ‰ Ø§Ù„Ø¢Ù†.', 'bina' ); ?></p>
+			<p class="text-muted-foreground"><?php esc_html_e( 'لا توجد عروض على هذا المشروع حتى الآن.', 'bina' ); ?></p>
 		<?php else : ?>
 			<ul class="space-y-3">
 				<?php foreach ( $proposals as $row ) : ?>
@@ -164,9 +164,9 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 					$proposal_id = isset( $row['id'] ) ? (int) $row['id'] : 0;
 					$provider_id = isset( $row['provider_id'] ) ? (int) $row['provider_id'] : 0;
 					$provider    = $provider_id > 0 ? get_userdata( $provider_id ) : null;
-					$provider_name = $provider ? (string) $provider->display_name : __( 'Ù…Ø²ÙˆØ¯ Ø®Ø¯Ù…Ø©', 'bina' );
+					$provider_name = $provider ? (string) $provider->display_name : __( 'مزود خدمة', 'bina' );
 					$status      = isset( $row['status'] ) ? (string) $row['status'] : 'pending';
-					$status_label = $status === 'accepted' ? __( 'Ù…Ù‚Ø¨ÙˆÙ„', 'bina' ) : ( $status === 'rejected' ? __( 'Ù…Ø±ÙÙˆØ¶', 'bina' ) : __( 'Ù‚ÙŠØ¯ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©', 'bina' ) );
+					$status_label = $status === 'accepted' ? __( 'مقبول', 'bina' ) : ( $status === 'rejected' ? __( 'مرفوض', 'bina' ) : __( 'قيد المراجعة', 'bina' ) );
 					$price       = isset( $row['price_total'] ) ? (float) $row['price_total'] : 0;
 					$days        = isset( $row['duration_days'] ) ? (int) $row['duration_days'] : 0;
 					$plan_key    = isset( $row['plan_key'] ) ? (string) $row['plan_key'] : 'pay_at_completion';
@@ -179,8 +179,8 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 							<span class="inline-flex rounded-md border px-2 py-0.5 text-xs"><?php echo esc_html( $status_label ); ?></span>
 						</div>
 						<div class="flex flex-wrap gap-2 text-xs text-muted-foreground">
-							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( number_format_i18n( $price, 2 ) ); ?> <?php esc_html_e( 'Ø±.Ø³', 'bina' ); ?></span>
-							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( (string) $days ); ?> <?php esc_html_e( 'ÙŠÙˆÙ…', 'bina' ); ?></span>
+							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( number_format_i18n( $price, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></span>
+							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( (string) $days ); ?> <?php esc_html_e( 'يوم', 'bina' ); ?></span>
 							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( $plan_label ); ?></span>
 						</div>
 						<?php if ( $message !== '' ) : ?>
@@ -189,13 +189,13 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 						<?php if ( $status === 'pending' ) : ?>
 							<div class="flex items-center gap-3">
 								<button type="button" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium" data-bina-accept-proposal>
-									<?php esc_html_e( 'Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø¹Ø±Ø¶', 'bina' ); ?>
+									<?php esc_html_e( 'قبول العرض', 'bina' ); ?>
 								</button>
 								<span class="text-xs text-muted-foreground" data-bina-proposal-action-msg></span>
 							</div>
 						<?php elseif ( $status === 'accepted' ) : ?>
 							<div class="text-sm text-emerald-700 font-medium" data-bina-proposal-accepted-text>
-								<?php esc_html_e( 'ØªÙ… Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø¹Ø±Ø¶', 'bina' ); ?>
+								<?php esc_html_e( 'تم قبول العرض', 'bina' ); ?>
 							</div>
 						<?php endif; ?>
 					</li>
@@ -206,8 +206,8 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 
 	<?php if ( $accepted_pid > 0 && ! empty( $milestones ) ) : ?>
 		<div class="bg-card rounded-xl border p-6 space-y-4 text-sm" data-bina-milestones data-ajaxurl="<?php echo esc_url( $ajaxurl ); ?>" data-nonce="<?php echo esc_attr( $milestones_nonce ); ?>">
-			<h2 class="font-semibold text-base"><?php esc_html_e( 'Ø§Ù„Ø¯ÙØ¹Ø§Øª (Milestones)', 'bina' ); ?></h2>
-			<p class="text-muted-foreground"><?php esc_html_e( 'Ù‚Ù… Ø¨ØªÙ…ÙˆÙŠÙ„ Ø§Ù„Ø¯ÙØ¹Ø©ØŒ Ø«Ù… Ø¨Ø¹Ø¯ ØªØ³Ù„ÙŠÙ…Ù‡Ø§ ÙŠÙ…ÙƒÙ†Ùƒ Ø§Ø¹ØªÙ…Ø§Ø¯Ù‡Ø§ Ù„ØªØ­ÙˆÙŠÙ„Ù‡Ø§ Ù„Ù…Ø²ÙˆØ¯ Ø§Ù„Ø®Ø¯Ù…Ø©.', 'bina' ); ?></p>
+			<h2 class="font-semibold text-base"><?php esc_html_e( 'الدفعات (Milestones)', 'bina' ); ?></h2>
+			<p class="text-muted-foreground"><?php esc_html_e( 'قم بتمويل الدفعة، ثم بعد تسليمها يمكنك اعتمادها لتحويلها لمزود الخدمة.', 'bina' ); ?></p>
 
 			<ul class="space-y-3">
 				<?php foreach ( $milestones as $ms ) : ?>
@@ -220,18 +220,18 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 					$ms_meta = isset( $ms['meta'] ) ? json_decode( (string) $ms['meta'], true ) : array();
 					$ms_description = is_array( $ms_meta ) && ! empty( $ms_meta['description'] ) ? (string) $ms_meta['description'] : '';
 					$st_l  = $st;
-					if ( $st === 'scheduled' ) { $st_l = __( 'Ù…Ø³ØªØ­Ù‚Ø©', 'bina' ); }
-					if ( $st === 'payment_requested' ) { $st_l = __( 'Ø¨Ø§Ù†ØªØ¸Ø§Ø± ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø£Ø¯Ù…Ù†', 'bina' ); }
-					if ( $st === 'funded' ) { $st_l = __( 'Ù…ÙÙ…ÙˆÙ‘Ù„Ø©', 'bina' ); }
-					if ( $st === 'submitted' ) { $st_l = __( 'ØªÙ… Ø§Ù„ØªØ³Ù„ÙŠÙ…', 'bina' ); }
-					if ( $st === 'approved' ) { $st_l = __( 'ØªÙ… Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯', 'bina' ); }
-					if ( $st === 'released' ) { $st_l = __( 'ØªÙ… Ø§Ù„ØªØ­ÙˆÙŠÙ„ Ù„Ù…Ø²ÙˆØ¯ Ø§Ù„Ø®Ø¯Ù…Ø©', 'bina' ); }
+					if ( $st === 'scheduled' ) { $st_l = __( 'مستحقة', 'bina' ); }
+					if ( $st === 'payment_requested' ) { $st_l = __( 'بانتظار تأكيد الأدمن', 'bina' ); }
+					if ( $st === 'funded' ) { $st_l = __( 'مموّلة', 'bina' ); }
+					if ( $st === 'submitted' ) { $st_l = __( 'تم التسليم', 'bina' ); }
+					if ( $st === 'approved' ) { $st_l = __( 'تم الاعتماد', 'bina' ); }
+					if ( $st === 'released' ) { $st_l = __( 'تم التحويل لمزود الخدمة', 'bina' ); }
 					?>
 					<li class="rounded-lg border border-border/70 p-4 space-y-2" data-bina-ms-row>
 						<div class="flex items-start justify-between gap-3">
 							<div class="min-w-0">
-								<div class="font-medium"><?php echo esc_html( $title !== '' ? $title : sprintf( __( 'Ø¯ÙØ¹Ø© %d', 'bina' ), $no ) ); ?></div>
-								<div class="text-xs text-muted-foreground tabular-nums mt-1"><?php echo esc_html( number_format_i18n( $amt, 2 ) ); ?> <?php esc_html_e( 'Ø±.Ø³', 'bina' ); ?></div>
+								<div class="font-medium"><?php echo esc_html( $title !== '' ? $title : sprintf( __( 'دفعة %d', 'bina' ), $no ) ); ?></div>
+								<div class="text-xs text-muted-foreground tabular-nums mt-1"><?php echo esc_html( number_format_i18n( $amt, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
 								<?php if ( $ms_description !== '' ) : ?>
 									<div class="text-xs text-muted-foreground mt-2"><?php echo esc_html( $ms_description ); ?></div>
 								<?php endif; ?>
@@ -244,24 +244,24 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 								<button type="button" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium"
 									data-bina-ms-action="request"
 									data-milestone-id="<?php echo esc_attr( (string) $mid ); ?>"
-									data-confirm="<?php echo esc_attr__( 'ØªØ£ÙƒÙŠØ¯: Ø¥Ø±Ø³Ø§Ù„ Ø·Ù„Ø¨ ØªÙ…ÙˆÙŠÙ„ Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙØ¹Ø©ØŸ', 'bina' ); ?>"
-								><?php esc_html_e( 'Ø·Ù„Ø¨ ØªÙ…ÙˆÙŠÙ„ Ø§Ù„Ø¯ÙØ¹Ø©', 'bina' ); ?></button>
+									data-confirm="<?php echo esc_attr__( 'تأكيد: إرسال طلب تمويل هذه الدفعة؟', 'bina' ); ?>"
+								><?php esc_html_e( 'طلب تمويل الدفعة', 'bina' ); ?></button>
 							<?php elseif ( $st === 'payment_requested' ) : ?>
 								<?php if ( current_user_can( 'manage_options' ) ) : ?>
 									<button type="button" class="inline-flex items-center justify-center rounded-md border bg-background shadow-xs hover:bg-accent h-9 px-4 text-sm font-medium"
 										data-bina-ms-action="fund"
 										data-milestone-id="<?php echo esc_attr( (string) $mid ); ?>"
-										data-confirm="<?php echo esc_attr__( 'ØªØ£ÙƒÙŠØ¯: ØªÙ… Ø§Ø³ØªÙ„Ø§Ù… Ø§Ù„Ø¯ÙØ¹Ø© Ù…Ù† Ø§Ù„Ø¹Ù…ÙŠÙ„ ÙˆØªØ£ÙƒÙŠØ¯ Ø§Ù„ØªÙ…ÙˆÙŠÙ„ØŸ', 'bina' ); ?>"
-									><?php esc_html_e( 'ØªØ£ÙƒÙŠØ¯ Ø§Ù„ØªÙ…ÙˆÙŠÙ„ (Ø£Ø¯Ù…Ù†)', 'bina' ); ?></button>
+										data-confirm="<?php echo esc_attr__( 'تأكيد: تم استلام الدفعة من العميل وتأكيد التمويل؟', 'bina' ); ?>"
+									><?php esc_html_e( 'تأكيد التمويل (أدمن)', 'bina' ); ?></button>
 								<?php else : ?>
-									<span class="text-xs text-muted-foreground"><?php esc_html_e( 'ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø·Ù„Ø¨ Ø§Ù„ØªÙ…ÙˆÙŠÙ„ØŒ ÙÙŠ Ø§Ù†ØªØ¸Ø§Ø± ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø£Ø¯Ù…Ù†.', 'bina' ); ?></span>
+									<span class="text-xs text-muted-foreground"><?php esc_html_e( 'تم إرسال طلب التمويل، في انتظار تأكيد الأدمن.', 'bina' ); ?></span>
 								<?php endif; ?>
 							<?php elseif ( $st === 'submitted' ) : ?>
 								<button type="button" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium"
 									data-bina-ms-action="approve"
 									data-milestone-id="<?php echo esc_attr( (string) $mid ); ?>"
-									data-confirm="<?php echo esc_attr__( 'Ø§Ø¹ØªÙ…Ø§Ø¯ Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙØ¹Ø© ÙˆØªØ­ÙˆÙŠÙ„Ù‡Ø§ Ù„Ù…Ø²ÙˆØ¯ Ø§Ù„Ø®Ø¯Ù…Ø©ØŸ', 'bina' ); ?>"
-								><?php esc_html_e( 'Ø§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ø¯ÙØ¹Ø©', 'bina' ); ?></button>
+									data-confirm="<?php echo esc_attr__( 'اعتماد هذه الدفعة وتحويلها لمزود الخدمة؟', 'bina' ); ?>"
+								><?php esc_html_e( 'اعتماد الدفعة', 'bina' ); ?></button>
 							<?php endif; ?>
 							<span class="text-xs text-muted-foreground" data-bina-ms-msg></span>
 						</div>

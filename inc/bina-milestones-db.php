@@ -115,7 +115,7 @@ function bina_milestone_update_status( $milestone_id, $new_status, $extra_cols =
 	$milestone_id = (int) $milestone_id;
 	$new_status   = sanitize_text_field( (string) $new_status );
 	if ( $milestone_id < 1 || $new_status === '' ) {
-		return new WP_Error( 'bina_ms_bad', __( 'Ø¨ÙŠØ§Ù†Ø§Øª ØºÙŠØ± ØµØ§Ù„Ø­Ø©.', 'bina' ) );
+		return new WP_Error( 'bina_ms_bad', __( 'بيانات غير صالحة.', 'bina' ) );
 	}
 	$now  = current_time( 'mysql' );
 	$data = array_merge(
@@ -129,7 +129,7 @@ function bina_milestone_update_status( $milestone_id, $new_status, $extra_cols =
 
 	$ok = $wpdb->update( $table, $data, $where ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 	if ( $ok === false ) {
-		return new WP_Error( 'bina_ms_db', __( 'ØªØ¹Ø°Ø± ØªØ­Ø¯ÙŠØ« Ø§Ù„Ø¯ÙØ¹Ø©.', 'bina' ) );
+		return new WP_Error( 'bina_ms_db', __( 'تعذر تحديث الدفعة.', 'bina' ) );
 	}
 	return true;
 }
@@ -204,7 +204,7 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 	$plan_meta    = isset( $proposal['plan_meta'] ) ? json_decode( (string) $proposal['plan_meta'], true ) : null;
 
 	if ( $project_id < 1 || $proposal_id < 1 || $provider_id < 1 ) {
-		return new WP_Error( 'bina_ms_bad', __( 'Ø¨ÙŠØ§Ù†Ø§Øª ØºÙŠØ± ØµØ§Ù„Ø­Ø© Ù„Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø¯ÙØ¹Ø§Øª.', 'bina' ) );
+		return new WP_Error( 'bina_ms_bad', __( 'بيانات غير صالحة لإنشاء الدفعات.', 'bina' ) );
 	}
 
 	if ( bina_milestones_count_for_project( $project_id ) > 0 ) {
@@ -221,7 +221,7 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 	if ( $plan_key === 'four_installments_equal' ) {
 		$n = 4;
 		for ( $i = 1; $i <= 4; $i++ ) {
-			$titles[] = sprintf( __( 'Ø¯ÙØ¹Ø© Ø±Ù‚Ù… %d', 'bina' ), $i );
+			$titles[] = sprintf( __( 'دفعة رقم %d', 'bina' ), $i );
 		}
 		$period_days = $duration > 0 ? max( 1, (int) ceil( $duration / 4 ) ) : 7;
 		for ( $i = 1; $i <= 4; $i++ ) {
@@ -230,14 +230,14 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 	} elseif ( $plan_key === 'eleven_months' ) {
 		$n = 11;
 		for ( $i = 1; $i <= 11; $i++ ) {
-			$titles[] = sprintf( __( 'Ø¯ÙØ¹Ø© Ø´Ù‡Ø± %d', 'bina' ), $i );
+			$titles[] = sprintf( __( 'دفعة شهر %d', 'bina' ), $i );
 		}
 		for ( $i = 1; $i <= 11; $i++ ) {
 			$due_ts[] = (int) strtotime( "+{$i} month", $now_ts );
 		}
 	} else {
 		$n        = 1;
-		$titles[] = __( 'Ø§Ù„Ø¯ÙØ¹ Ø¨Ø¹Ø¯ Ø§ÙƒØªÙ…Ø§Ù„ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹', 'bina' );
+		$titles[] = __( 'الدفع بعد اكتمال المشروع', 'bina' );
 		$due_ts[] = $duration > 0 ? ( $now_ts + ( $duration * DAY_IN_SECONDS ) ) : 0;
 	}
 
@@ -259,12 +259,12 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 	if ( count( $items ) !== $n ) {
 		$amounts = bina_milestones_split_amounts_equal( $total_amount, $n );
 		if ( count( $amounts ) !== $n ) {
-			return new WP_Error( 'bina_ms_amounts', __( 'ØªØ¹Ø°Ø± Ø­Ø³Ø§Ø¨ Ù…Ø¨Ø§Ù„Øº Ø§Ù„Ø¯ÙØ¹Ø§Øª.', 'bina' ) );
+			return new WP_Error( 'bina_ms_amounts', __( 'تعذر حساب مبالغ الدفعات.', 'bina' ) );
 		}
 		for ( $i = 1; $i <= $n; $i++ ) {
 			$items[] = array(
 				'no'          => $i,
-				'title'       => $titles[ $i - 1 ] ?? sprintf( __( 'Ø¯ÙØ¹Ø© Ø±Ù‚Ù… %d', 'bina' ), $i ),
+				'title'       => $titles[ $i - 1 ] ?? sprintf( __( 'دفعة رقم %d', 'bina' ), $i ),
 				'amount'      => (float) $amounts[ $i - 1 ],
 				'description' => '',
 			);
@@ -273,7 +273,7 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 
 	for ( $i = 1; $i <= $n; $i++ ) {
 		$item        = $items[ $i - 1 ] ?? array();
-		$title       = isset( $item['title'] ) && $item['title'] !== '' ? (string) $item['title'] : ( $titles[ $i - 1 ] ?? sprintf( __( 'Ø¯ÙØ¹Ø© Ø±Ù‚Ù… %d', 'bina' ), $i ) );
+		$title       = isset( $item['title'] ) && $item['title'] !== '' ? (string) $item['title'] : ( $titles[ $i - 1 ] ?? sprintf( __( 'دفعة رقم %d', 'bina' ), $i ) );
 		$amount      = isset( $item['amount'] ) ? round( (float) $item['amount'], 2 ) : 0.0;
 		$description = isset( $item['description'] ) ? (string) $item['description'] : '';
 		$due         = $due_ts[ $i - 1 ] ?? 0;
@@ -304,7 +304,7 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 			array( '%d', '%d', '%d', '%d', '%s', '%f', '%s', '%s', '%s', '%s', '%s' )
 		);
 		if ( ! $ok ) {
-			return new WP_Error( 'bina_ms_db', __( 'ØªØ¹Ø°Ø± Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø¯ÙØ¹Ø§Øª.', 'bina' ) );
+			return new WP_Error( 'bina_ms_db', __( 'تعذر إنشاء الدفعات.', 'bina' ) );
 		}
 	}
 

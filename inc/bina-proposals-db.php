@@ -153,13 +153,13 @@ function bina_proposal_upsert( $project_id, $provider_id, $price_total, $duratio
 	}
 
 	if ( $project_id < 1 || $provider_id < 1 ) {
-		return new WP_Error( 'bina_prop_bad', __( 'Ø¨ÙŠØ§Ù†Ø§Øª ØºÙŠØ± ØµØ§Ù„Ø­Ø©.', 'bina' ) );
+		return new WP_Error( 'bina_prop_bad', __( 'بيانات غير صالحة.', 'bina' ) );
 	}
 	if ( $message === '' ) {
-		return new WP_Error( 'bina_prop_empty', __( 'Ø±Ø³Ø§Ù„Ø© Ø§Ù„Ø¹Ø±Ø¶ Ù…Ø·Ù„ÙˆØ¨Ø©.', 'bina' ) );
+		return new WP_Error( 'bina_prop_empty', __( 'رسالة العرض مطلوبة.', 'bina' ) );
 	}
 	if ( $duration_days < 1 ) {
-		return new WP_Error( 'bina_prop_duration', __( 'Ù…Ø¯Ø© Ø§Ù„ØªÙ†ÙÙŠØ° Ù…Ø·Ù„ÙˆØ¨Ø©.', 'bina' ) );
+		return new WP_Error( 'bina_prop_duration', __( 'مدة التنفيذ مطلوبة.', 'bina' ) );
 	}
 	if ( $price_total < 0 ) {
 		$price_total = 0;
@@ -167,21 +167,21 @@ function bina_proposal_upsert( $project_id, $provider_id, $price_total, $duratio
 
 	$post = get_post( $project_id );
 	if ( ! $post || $post->post_type !== 'bina_project' ) {
-		return new WP_Error( 'bina_prop_project', __( 'Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ ØºÙŠØ± ØµØ§Ù„Ø­.', 'bina' ) );
+		return new WP_Error( 'bina_prop_project', __( 'المشروع غير صالح.', 'bina' ) );
 	}
 
 	if ( bina_project_is_market_locked( $project_id ) ) {
-		return new WP_Error( 'bina_prop_locked', __( 'Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ ØºÙŠØ± Ù…ØªØ§Ø­ Ù„Ù„ØªÙ‚Ø¯ÙŠÙ… Ø­Ø§Ù„ÙŠØ§Ù‹.', 'bina' ) );
+		return new WP_Error( 'bina_prop_locked', __( 'هذا المشروع غير متاح للتقديم حالياً.', 'bina' ) );
 	}
 
 	$u = get_userdata( $provider_id );
 	if ( ! $u || ! bina_user_is_service_provider( $u ) ) {
-		return new WP_Error( 'bina_prop_role', __( 'Ù‡Ø°Ø§ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ù„ÙŠØ³ Ù…Ø²ÙˆØ¯ Ø®Ø¯Ù…Ø©.', 'bina' ) );
+		return new WP_Error( 'bina_prop_role', __( 'هذا المستخدم ليس مزود خدمة.', 'bina' ) );
 	}
 
 	// Provider cannot bid on own project.
 	if ( (int) $post->post_author === $provider_id ) {
-		return new WP_Error( 'bina_prop_own', __( 'Ù„Ø§ ÙŠÙ…ÙƒÙ†Ùƒ Ø§Ù„ØªÙ‚Ø¯ÙŠÙ… Ø¹Ù„Ù‰ Ù…Ø´Ø±ÙˆØ¹Ùƒ.', 'bina' ) );
+		return new WP_Error( 'bina_prop_own', __( 'لا يمكنك التقديم على مشروعك.', 'bina' ) );
 	}
 
 	$now = current_time( 'mysql' );
@@ -232,7 +232,7 @@ function bina_proposal_upsert( $project_id, $provider_id, $price_total, $duratio
 		array( '%d', '%d', '%f', '%d', '%s', '%s', '%s', '%s', '%s', '%s' )
 	);
 	if ( ! $ok ) {
-		return new WP_Error( 'bina_prop_db', __( 'ØªØ¹Ø°Ø± Ø­ÙØ¸ Ø§Ù„Ø¹Ø±Ø¶.', 'bina' ) );
+		return new WP_Error( 'bina_prop_db', __( 'تعذر حفظ العرض.', 'bina' ) );
 	}
 
 	return (int) $wpdb->insert_id;
@@ -358,7 +358,7 @@ function bina_proposal_accept( $proposal_id, $actor_id ) {
 	$proposal_id = (int) $proposal_id;
 	$actor_id    = (int) $actor_id;
 	if ( $proposal_id < 1 || $actor_id < 1 ) {
-		return new WP_Error( 'bina_prop_bad', __( 'Ø¨ÙŠØ§Ù†Ø§Øª ØºÙŠØ± ØµØ§Ù„Ø­Ø©.', 'bina' ) );
+		return new WP_Error( 'bina_prop_bad', __( 'بيانات غير صالحة.', 'bina' ) );
 	}
 
 	$row = $wpdb->get_row(
@@ -369,7 +369,7 @@ function bina_proposal_accept( $proposal_id, $actor_id ) {
 		ARRAY_A
 	);
 	if ( ! is_array( $row ) ) {
-		return new WP_Error( 'bina_prop_nf', __( 'Ø§Ù„Ø¹Ø±Ø¶ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯.', 'bina' ) );
+		return new WP_Error( 'bina_prop_nf', __( 'العرض غير موجود.', 'bina' ) );
 	}
 
 	$project_id  = (int) $row['project_id'];
@@ -378,16 +378,16 @@ function bina_proposal_accept( $proposal_id, $actor_id ) {
 	$plan_meta   = isset( $row['plan_meta'] ) ? (string) $row['plan_meta'] : '';
 	$post        = get_post( $project_id );
 	if ( ! $post || $post->post_type !== 'bina_project' ) {
-		return new WP_Error( 'bina_prop_project', __( 'Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ ØºÙŠØ± ØµØ§Ù„Ø­.', 'bina' ) );
+		return new WP_Error( 'bina_prop_project', __( 'المشروع غير صالح.', 'bina' ) );
 	}
 
 	// Only customer (project author) or admin can accept.
 	if ( ! user_can( $actor_id, 'manage_options' ) && (int) $post->post_author !== $actor_id ) {
-		return new WP_Error( 'bina_prop_forbidden', __( 'ØºÙŠØ± Ù…ØµØ±Ø­.', 'bina' ) );
+		return new WP_Error( 'bina_prop_forbidden', __( 'غير مصرح.', 'bina' ) );
 	}
 
 	if ( bina_project_is_market_locked( $project_id ) ) {
-		return new WP_Error( 'bina_prop_locked', __( 'Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ù…Ù‚ÙÙˆÙ„ Ø¨Ø§Ù„ÙØ¹Ù„.', 'bina' ) );
+		return new WP_Error( 'bina_prop_locked', __( 'المشروع مقفول بالفعل.', 'bina' ) );
 	}
 
 	$now = current_time( 'mysql' );
@@ -406,7 +406,7 @@ function bina_proposal_accept( $proposal_id, $actor_id ) {
 		array( '%d' )
 	);
 	if ( $updated === false ) {
-		return new WP_Error( 'bina_prop_db', __( 'ØªØ¹Ø°Ø± ØªØ­Ø¯ÙŠØ« Ø­Ø§Ù„Ø© Ø§Ù„Ø¹Ø±Ø¶.', 'bina' ) );
+		return new WP_Error( 'bina_prop_db', __( 'تعذر تحديث حالة العرض.', 'bina' ) );
 	}
 
 	// Verify it actually became accepted.
@@ -417,7 +417,7 @@ function bina_proposal_accept( $proposal_id, $actor_id ) {
 		)
 	);
 	if ( $st_after !== 'accepted' ) {
-		return new WP_Error( 'bina_prop_db', __( 'ØªØ¹Ø°Ø± ØªØ«Ø¨ÙŠØª Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø¹Ø±Ø¶.', 'bina' ) );
+		return new WP_Error( 'bina_prop_db', __( 'تعذر تثبيت قبول العرض.', 'bina' ) );
 	}
 
 	// Reject all other proposals for this project.
@@ -431,7 +431,7 @@ function bina_proposal_accept( $proposal_id, $actor_id ) {
 		)
 	);
 	if ( $rej === false ) {
-		return new WP_Error( 'bina_prop_db', __( 'ØªØ¹Ø°Ø± Ø±ÙØ¶ Ø§Ù„Ø¹Ø±ÙˆØ¶ Ø§Ù„Ø£Ø®Ø±Ù‰.', 'bina' ) );
+		return new WP_Error( 'bina_prop_db', __( 'تعذر رفض العروض الأخرى.', 'bina' ) );
 	}
 
 	// Lock project and assign provider.
