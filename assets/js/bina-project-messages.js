@@ -191,7 +191,7 @@
 
           // Visible download button (works even if overlay styles are missed).
           const dlRow = document.createElement("div");
-          dlRow.className = "px-2 py-1 border-t border-border/40 bg-background/90";
+          dlRow.className = "px-2 py-1 border-t border-border/40 bg-white";
           const dl = document.createElement("a");
           dl.href = String(a.url);
           dl.setAttribute("download", "");
