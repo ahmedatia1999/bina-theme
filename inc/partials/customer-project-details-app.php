@@ -168,6 +168,8 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 					$status      = isset( $row['status'] ) ? (string) $row['status'] : 'pending';
 					$status_label = $status === 'accepted' ? __( 'مقبول', 'bina' ) : ( $status === 'rejected' ? __( 'مرفوض', 'bina' ) : __( 'قيد المراجعة', 'bina' ) );
 					$price       = isset( $row['price_total'] ) ? (float) $row['price_total'] : 0;
+					$proposal_customer_fee = function_exists( 'bina_platform_customer_fee_rate' ) ? round( $price * bina_platform_customer_fee_rate(), 2 ) : 0.0;
+					$proposal_customer_total = round( $price + $proposal_customer_fee, 2 );
 					$days        = isset( $row['duration_days'] ) ? (int) $row['duration_days'] : 0;
 					$plan_key    = isset( $row['plan_key'] ) ? (string) $row['plan_key'] : 'pay_at_completion';
 					$plan_label  = isset( $plan_labels[ $plan_key ] ) ? $plan_labels[ $plan_key ] : $plan_key;
@@ -185,6 +187,11 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( number_format_i18n( $price, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></span>
 							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( (string) $days ); ?> <?php esc_html_e( 'يوم', 'bina' ); ?></span>
 							<span class="inline-flex rounded-md border px-0\.5 py-0.5"><?php echo esc_html( $plan_label ); ?></span>
+						</div>
+						<div class="rounded-md border border-border/60 bg-background/60 p-3 space-y-1 text-xs text-muted-foreground">
+							<div><?php esc_html_e( 'سعر العرض', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $price, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+							<div><?php esc_html_e( 'عمولة المنصة على العميل 1%', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $proposal_customer_fee, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+							<div class="font-medium text-foreground"><?php esc_html_e( 'الإجمالي قبل قبول العرض', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $proposal_customer_total, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
 						</div>
 						<?php if ( $message !== '' ) : ?>
 							<p class="text-muted-foreground"><?php echo esc_html( $message ); ?></p>
