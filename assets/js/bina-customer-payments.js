@@ -43,7 +43,6 @@
 		const data = { action: 'bina_save_customer_payment_method', nonce, method };
 		fd.forEach((v, k) => (data[k] = String(v || '')));
 
-		// Validate before sending.
 		if (!method) {
 			if (msg) msg.textContent = 'اختر طريقة دفع';
 			return;
@@ -63,8 +62,34 @@
 
 		if (msg) msg.textContent = '...';
 		post(data).then((res) => {
-			if (msg) msg.textContent = res && res.success ? 'تم الحفظ' : (res?.data?.message || 'تعذر الحفظ');
+			const ok = !!(res && res.success);
+			if (msg) msg.textContent = ok ? 'تم الحفظ' : (res?.data?.message || 'تعذر الحفظ');
+			if (!ok || !res?.data?.saved) return;
+
+			const saved = res.data.saved || {};
+			if (methodSel && saved.method) {
+				methodSel.value = String(saved.method);
+				setVisibleBlocks(methodSel.value || '');
+			}
+
+			const bankHolder = form.querySelector('input[name="bank_holder"]');
+			const bankName = form.querySelector('input[name="bank_name"]');
+			const bankIban = form.querySelector('input[name="bank_iban"]');
+			const stcPhone = form.querySelector('input[name="stc_phone"]');
+			if (bankHolder) bankHolder.value = String(saved.bank_holder || '');
+			if (bankName) bankName.value = String(saved.bank_name || '');
+			if (bankIban) bankIban.value = String(saved.bank_iban || '');
+			if (stcPhone) stcPhone.value = String(saved.stc_phone || '');
+
+			window.setTimeout(() => {
+				try {
+					const u = new URL(window.location.href);
+					u.searchParams.set('_', String(Date.now()));
+					window.location.href = u.toString();
+				} catch (e2) {
+					window.location.reload();
+				}
+			}, 700);
 		});
 	});
 })();
-

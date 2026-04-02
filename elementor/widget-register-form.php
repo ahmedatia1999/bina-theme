@@ -30,6 +30,10 @@ class bina_Register_Form_Widget extends Widget_Base {
     protected function render() {
         $s = $this->get_settings_for_display();
         $hero = !empty($s['hero_image']['url']) ? $s['hero_image']['url'] : Utils::get_placeholder_image_src();
+        $dir_attr = 'rtl';
+        if ( function_exists( 'bina_trp_current_lang' ) && bina_trp_current_lang() === 'en' ) {
+            $dir_attr = 'ltr';
+        }
         wp_enqueue_script('bina-register-js', get_template_directory_uri() . '/assets/js/register.js', array(), filemtime(get_template_directory() . '/assets/js/register.js'), true);
         ?>
         <div class="relative min-h-svh bina-register-widget">
@@ -104,7 +108,7 @@ class bina_Register_Form_Widget extends Widget_Base {
                                         </div>
                                         <div data-slot="form-item" class="grid gap-2">
                                             <label class="flex items-center gap-2 text-sm leading-none font-medium">نوع الحساب</label>
-                                            <div role="radiogroup" dir="rtl" class="gap-3 flex flex-col space-y-1 mt-2">
+                                            <div role="radiogroup" dir="<?php echo esc_attr( $dir_attr ); ?>" class="gap-3 flex flex-col space-y-1 mt-2">
                                                 <label class="flex items-start gap-2 rounded-lg border bg-background p-4 rtl:flex-row-reverse cursor-pointer hover:bg-accent transition-colors">
                                                     <button type="button" role="radio" aria-checked="false" data-state="unchecked" value="customer" data-slot="radio-group-item" class="border-input text-primary aspect-square size-4 rounded-full border shadow-xs mt-0.5 shrink-0"></button>
                                                     <span class="text-sm font-medium leading-normal">صاحب عمل</span>

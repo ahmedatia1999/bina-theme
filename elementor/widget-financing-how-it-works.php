@@ -134,6 +134,7 @@ class bina_Financing_How_It_Works_Widget extends Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $steps = $settings['steps'] ?? [];
+        $is_en = function_exists( 'bina_trp_current_lang' ) ? ( bina_trp_current_lang() === 'en' ) : false;
         ?>
 
         <section class="section-padding">
@@ -170,13 +171,23 @@ class bina_Financing_How_It_Works_Widget extends Widget_Base {
                                 </div>
                                 <?php if ($index < count($steps) - 1): ?>
                                     <div class="hidden md:block absolute top-1/2 -left-3 transform rotate-180">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-arrow-right w-6 h-6 text-primary/40">
-                                            <path d="M5 12h14"></path>
-                                            <path d="m12 5 7 7-7 7"></path>
-                                        </svg>
+                                        <?php if ( $is_en ) : ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-arrow-left w-6 h-6 text-primary/40">
+                                                <path d="m12 19-7-7 7-7"></path>
+                                                <path d="M19 12H5"></path>
+                                            </svg>
+                                        <?php else : ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-arrow-right w-6 h-6 text-primary/40">
+                                                <path d="M5 12h14"></path>
+                                                <path d="m12 5 7 7-7 7"></path>
+                                            </svg>
+                                        <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>

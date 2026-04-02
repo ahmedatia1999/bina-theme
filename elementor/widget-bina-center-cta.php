@@ -81,6 +81,7 @@ class bina_Bina_Service_CTA_Widget extends Widget_Base {
 		$h   = isset( $s['heading'] ) ? (string) $s['heading'] : '';
 		$d   = isset( $s['description'] ) ? (string) $s['description'] : '';
 		$bt  = isset( $s['primary_button_text'] ) ? (string) $s['primary_button_text'] : '';
+		$is_en = function_exists( 'bina_trp_current_lang' ) ? ( bina_trp_current_lang() === 'en' ) : false;
 
 		$btn_target = '';
 		$btn_rel    = '';
@@ -96,7 +97,17 @@ class bina_Bina_Service_CTA_Widget extends Widget_Base {
 					<p class="text-primary-foreground/80 mb-8 max-w-2xl mx-auto"><?php echo esc_html( $d ); ?></p>
 					<a href="<?php echo $url; ?>"<?php echo $btn_target; ?><?php echo $btn_rel; ?> class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-11 rounded-md text-lg px-8 py-6">
 						<?php echo esc_html( $bt ); ?>
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left w-5 h-5"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+						<?php if ( $is_en ) : ?>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5">
+								<path d="M5 12h14"></path>
+								<path d="m12 5 7 7-7 7"></path>
+							</svg>
+						<?php else : ?>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left w-5 h-5">
+								<path d="m12 19-7-7 7-7"></path>
+								<path d="M19 12H5"></path>
+							</svg>
+						<?php endif; ?>
 					</a>
 				</div>
 			</div>

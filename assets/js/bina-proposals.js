@@ -15,31 +15,45 @@
     return json;
   }
 
+  function toMoney(value) {
+    const n = Number(String(value || "").replace(",", "."));
+    if (!isFinite(n)) return 0;
+    return Math.round(n * 100) / 100;
+  }
+
+  function splitEqual(total, n) {
+    const t = toMoney(total);
+    const nn = Number(n || 0);
+    if (!isFinite(nn) || nn < 1) return [];
+    const base = Math.round((t / nn) * 100) / 100;
+    const out = Array.from({ length: nn }, () => base);
+    const sum = Math.round(out.reduce((a, b) => a + b, 0) * 100) / 100;
+    const diff = Math.round((t - sum) * 100) / 100;
+    out[nn - 1] = Math.round((out[nn - 1] + diff) * 100) / 100;
+    return out;
+  }
+
+  function safeJsonParse(s) {
+    try {
+      const v = JSON.parse(String(s || ""));
+      return v && typeof v === "object" ? v : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function serializePlanMeta(planKey, total, items) {
+    return JSON.stringify({
+      plan_key: planKey,
+      total: isFinite(total) ? Number(total.toFixed(2)) : 0,
+      items,
+    });
+  }
+
   function init(root) {
     const ajaxUrl = root.getAttribute("data-ajaxurl") || "";
     const nonce = root.getAttribute("data-nonce") || "";
     if (!ajaxUrl || !nonce) return;
-
-    function splitEqual(total, n) {
-      const t = Number(total || 0);
-      const nn = Number(n || 0);
-      if (!isFinite(t) || !isFinite(nn) || nn < 1) return [];
-      const base = Math.round((t / nn) * 100) / 100;
-      const out = Array.from({ length: nn }, () => base);
-      const sum = Math.round(out.reduce((a, b) => a + b, 0) * 100) / 100;
-      const diff = Math.round((t - sum) * 100) / 100;
-      out[nn - 1] = Math.round((out[nn - 1] + diff) * 100) / 100;
-      return out;
-    }
-
-    function safeJsonParse(s) {
-      try {
-        const v = JSON.parse(String(s || ""));
-        return v && typeof v === "object" ? v : null;
-      } catch (e) {
-        return null;
-      }
-    }
 
     function renderBreakdown(form) {
       const planSel = form.querySelector('select[name="plan_key"]');
@@ -53,10 +67,9 @@
       if (!bdRoot || !bd || !planSel || !priceEl || !planMetaInput) return;
 
       const planKey = String(planSel.value || "pay_at_completion");
-      const total = Number(String(priceEl.value || "").replace(",", "."));
+      const total = toMoney(priceEl.value || "");
       const existing = safeJsonParse(planMetaInput.value);
 
-      // Duration: for installment plans it's fixed (4/11 months), so hide the input and set a stable value.
       if (durationRow && durationEl) {
         if (planKey === "four_installments_equal") {
           durationRow.classList.add("hidden");
@@ -69,60 +82,81 @@
         }
       }
 
-      // pay_at_completion: hide the breakdown UI (no schedule needed).
       if (planKey === "pay_at_completion") {
         bdRoot.classList.add("hidden");
         planMetaInput.value = "";
+        if (hint) {
+          hint.textContent = "";
+          hint.classList.remove("text-destructive");
+        }
         return;
       }
       bdRoot.classList.remove("hidden");
 
       const n = planKey === "four_installments_equal" ? 4 : 11;
-      const amounts = splitEqual(isFinite(total) ? total : 0, n);
-
-      const items = [];
+      const defaultAmounts = splitEqual(total, n);
       const prevItems = Array.isArray(existing?.items) ? existing.items : [];
+      const items = [];
+
+      function updateSummary() {
+        const sum = Math.round(items.reduce((a, it) => a + (Number(it.amount) || 0), 0) * 100) / 100;
+        if (hint) {
+          hint.textContent = `Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ: ${sum.toFixed(2)} Ø±.Ø³ (Ø§Ù„Ù…Ø·Ù„ÙˆØ¨: ${total.toFixed(2)} Ø±.Ø³)`;
+          hint.classList.toggle("text-destructive", Math.abs(sum - total) > 0.01);
+        }
+        planMetaInput.value = serializePlanMeta(planKey, total, items);
+      }
 
       bd.innerHTML = "";
+
       for (let i = 0; i < n; i++) {
         const idx = i + 1;
-        const amount = amounts[i] ?? 0;
         const prev = prevItems[i] && typeof prevItems[i] === "object" ? prevItems[i] : {};
-        const title =
-          planKey === "eleven_months" ? `شهر ${idx}` : `دفعة ${idx}`;
+        const title = planKey === "eleven_months" ? `Ø´Ù‡Ø± ${idx}` : `Ø¯ÙØ¹Ø© ${idx}`;
+        const amount = prev.amount !== undefined && prev.amount !== null && prev.amount !== ""
+          ? toMoney(prev.amount)
+          : (defaultAmounts[i] ?? 0);
 
         const row = document.createElement("div");
         row.className = "rounded-md border border-border/60 bg-background p-2 space-y-2";
         row.innerHTML = `
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center justify-between gap-3">
             <div class="text-xs font-medium">${title}</div>
-            <div class="text-xs text-muted-foreground tabular-nums">${amount.toFixed(2)} ر.س</div>
+            <input type="number" min="0" step="0.01" class="w-28 rounded-md border border-input bg-transparent px-2 py-1.5 text-xs text-start" placeholder="0.00" value="${amount.toFixed(2)}" />
           </div>
-          <textarea rows="2" class="w-full rounded-md border border-input bg-transparent px-2 py-1.5 text-xs" placeholder="اكتب تفاصيل ما سيتم تنفيذه في هذا الشهر/الدفعة..."></textarea>
+          <textarea rows="2" class="w-full rounded-md border border-input bg-transparent px-2 py-1.5 text-xs" placeholder="Ø§ÙƒØªØ¨ ØªÙØ§ØµÙŠÙ„ Ù…Ø§ Ø³ÙŠØªÙ… ØªÙ†ÙÙŠØ°Ù‡ ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø´Ù‡Ø±/Ø§Ù„Ø¯ÙØ¹Ø©..."></textarea>
         `;
+
+        const amountInput = row.querySelector('input[type="number"]');
         const ta = row.querySelector("textarea");
         if (ta) ta.value = String(prev.description || "").trim();
-        bd.appendChild(row);
 
-        const item = { no: idx, title, amount: Number(amount.toFixed(2)), description: ta ? ta.value : "" };
+        const item = {
+          no: idx,
+          title,
+          amount: Number(amount.toFixed(2)),
+          description: ta ? ta.value : "",
+        };
         items.push(item);
 
-        // Keep meta in sync as user types.
-        if (ta) {
-          ta.addEventListener("input", () => {
-            // update this item description
-            item.description = ta.value || "";
-            planMetaInput.value = JSON.stringify({ plan_key: planKey, total: isFinite(total) ? Number(total.toFixed(2)) : 0, items });
-          });
+        function syncItem() {
+          item.amount = amountInput ? toMoney(amountInput.value || 0) : item.amount;
+          item.description = ta ? (ta.value || "").trim() : item.description;
+          updateSummary();
         }
+
+        if (amountInput) {
+          amountInput.addEventListener("input", syncItem);
+          amountInput.addEventListener("change", syncItem);
+        }
+        if (ta) {
+          ta.addEventListener("input", syncItem);
+        }
+
+        bd.appendChild(row);
       }
 
-      const sum = Math.round(items.reduce((a, it) => a + (Number(it.amount) || 0), 0) * 100) / 100;
-      if (hint) {
-        const t = isFinite(total) ? Math.round(total * 100) / 100 : 0;
-        hint.textContent = `الإجمالي: ${sum.toFixed(2)} ر.س (المطلوب: ${t.toFixed(2)} ر.س)`;
-      }
-      planMetaInput.value = JSON.stringify({ plan_key: planKey, total: isFinite(total) ? Number(total.toFixed(2)) : 0, items });
+      updateSummary();
     }
 
     root.addEventListener("click", (e) => {
@@ -148,13 +182,13 @@
       if (form) form.classList.add("hidden");
     });
 
-    // Update breakdown when plan or total changes.
     root.addEventListener("change", (e) => {
       const sel = e.target.closest('select[name="plan_key"]');
       if (!sel) return;
       const form = e.target.closest("[data-bina-proposal-form]");
       if (form) renderBreakdown(form);
     });
+
     root.addEventListener("input", (e) => {
       const inp = e.target.closest('input[name="price_total"]');
       if (!inp) return;
@@ -173,10 +207,9 @@
 
       const msg = qs(card, "[data-bina-proposal-msg]");
       const submit = qs(form, "[data-bina-proposal-submit]");
-      if (msg) msg.textContent = "جارٍ الإرسال...";
+      if (msg) msg.textContent = "Ø¬Ø§Ø±Ù Ø§Ù„Ø¥Ø±Ø³Ø§Ù„...";
       if (submit) submit.disabled = true;
 
-      // Ensure computed schedule + duration are up-to-date before sending.
       renderBreakdown(form);
 
       const fd = new FormData(form);
@@ -187,10 +220,25 @@
       const planMeta = (fd.get("plan_meta") || "").toString().trim();
 
       try {
-        // Basic client validation for installment plans (must have meta JSON).
         if (planKey !== "pay_at_completion" && !planMeta) {
-          throw new Error("أكمل تفاصيل الدفعات أولاً.");
+          throw new Error("Ø£ÙƒÙ…Ù„ ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø¯ÙØ¹Ø§Øª Ø£ÙˆÙ„Ø§Ù‹.");
         }
+
+        if (planKey !== "pay_at_completion") {
+          const parsed = safeJsonParse(planMeta);
+          const items = Array.isArray(parsed?.items) ? parsed.items : [];
+          const sum = Math.round(items.reduce((acc, item) => acc + toMoney(item?.amount || 0), 0) * 100) / 100;
+          const total = toMoney(priceTotal);
+          const hasEmptyDescription = items.some((item) => !String(item?.description || "").trim());
+
+          if (!items.length || Math.abs(sum - total) > 0.01) {
+            throw new Error("Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø¯ÙØ¹Ø§Øª ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ³Ø§ÙˆÙŠ Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ.");
+          }
+          if (hasEmptyDescription) {
+            throw new Error("Ø§ÙƒØªØ¨ ÙˆØµÙÙ‹Ø§ Ù„ÙƒÙ„ Ø¯ÙØ¹Ø©.");
+          }
+        }
+
         const json = await post(ajaxUrl, {
           action: "bina_submit_proposal",
           nonce,
@@ -203,26 +251,24 @@
         });
 
         if (!json.success) {
-          throw new Error((json.data && json.data.message) || "تعذر إرسال العرض.");
+          throw new Error((json.data && json.data.message) || "ØªØ¹Ø°Ø± Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¹Ø±Ø¶.");
         }
 
-        if (msg) msg.textContent = (json.data && json.data.message) || "تم إرسال العرض.";
+        if (msg) msg.textContent = (json.data && json.data.message) || "ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¹Ø±Ø¶.";
         form.reset();
         form.classList.add("hidden");
         const openBtn = card.querySelector("[data-bina-proposal-open]");
         const sentEl = card.querySelector("[data-bina-proposal-sent]");
         if (openBtn) openBtn.classList.add("hidden");
         if (sentEl) sentEl.classList.remove("hidden");
-        // Force reload so server-rendered state always matches DB.
         window.setTimeout(() => window.location.reload(), 700);
       } catch (err) {
-        if (msg) msg.textContent = err && err.message ? err.message : "تعذر إرسال العرض.";
+        if (msg) msg.textContent = err && err.message ? err.message : "ØªØ¹Ø°Ø± Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¹Ø±Ø¶.";
       } finally {
         if (submit) submit.disabled = false;
       }
     });
 
-    // Render for any pre-opened forms (edge cases).
     root.querySelectorAll("[data-bina-proposal-form]").forEach((f) => {
       if (!f.classList.contains("hidden")) renderBreakdown(f);
     });
@@ -232,4 +278,3 @@
     document.querySelectorAll("[data-bina-proposals]").forEach(init);
   });
 })();
-

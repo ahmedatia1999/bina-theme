@@ -78,7 +78,7 @@ class bina_Login_Form_Widget extends Widget_Base {
                                         </div>
                                     </form>
                                     <div class="bg-muted relative hidden md:block">
-                                        <img src="<?php echo esc_url($hero); ?>" alt="Image" class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.5] dark:grayscale">
+                                        <img src="<?php echo esc_url($hero); ?>" alt="Image" class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.5] dark:grayscale" style="object-fit: cover;">
                                     </div>
                                 </div>
                             </div>

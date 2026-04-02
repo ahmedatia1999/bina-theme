@@ -164,6 +164,7 @@ class bina_Hero_Stats_Widget extends Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $stats = $settings['stats'] ?? [];
+        $is_en = function_exists( 'bina_trp_current_lang' ) ? ( bina_trp_current_lang() === 'en' ) : false;
 
         $primary_href = $settings['primary_button_url']['url'] ?? '';
         $primary_href = function_exists('bina_dashboard_resolve_url') ? bina_dashboard_resolve_url($primary_href) : $primary_href;
@@ -437,13 +438,23 @@ class bina_Hero_Stats_Widget extends Widget_Base {
                                     <a href="<?php echo $primary_href; ?>"<?php echo $primary_target; ?><?php echo $primary_rel; ?>
                                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-11 rounded-md px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg group">
                                         <?php echo esc_html($settings['primary_button_text'] ?? ''); ?>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-arrow-left w-5 h-5 group-hover:-translate-x-1 transition-transform">
-                                            <path d="m12 19-7-7 7-7"></path>
-                                            <path d="M19 12H5"></path>
-                                        </svg>
+                                        <?php if ( $is_en ) : ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-arrow-right w-5 h-5 group-hover:translate-x-1 transition-transform">
+                                                <path d="M5 12h14"></path>
+                                                <path d="m12 5 7 7-7 7"></path>
+                                            </svg>
+                                        <?php else : ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-arrow-left w-5 h-5 group-hover:-translate-x-1 transition-transform">
+                                                <path d="m12 19-7-7 7-7"></path>
+                                                <path d="M19 12H5"></path>
+                                            </svg>
+                                        <?php endif; ?>
                                     </a>
                                     <a href="<?php echo $secondary_href; ?>"<?php echo $secondary_target; ?><?php echo $secondary_rel; ?>
                                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-11 rounded-md px-8 border-green-600 text-green-600 hover:bg-green-600 hover:text-white">

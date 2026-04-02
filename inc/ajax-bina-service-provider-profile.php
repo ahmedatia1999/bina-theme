@@ -60,12 +60,21 @@ function bina_ajax_save_service_provider_profile() {
 
 	if ( isset( $_POST['phone'] ) ) {
 		update_user_meta( $user_id, 'bina_phone', $digits );
+		update_user_meta( $user_id, 'bina_phone_normalized', function_exists( 'bina_normalize_phone' ) ? bina_normalize_phone( $digits ) : $digits );
 	}
 	if ( isset( $_POST['city'] ) ) {
 		update_user_meta( $user_id, 'bina_city', $city );
 	}
 
-	wp_send_json_success( array( 'ok' => 1 ) );
+	wp_send_json_success(
+		array(
+			'ok'    => 1,
+			'saved' => array(
+				'display_name' => $display_name,
+				'phone'        => $digits,
+				'city'         => $city,
+			),
+		)
+	);
 }
 add_action( 'wp_ajax_bina_save_service_provider_profile', 'bina_ajax_save_service_provider_profile' );
-

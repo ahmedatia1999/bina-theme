@@ -195,6 +195,7 @@ class bina_Implementation_Service_Widget extends Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $features = $settings['features'] ?? [];
+        $is_en = function_exists( 'bina_trp_current_lang' ) ? ( bina_trp_current_lang() === 'en' ) : false;
 
         $primary_url = $settings['primary_button_url']['url'] ?? '#';
         $secondary_url = $settings['secondary_button_url']['url'] ?? '#';
@@ -225,9 +226,14 @@ class bina_Implementation_Service_Widget extends Widget_Base {
                                             href="<?php echo esc_url($primary_url); ?>"><?php echo esc_html($settings['primary_button_text'] ?? ''); ?><svg xmlns="http://www.w3.org/2000/svg"
                                                 width="24" height="24" viewBox="0 0 24 24" fill="none"
                                                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="lucide lucide-arrow-left w-4 h-4">
-                                                <path d="m12 19-7-7 7-7"></path>
-                                                <path d="M19 12H5"></path>
+                                                stroke-linejoin="round" class="<?php echo $is_en ? 'lucide lucide-arrow-right' : 'lucide lucide-arrow-left'; ?> w-4 h-4">
+                                                <?php if ( $is_en ) : ?>
+                                                    <path d="M5 12h14"></path>
+                                                    <path d="m12 5 7 7-7 7"></path>
+                                                <?php else : ?>
+                                                    <path d="m12 19-7-7 7-7"></path>
+                                                    <path d="M19 12H5"></path>
+                                                <?php endif; ?>
                                             </svg></a><a
                                             href="<?php echo esc_url($secondary_url); ?>"<?php echo $secondary_target; ?><?php echo $secondary_rel; ?>
                                             class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 rounded-md px-8"><?php echo esc_html($settings['secondary_button_text'] ?? ''); ?></a></div>

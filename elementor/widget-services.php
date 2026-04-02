@@ -268,6 +268,7 @@ class bina_Services_Widget extends Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $cards = $settings['cards'] ?? [];
+        $is_en = function_exists( 'bina_trp_current_lang' ) ? ( bina_trp_current_lang() === 'en' ) : false;
         ?>
 
                 <section id="services" class="py-12 md:py-20 bg-gradient-section scroll-mt-20 content-visibility-auto">
@@ -312,13 +313,24 @@ class bina_Services_Widget extends Widget_Base {
                                                 class="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed mb-2 md:mb-4 text-center md:text-start hidden sm:block">
                                                 <?php echo esc_html($text); ?></p><span
                                                 class="hidden md:inline-flex items-center gap-2 text-primary font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"><?php echo esc_html($more); ?>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-arrow-left w-4 h-4">
-                                                    <path d="m12 19-7-7 7-7"></path>
-                                                    <path d="M19 12H5"></path>
-                                                </svg></span>
+                                                <?php if ( $is_en ) : ?>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-arrow-right w-4 h-4">
+                                                        <path d="M5 12h14"></path>
+                                                        <path d="m12 5 7 7-7 7"></path>
+                                                    </svg>
+                                                <?php else : ?>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-arrow-left w-4 h-4">
+                                                        <path d="m12 19-7-7 7-7"></path>
+                                                        <path d="M19 12H5"></path>
+                                                    </svg>
+                                                <?php endif; ?>
+                                            </span>
                                             <div
                                                 class="absolute -bottom-10 -right-10 w-20 sm:w-32 h-20 sm:h-32 bg-gradient-to-br <?php echo esc_attr($from); ?> <?php echo esc_attr($to); ?> rounded-full opacity-10 group-hover:opacity-20 transition-opacity">
                                             </div>

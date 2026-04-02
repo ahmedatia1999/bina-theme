@@ -44,6 +44,20 @@ function bina_ajax_save_customer_payment_method() {
 		update_user_meta( $user_id, 'bina_customer_pay_bank_holder', $bank_holder );
 		update_user_meta( $user_id, 'bina_customer_pay_bank_name', $bank_name );
 		update_user_meta( $user_id, 'bina_customer_pay_bank_iban', $bank_iban );
+		delete_user_meta( $user_id, 'bina_customer_pay_stc_phone' );
+
+		wp_send_json_success(
+			array(
+				'ok'    => 1,
+				'saved' => array(
+					'method'      => 'bank',
+					'bank_holder' => $bank_holder,
+					'bank_name'   => $bank_name,
+					'bank_iban'   => $bank_iban,
+					'stc_phone'   => '',
+				),
+			)
+		);
 	}
 
 	if ( 'stc' === $method ) {
@@ -59,9 +73,22 @@ function bina_ajax_save_customer_payment_method() {
 
 		update_user_meta( $user_id, 'bina_customer_pay_method', 'stc' );
 		update_user_meta( $user_id, 'bina_customer_pay_stc_phone', $digits );
-	}
+		delete_user_meta( $user_id, 'bina_customer_pay_bank_holder' );
+		delete_user_meta( $user_id, 'bina_customer_pay_bank_name' );
+		delete_user_meta( $user_id, 'bina_customer_pay_bank_iban' );
 
-	wp_send_json_success( array( 'ok' => 1 ) );
+		wp_send_json_success(
+			array(
+				'ok'    => 1,
+				'saved' => array(
+					'method'      => 'stc',
+					'bank_holder' => '',
+					'bank_name'   => '',
+					'bank_iban'   => '',
+					'stc_phone'   => $digits,
+				),
+			)
+		);
+	}
 }
 add_action( 'wp_ajax_bina_save_customer_payment_method', 'bina_ajax_save_customer_payment_method' );
-

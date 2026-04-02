@@ -425,12 +425,12 @@ body {
     -moz-osx-font-smoothing: grayscale
 }
 
-[dir=rtl] {
-    text-align: right
+html[dir="rtl"] .text-right {
+    text-align: right;
 }
 
-[dir=ltr] {
-    text-align: left
+html:not([dir="rtl"]) .text-right {
+    text-align: left;
 }
 
 .bg-gradient-primary {
@@ -600,8 +600,12 @@ body {
     left: -3rem
 }
 
-.-left-3 {
+html[dir="rtl"] .-left-3 {
     left: -.75rem
+}
+
+html:not([dir="rtl"]) .-left-3 {
+    right: -.75rem
 }
 
 .-left-4 {
@@ -620,8 +624,12 @@ body {
     right: -.5rem
 }
 
-.-right-3 {
+html[dir="rtl"] .-right-3 {
     right: -.75rem
+}
+
+html:not([dir="rtl"]) .-right-3 {
+    left: -.75rem
 }
 
 .-right-4 {
@@ -744,8 +752,12 @@ body {
     right: 1rem
 }
 
-.right-6 {
+html[dir="rtl"] .right-6 {
     right: 1.5rem
+}
+
+html:not([dir="rtl"]) .right-6 {
+    left: 1.5rem !important;
 }
 
 .right-\[10\%\] {
@@ -4606,8 +4618,14 @@ html.bina-theme-transition * {
         right: 0
     }
 
-    .sm\:right-6 {
-        right: 1.5rem
+   html[dir="rtl"] .sm\:right-6 {
+        right: 1.5rem !important;
+        left: auto !important;
+    }
+
+    html:not([dir="rtl"]) .sm\:right-6 {
+        right: auto !important;
+        left: 1.5rem !important;
     }
 
     .sm\:top-auto {
@@ -5644,13 +5662,13 @@ html:not([dir="rtl"]) .reviews-swiper-wrap .swiper-button-prev {
 
 /* RTL positions */
 html[dir="rtl"] .reviews-swiper-wrap .swiper-button-next {
-    right: -44px !important;
-    left: auto !important;
+    left: -44px !important;
+    right: auto !important;
 }
 
 html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
-    left: -44px !important;
-    right: auto !important;
+    right: -44px !important;
+    left: auto !important;
 }
 
 .reviews-swiper-wrap .swiper-button-next::after,
@@ -5680,6 +5698,37 @@ html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
     html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
         left: -14px !important;
     }
+}
+
+/* Swap arrow glyph direction in RTL (Swiper ::after) */
+html[dir="rtl"] .reviews-swiper-wrap .swiper-button-next::after,
+html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev::after {
+    transform: rotate(180deg);
+}
+
+/* English/LTR typography: use Poppins only in English pages */
+html[dir="ltr"] body,
+html[dir="ltr"] button,
+html[dir="ltr"] input,
+html[dir="ltr"] textarea,
+html[dir="ltr"] select {
+    font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Flip FontAwesome "left" arrows in LTR (so they point right) */
+html[dir="ltr"] .fa-arrow-left,
+html[dir="ltr"] .fa-angle-left,
+html[dir="ltr"] .fa-chevron-left,
+html[dir="ltr"] .fa-caret-left {
+    display: inline-block;
+    transform: scaleX(-1);
+}
+
+/* Flip Lucide arrow-left in LTR (English) without breaking Tailwind transforms */
+html:not([dir="rtl"]) svg.lucide-arrow-left,
+html:not([dir="rtl"]) .lucide.lucide-arrow-left {
+    --tw-scale-x: -1;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 [data-state="open"] {
@@ -5717,6 +5766,42 @@ html[dir="rtl"] .reviews-swiper-wrap .swiper-button-prev {
 /* Contact Form 7 financing form */
 .bina-financing-cf7 .wpcf7-form p {
     margin: 0;
+}
+
+/* Contact Form 7 (English/LTR only) */
+html:not([dir="rtl"]) form,
+html:not([dir="rtl"]) form {
+    direction: ltr;
+    text-align: left;
+}
+
+html:not([dir="rtl"]) form  label,
+html:not([dir="rtl"]) form .wpcf7-list-item-label,
+html:not([dir="rtl"]) form .text-start {
+    text-align: left;
+}
+
+/* Fix inputs that were styled with right padding for RTL */
+html:not([dir="rtl"]) form input.pr-10,
+html:not([dir="rtl"]) form textarea.pr-10,
+html:not([dir="rtl"]) form select.pr-10 {
+    padding-left: 0.75rem !important;
+    padding-right: 2.5rem !important;
+}
+
+/* CF7 radio/checkbox layout: keep items readable in LTR */
+html:not([dir="rtl"]) form .wpcf7-radio,
+html:not([dir="rtl"]) form .wpcf7-checkbox {
+    direction: ltr;
+}
+
+html:not([dir="rtl"]) form .wpcf7-list-item label {
+    justify-content: flex-start;
+}
+
+/* If a wrapper forces RTL, neutralize it in English */
+    html:not([dir="rtl"]) form {
+    direction: ltr !important;
 }
 
 .bina-financing-cf7 .wpcf7-form-control-wrap {

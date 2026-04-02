@@ -9,6 +9,13 @@
         // Enqueue Google Fonts or Custom Font CDN links
         echo '<link rel="preload" href="https://fonts.cdnfonts.com/css/avenir-lt-pro?styles=60926,60921,60923,60919,60915" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
         echo '<link rel="preload" href="https://fonts.cdnfonts.com/css/somar-sans?styles=143705,143693,143669" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
+        // Poppins (for English LTR)
+        wp_enqueue_style(
+            'bina-poppins',
+            'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
+            array(),
+            null
+        );
 
         // Enqueue jQuery
         wp_enqueue_script( 'jquery' );

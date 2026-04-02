@@ -45,8 +45,25 @@
 			display_name,
 			phone
 		}).then((res) => {
-			if (msg) msg.textContent = res && res.success ? 'تم الحفظ' : (res?.data?.message || 'تعذر الحفظ');
+			const ok = !!(res && res.success);
+			if (msg) msg.textContent = ok ? 'تم الحفظ' : (res?.data?.message || 'تعذر الحفظ');
+			if (!ok || !res?.data?.saved) return;
+
+			const saved = res.data.saved || {};
+			const nameInput = form.querySelector('input[name="display_name"]');
+			const phoneInput = form.querySelector('input[name="phone"]');
+			if (nameInput) nameInput.value = String(saved.display_name || '');
+			if (phoneInput) phoneInput.value = String(saved.phone || '');
+
+			window.setTimeout(() => {
+				try {
+					const u = new URL(window.location.href);
+					u.searchParams.set('_', String(Date.now()));
+					window.location.href = u.toString();
+				} catch (e2) {
+					window.location.reload();
+				}
+			}, 700);
 		});
 	});
 })();
-
