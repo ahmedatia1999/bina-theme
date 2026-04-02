@@ -27,6 +27,7 @@ $stc_phone   = (string) get_user_meta( $user->ID, 'bina_payout_stc_phone', true 
 	<div>
 		<h1 class="text-2xl sm:text-3xl font-bold tracking-tight"><?php esc_html_e( 'المدفوعات', 'bina' ); ?></h1>
 		<p class="text-muted-foreground mt-1"><?php esc_html_e( 'رصيدك داخل المنصة وطلبات السحب.', 'bina' ); ?></p>
+		<p class="text-xs text-muted-foreground mt-2"><?php esc_html_e( 'يتم خصم عمولة 1% على المبالغ التي تستلمها عند التحويل لك.', 'bina' ); ?></p>
 	</div>
 
 	<div class="grid gap-4 sm:grid-cols-2">
