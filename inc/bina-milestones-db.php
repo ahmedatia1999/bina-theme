@@ -207,6 +207,35 @@ function bina_milestones_fetch_payment_requested( $limit = 200 ) {
 }
 
 /**
+ * Fetch milestones by statuses for admin overview.
+ *
+ * @param string[] $statuses
+ * @param int      $limit
+ * @return array<int,array<string,mixed>>
+ */
+function bina_milestones_fetch_by_statuses( $statuses, $limit = 200 ) {
+	global $wpdb;
+	$table = bina_milestones_db_table_name();
+	$limit = max( 1, min( 500, (int) $limit ) );
+	$statuses = is_array( $statuses ) ? array_values( array_filter( array_map( 'sanitize_text_field', $statuses ) ) ) : array();
+	if ( empty( $statuses ) ) {
+		return array();
+	}
+
+	$placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
+	$sql = "SELECT id, project_id, proposal_id, provider_id, milestone_no, title, amount, status, updated_at
+		FROM {$table}
+		WHERE status IN ({$placeholders})
+		ORDER BY updated_at DESC
+		LIMIT %d";
+	$params = $statuses;
+	$params[] = $limit;
+
+	$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	return is_array( $rows ) ? $rows : array();
+}
+
+/**
  * Split total into N amounts with 2-dec rounding and exact sum.
  *
  * @param float $total

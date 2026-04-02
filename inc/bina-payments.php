@@ -159,6 +159,49 @@ function bina_payment_tx_get_by_object( $flow_type, $object_type, $object_id, $s
 	return is_array( $row ) ? $row : null;
 }
 
+/**
+ * Fetch payment transactions for admin table.
+ *
+ * @param array<string,mixed> $args
+ * @return array<int,array<string,mixed>>
+ */
+function bina_payment_tx_fetch_for_admin( $args = array() ) {
+	global $wpdb;
+
+	$table      = bina_payments_table_name();
+	$flow_type  = isset( $args['flow_type'] ) ? sanitize_key( (string) $args['flow_type'] ) : '';
+	$object_type = isset( $args['object_type'] ) ? sanitize_key( (string) $args['object_type'] ) : '';
+	$status     = isset( $args['status'] ) ? sanitize_key( (string) $args['status'] ) : '';
+	$limit      = isset( $args['limit'] ) ? (int) $args['limit'] : 100;
+	$limit      = max( 1, min( 500, $limit ) );
+
+	$where   = array();
+	$params  = array();
+	if ( $flow_type !== '' ) {
+		$where[]  = 'flow_type = %s';
+		$params[] = $flow_type;
+	}
+	if ( $object_type !== '' ) {
+		$where[]  = 'object_type = %s';
+		$params[] = $object_type;
+	}
+	if ( $status !== '' ) {
+		$where[]  = 'status = %s';
+		$params[] = $status;
+	}
+
+	$sql = "SELECT id, flow_type, object_type, object_id, user_id, gateway_key, status, amount, currency, gateway_ref, created_at, updated_at
+		FROM {$table}";
+	if ( ! empty( $where ) ) {
+		$sql .= ' WHERE ' . implode( ' AND ', $where );
+	}
+	$sql .= ' ORDER BY id DESC LIMIT %d';
+	$params[] = $limit;
+
+	$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	return is_array( $rows ) ? $rows : array();
+}
+
 function bina_payment_tx_update( $tx_id, $data ) {
 	global $wpdb;
 

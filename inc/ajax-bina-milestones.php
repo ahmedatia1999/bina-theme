@@ -268,6 +268,104 @@ function bina_ajax_submit_milestone() {
 add_action( 'wp_ajax_bina_submit_milestone', 'bina_ajax_submit_milestone' );
 
 /**
+ * Move funded milestone amount from pending to available for provider.
+ * Used by customer approve flow and admin "make withdrawable" action.
+ *
+ * @param int $milestone_id
+ * @param int $actor_id
+ * @return true|WP_Error
+ */
+function bina_milestone_release_to_available( $milestone_id, $actor_id ) {
+	$milestone_id = (int) $milestone_id;
+	$actor_id     = (int) $actor_id;
+	if ( $milestone_id < 1 || $actor_id < 1 ) {
+		return new WP_Error( 'bina_ms_bad', __( 'بيانات غير صالحة.', 'bina' ) );
+	}
+
+	$row = bina_milestone_get_by_id( $milestone_id );
+	if ( ! is_array( $row ) ) {
+		return new WP_Error( 'bina_ms_nf', __( 'الدفعة غير موجودة.', 'bina' ) );
+	}
+
+	$status = (string) ( $row['status'] ?? '' );
+	if ( $status === 'released' ) {
+		return true;
+	}
+	if ( ! in_array( $status, array( 'funded', 'submitted', 'approved' ), true ) ) {
+		return new WP_Error( 'bina_ms_state', __( 'هذه الدفعة غير جاهزة للإتاحة للسحب.', 'bina' ) );
+	}
+
+	$project_id   = (int) ( $row['project_id'] ?? 0 );
+	$provider_id  = (int) ( $row['provider_id'] ?? 0 );
+	$proposal_id  = (int) ( $row['proposal_id'] ?? 0 );
+	$no           = (int) ( $row['milestone_no'] ?? 0 );
+	$financials   = function_exists( 'bina_milestone_get_financials' ) ? bina_milestone_get_financials( $row ) : array();
+	$amount       = isset( $financials['base_amount'] ) ? (float) $financials['base_amount'] : (float) ( $row['amount'] ?? 0 );
+	$provider_net = isset( $financials['provider_net'] ) ? (float) $financials['provider_net'] : $amount;
+
+	if ( $provider_id < 1 || $provider_net <= 0 ) {
+		return new WP_Error( 'bina_ms_amount', __( 'بيانات الدفعة غير صالحة.', 'bina' ) );
+	}
+
+	$debit = bina_wallet_ledger_add(
+		array(
+			'user_id'        => $provider_id,
+			'project_id'     => $project_id,
+			'proposal_id'    => $proposal_id,
+			'milestone_no'   => $no,
+			'entry_type'     => 'escrow_release_debit',
+			'amount'         => -1 * (float) $provider_net,
+			'balance_bucket' => 'pending',
+			'note'           => 'milestone release to available (debit pending)',
+			'meta'           => array( 'milestone_id' => $milestone_id, 'actor_id' => $actor_id ),
+		)
+	);
+	if ( is_wp_error( $debit ) ) {
+		return $debit;
+	}
+
+	$credit = bina_wallet_ledger_add(
+		array(
+			'user_id'        => $provider_id,
+			'project_id'     => $project_id,
+			'proposal_id'    => $proposal_id,
+			'milestone_no'   => $no,
+			'entry_type'     => 'escrow_release_credit',
+			'amount'         => (float) $provider_net,
+			'balance_bucket' => 'available',
+			'note'           => 'milestone release to available (credit available)',
+			'meta'           => array( 'milestone_id' => $milestone_id, 'actor_id' => $actor_id ),
+		)
+	);
+	if ( is_wp_error( $credit ) ) {
+		bina_wallet_ledger_add(
+			array(
+				'user_id'        => $provider_id,
+				'project_id'     => $project_id,
+				'proposal_id'    => $proposal_id,
+				'milestone_no'   => $no,
+				'entry_type'     => 'escrow_release_rollback',
+				'amount'         => (float) $provider_net,
+				'balance_bucket' => 'pending',
+				'note'           => 'rollback release debit',
+				'meta'           => array( 'milestone_id' => $milestone_id, 'actor_id' => $actor_id ),
+			)
+		);
+		return $credit;
+	}
+
+	bina_milestone_update_status(
+		$milestone_id,
+		'released',
+		array(
+			'released_at' => current_time( 'mysql' ),
+		)
+	);
+
+	return true;
+}
+
+/**
  * Customer approves a submitted milestone, releasing funds to provider available.
  * POST: milestone_id, nonce
  */
@@ -298,17 +396,6 @@ function bina_ajax_approve_milestone() {
 		wp_send_json_error( array( 'message' => __( '??? ????? ?????? ?????.', 'bina' ) ), 400 );
 	}
 
-	$provider_id  = (int) ( $row['provider_id'] ?? 0 );
-	$financials   = function_exists( 'bina_milestone_get_financials' ) ? bina_milestone_get_financials( $row ) : array();
-	$amount       = isset( $financials['base_amount'] ) ? (float) $financials['base_amount'] : (float) ( $row['amount'] ?? 0 );
-	$provider_net = isset( $financials['provider_net'] ) ? (float) $financials['provider_net'] : $amount;
-	$proposal_id  = (int) ( $row['proposal_id'] ?? 0 );
-	$no           = (int) ( $row['milestone_no'] ?? 0 );
-	if ( $provider_id < 1 || $amount <= 0 || $provider_net <= 0 ) {
-		wp_send_json_error( array( 'message' => __( '?????? ?????? ??? ?????.', 'bina' ) ), 400 );
-	}
-
-	// Mark approved.
 	$u = bina_milestone_update_status(
 		$milestone_id,
 		'approved',
@@ -320,62 +407,10 @@ function bina_ajax_approve_milestone() {
 		wp_send_json_error( array( 'message' => $u->get_error_message() ), 400 );
 	}
 
-	// Release funds: pending -net, available +net.
-	$debit = bina_wallet_ledger_add(
-		array(
-			'user_id'        => $provider_id,
-			'project_id'     => $project_id,
-			'proposal_id'    => $proposal_id,
-			'milestone_no'   => $no,
-			'entry_type'     => 'escrow_release_debit',
-			'amount'         => -1 * (float) $provider_net,
-			'balance_bucket' => 'pending',
-			'note'           => 'milestone approved release (debit pending)',
-			'meta'           => array( 'milestone_id' => $milestone_id ),
-		)
-	);
-	if ( is_wp_error( $debit ) ) {
-		wp_send_json_error( array( 'message' => $debit->get_error_message() ), 400 );
+	$r = bina_milestone_release_to_available( $milestone_id, $user_id );
+	if ( is_wp_error( $r ) ) {
+		wp_send_json_error( array( 'message' => $r->get_error_message() ), 400 );
 	}
-	$credit = bina_wallet_ledger_add(
-		array(
-			'user_id'        => $provider_id,
-			'project_id'     => $project_id,
-			'proposal_id'    => $proposal_id,
-			'milestone_no'   => $no,
-			'entry_type'     => 'escrow_release_credit',
-			'amount'         => (float) $provider_net,
-			'balance_bucket' => 'available',
-			'note'           => 'milestone approved release (credit available)',
-			'meta'           => array( 'milestone_id' => $milestone_id ),
-		)
-	);
-	if ( is_wp_error( $credit ) ) {
-		// Best-effort rollback debit.
-		bina_wallet_ledger_add(
-			array(
-				'user_id'        => $provider_id,
-				'project_id'     => $project_id,
-				'proposal_id'    => $proposal_id,
-				'milestone_no'   => $no,
-				'entry_type'     => 'escrow_release_rollback',
-				'amount'         => (float) $provider_net,
-				'balance_bucket' => 'pending',
-				'note'           => 'rollback release debit',
-				'meta'           => array( 'milestone_id' => $milestone_id ),
-			)
-		);
-		wp_send_json_error( array( 'message' => $credit->get_error_message() ), 400 );
-	}
-
-	// Mark released.
-	bina_milestone_update_status(
-		$milestone_id,
-		'released',
-		array(
-			'released_at' => current_time( 'mysql' ),
-		)
-	);
 
 	wp_send_json_success( array( 'ok' => 1 ) );
 }

@@ -75,6 +75,42 @@ function bina_admin_confirm_milestone_funding_from_overview() {
 add_action( 'admin_init', 'bina_admin_confirm_milestone_funding_from_overview' );
 
 /**
+ * Admin action: make funded milestone withdrawable (move pending -> available).
+ *
+ * @return void
+ */
+function bina_admin_make_milestone_withdrawable_from_overview() {
+	if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- handled below.
+	if ( empty( $_POST['bina_make_milestone_withdrawable'] ) || empty( $_POST['milestone_id'] ) ) {
+		return;
+	}
+
+	$milestone_id = absint( $_POST['milestone_id'] );
+	if ( $milestone_id < 1 ) {
+		return;
+	}
+	$nonce = isset( $_POST['bina_make_milestone_withdrawable_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['bina_make_milestone_withdrawable_nonce'] ) ) : '';
+	if ( ! wp_verify_nonce( $nonce, 'bina_make_milestone_withdrawable_' . $milestone_id ) ) {
+		return;
+	}
+
+	$r = function_exists( 'bina_milestone_release_to_available' )
+		? bina_milestone_release_to_available( $milestone_id, get_current_user_id() )
+		: new WP_Error( 'bina_ms_missing', __( 'ميزة إتاحة السحب غير متاحة.', 'bina' ) );
+	if ( is_wp_error( $r ) ) {
+		wp_safe_redirect( admin_url( 'admin.php?page=bina-project-admin&tab=payments&withdrawable=0' ) );
+		exit;
+	}
+
+	wp_safe_redirect( admin_url( 'admin.php?page=bina-project-admin&tab=payments&withdrawable=1' ) );
+	exit;
+}
+add_action( 'admin_init', 'bina_admin_make_milestone_withdrawable_from_overview' );
+
+/**
  * Render admin overview page.
  *
  * @return void
@@ -119,6 +155,10 @@ function bina_render_admin_project_overview_page() {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_GET['funded'] ) && (string) $_GET['funded'] === '1' ) {
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'تم تأكيد تمويل الدفعة.', 'bina' ) . '</p></div>';
+	}
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['withdrawable'] ) && (string) $_GET['withdrawable'] === '1' ) {
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'تم إتاحة الدفعة للسحب لمزود الخدمة.', 'bina' ) . '</p></div>';
 	}
 
 	// Tabs.
@@ -448,49 +488,156 @@ function bina_render_admin_payments_list( $project_detail_url ) {
 	$rows = function_exists( 'bina_milestones_fetch_payment_requested' ) ? bina_milestones_fetch_payment_requested( 300 ) : array();
 	if ( empty( $rows ) ) {
 		echo '<p>' . esc_html__( 'لا توجد طلبات حالياً.', 'bina' ) . '</p>';
+	} else {
+		echo '<table class="widefat striped">';
+		echo '<thead><tr>';
+		echo '<th>' . esc_html__( 'المشروع', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'العميل', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'مقدم الخدمة', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'الدفعة', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'المبلغ', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'آخر تحديث', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'إجراء', 'bina' ) . '</th>';
+		echo '</tr></thead><tbody>';
+
+		foreach ( $rows as $r ) {
+			$mid        = isset( $r['id'] ) ? (int) $r['id'] : 0;
+			$project_id = isset( $r['project_id'] ) ? (int) $r['project_id'] : 0;
+			$provider_id = isset( $r['provider_id'] ) ? (int) $r['provider_id'] : 0;
+			$no         = isset( $r['milestone_no'] ) ? (int) $r['milestone_no'] : 0;
+			$title      = isset( $r['title'] ) ? (string) $r['title'] : '';
+			$amount     = isset( $r['amount'] ) ? (float) $r['amount'] : 0.0;
+			$updated_at = isset( $r['updated_at'] ) ? (string) $r['updated_at'] : '';
+
+			$p = $project_id > 0 ? get_post( $project_id ) : null;
+			$customer_u = $p ? get_userdata( (int) $p->post_author ) : null;
+			$provider_u = $provider_id > 0 ? get_userdata( $provider_id ) : null;
+
+			$nonce = wp_create_nonce( 'bina_confirm_milestone_funding_' . $mid );
+
+			echo '<tr>';
+			echo '<td><a href="' . esc_url( $project_detail_url( $project_id ) ) . '">' . esc_html( $p ? get_the_title( $project_id ) : '—' ) . '</a></td>';
+			echo '<td>' . esc_html( $customer_u ? $customer_u->display_name : '—' ) . '</td>';
+			echo '<td>' . esc_html( $provider_u ? $provider_u->display_name : '—' ) . '</td>';
+			echo '<td>' . esc_html( $title !== '' ? $title : sprintf( __( 'دفعة %d', 'bina' ), $no ) ) . '</td>';
+			echo '<td>' . esc_html( number_format_i18n( $amount, 2 ) ) . ' ' . esc_html__( 'ر.س', 'bina' ) . '</td>';
+			echo '<td>' . esc_html( $updated_at !== '' ? $updated_at : '—' ) . '</td>';
+			echo '<td>';
+			echo '<form method="post" action="' . esc_url( admin_url( 'admin.php?page=bina-project-admin&tab=payments' ) ) . '" style="display:inline-block; margin:0; padding:0;" onsubmit="return confirm(\'' . esc_js( __( 'تأكيد: تم استلام دفعة العميل وتأكيد تمويلها؟', 'bina' ) ) . '\');">';
+			echo '<input type="hidden" name="milestone_id" value="' . esc_attr( (string) $mid ) . '" />';
+			echo '<input type="hidden" name="bina_confirm_milestone_funding" value="1" />';
+			echo '<input type="hidden" name="bina_confirm_milestone_funding_nonce" value="' . esc_attr( $nonce ) . '" />';
+			echo '<button type="submit" class="button button-small button-primary">' . esc_html__( 'تأكيد التمويل', 'bina' ) . '</button>';
+			echo '</form>';
+			echo '</td>';
+			echo '</tr>';
+		}
+		echo '</tbody></table>';
+	}
+
+	echo '<hr style="margin:20px 0;" />';
+	echo '<h2>' . esc_html__( 'معاملات الدفع الناجحة', 'bina' ) . '</h2>';
+	echo '<p class="description">' . esc_html__( 'تعرض عمليات التمويل التي تمت بنجاح عبر البوابة (Mock/Production).', 'bina' ) . '</p>';
+	$tx_rows = function_exists( 'bina_payment_tx_fetch_for_admin' )
+		? bina_payment_tx_fetch_for_admin(
+			array(
+				'flow_type'   => 'payin',
+				'object_type' => 'milestone',
+				'status'      => 'completed',
+				'limit'       => 300,
+			)
+		)
+		: array();
+	if ( empty( $tx_rows ) ) {
+		echo '<p>' . esc_html__( 'لا توجد معاملات مكتملة حتى الآن.', 'bina' ) . '</p>';
+	} else {
+		echo '<table class="widefat striped">';
+		echo '<thead><tr>';
+		echo '<th>' . esc_html__( '#TX', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'المشروع', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'الدفعة', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'العميل الدافع', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'المبلغ', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'Gateway Ref', 'bina' ) . '</th>';
+		echo '<th>' . esc_html__( 'التاريخ', 'bina' ) . '</th>';
+		echo '</tr></thead><tbody>';
+		foreach ( $tx_rows as $tx ) {
+			$mid      = isset( $tx['object_id'] ) ? (int) $tx['object_id'] : 0;
+			$tx_id    = isset( $tx['id'] ) ? (int) $tx['id'] : 0;
+			$payer_id = isset( $tx['user_id'] ) ? (int) $tx['user_id'] : 0;
+			$amount   = isset( $tx['amount'] ) ? (float) $tx['amount'] : 0.0;
+			$ref      = isset( $tx['gateway_ref'] ) ? (string) $tx['gateway_ref'] : '';
+			$created  = isset( $tx['created_at'] ) ? (string) $tx['created_at'] : '';
+			$milestone = function_exists( 'bina_milestone_get_by_id' ) ? bina_milestone_get_by_id( $mid ) : null;
+			$project_id = is_array( $milestone ) && isset( $milestone['project_id'] ) ? (int) $milestone['project_id'] : 0;
+			$project = $project_id > 0 ? get_post( $project_id ) : null;
+			$payer = $payer_id > 0 ? get_userdata( $payer_id ) : null;
+			$ms_label = is_array( $milestone )
+				? ( ! empty( $milestone['title'] ) ? (string) $milestone['title'] : sprintf( __( 'دفعة %d', 'bina' ), (int) ( $milestone['milestone_no'] ?? 0 ) ) )
+				: '—';
+
+			echo '<tr>';
+			echo '<td>' . esc_html( (string) $tx_id ) . '</td>';
+			echo '<td>' . ( $project_id > 0 ? '<a href="' . esc_url( $project_detail_url( $project_id ) ) . '">' . esc_html( $project ? get_the_title( $project_id ) : ( '#' . $project_id ) ) . '</a>' : '—' ) . '</td>';
+			echo '<td>' . esc_html( $ms_label ) . '</td>';
+			echo '<td>' . esc_html( $payer ? $payer->display_name : '—' ) . '</td>';
+			echo '<td>' . esc_html( number_format_i18n( $amount, 2 ) ) . ' ' . esc_html__( 'ر.س', 'bina' ) . '</td>';
+			echo '<td>' . esc_html( $ref !== '' ? $ref : '—' ) . '</td>';
+			echo '<td>' . esc_html( $created !== '' ? $created : '—' ) . '</td>';
+			echo '</tr>';
+		}
+		echo '</tbody></table>';
+	}
+
+	echo '<hr style="margin:20px 0;" />';
+	echo '<h2>' . esc_html__( 'الدفعات الممولة وإتاحة السحب', 'bina' ) . '</h2>';
+	echo '<p class="description">' . esc_html__( 'من هنا يمكنك التحكم في جعل الدفعة متاحة للسحب لمزود الخدمة.', 'bina' ) . '</p>';
+	$funded_rows = function_exists( 'bina_milestones_fetch_by_statuses' )
+		? bina_milestones_fetch_by_statuses( array( 'funded', 'submitted', 'approved', 'released' ), 300 )
+		: array();
+	if ( empty( $funded_rows ) ) {
+		echo '<p>' . esc_html__( 'لا توجد دفعات ممولة حتى الآن.', 'bina' ) . '</p>';
 		return;
 	}
 
 	echo '<table class="widefat striped">';
 	echo '<thead><tr>';
 	echo '<th>' . esc_html__( 'المشروع', 'bina' ) . '</th>';
-	echo '<th>' . esc_html__( 'العميل', 'bina' ) . '</th>';
 	echo '<th>' . esc_html__( 'مقدم الخدمة', 'bina' ) . '</th>';
 	echo '<th>' . esc_html__( 'الدفعة', 'bina' ) . '</th>';
 	echo '<th>' . esc_html__( 'المبلغ', 'bina' ) . '</th>';
-	echo '<th>' . esc_html__( 'آخر تحديث', 'bina' ) . '</th>';
+	echo '<th>' . esc_html__( 'الحالة', 'bina' ) . '</th>';
 	echo '<th>' . esc_html__( 'إجراء', 'bina' ) . '</th>';
 	echo '</tr></thead><tbody>';
-
-	foreach ( $rows as $r ) {
-		$mid        = isset( $r['id'] ) ? (int) $r['id'] : 0;
-		$project_id = isset( $r['project_id'] ) ? (int) $r['project_id'] : 0;
+	foreach ( $funded_rows as $r ) {
+		$mid         = isset( $r['id'] ) ? (int) $r['id'] : 0;
+		$project_id  = isset( $r['project_id'] ) ? (int) $r['project_id'] : 0;
 		$provider_id = isset( $r['provider_id'] ) ? (int) $r['provider_id'] : 0;
-		$no         = isset( $r['milestone_no'] ) ? (int) $r['milestone_no'] : 0;
-		$title      = isset( $r['title'] ) ? (string) $r['title'] : '';
-		$amount     = isset( $r['amount'] ) ? (float) $r['amount'] : 0.0;
-		$updated_at = isset( $r['updated_at'] ) ? (string) $r['updated_at'] : '';
-
-		$p = $project_id > 0 ? get_post( $project_id ) : null;
-		$customer_u = $p ? get_userdata( (int) $p->post_author ) : null;
-		$provider_u = $provider_id > 0 ? get_userdata( $provider_id ) : null;
-
-		$nonce = wp_create_nonce( 'bina_confirm_milestone_funding_' . $mid );
+		$title       = isset( $r['title'] ) ? (string) $r['title'] : '';
+		$no          = isset( $r['milestone_no'] ) ? (int) $r['milestone_no'] : 0;
+		$amount      = isset( $r['amount'] ) ? (float) $r['amount'] : 0.0;
+		$status      = isset( $r['status'] ) ? (string) $r['status'] : '';
+		$project     = $project_id > 0 ? get_post( $project_id ) : null;
+		$provider_u  = $provider_id > 0 ? get_userdata( $provider_id ) : null;
 
 		echo '<tr>';
-		echo '<td><a href="' . esc_url( $project_detail_url( $project_id ) ) . '">' . esc_html( $p ? get_the_title( $project_id ) : '—' ) . '</a></td>';
-		echo '<td>' . esc_html( $customer_u ? $customer_u->display_name : '—' ) . '</td>';
+		echo '<td>' . ( $project_id > 0 ? '<a href="' . esc_url( $project_detail_url( $project_id ) ) . '">' . esc_html( $project ? get_the_title( $project_id ) : ( '#' . $project_id ) ) . '</a>' : '—' ) . '</td>';
 		echo '<td>' . esc_html( $provider_u ? $provider_u->display_name : '—' ) . '</td>';
 		echo '<td>' . esc_html( $title !== '' ? $title : sprintf( __( 'دفعة %d', 'bina' ), $no ) ) . '</td>';
 		echo '<td>' . esc_html( number_format_i18n( $amount, 2 ) ) . ' ' . esc_html__( 'ر.س', 'bina' ) . '</td>';
-		echo '<td>' . esc_html( $updated_at !== '' ? $updated_at : '—' ) . '</td>';
+		echo '<td>' . esc_html( $status ) . '</td>';
 		echo '<td>';
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin.php?page=bina-project-admin&tab=payments' ) ) . '" style="display:inline-block; margin:0; padding:0;" onsubmit="return confirm(\'' . esc_js( __( 'تأكيد: تم استلام دفعة العميل وتأكيد تمويلها؟', 'bina' ) ) . '\');">';
-		echo '<input type="hidden" name="milestone_id" value="' . esc_attr( (string) $mid ) . '" />';
-		echo '<input type="hidden" name="bina_confirm_milestone_funding" value="1" />';
-		echo '<input type="hidden" name="bina_confirm_milestone_funding_nonce" value="' . esc_attr( $nonce ) . '" />';
-		echo '<button type="submit" class="button button-small button-primary">' . esc_html__( 'تأكيد التمويل', 'bina' ) . '</button>';
-		echo '</form>';
+		if ( $status === 'released' ) {
+			echo '<span class="button button-small" style="opacity:.7;cursor:default;">' . esc_html__( 'متاح للسحب', 'bina' ) . '</span>';
+		} else {
+			$nonce = wp_create_nonce( 'bina_make_milestone_withdrawable_' . $mid );
+			echo '<form method="post" action="' . esc_url( admin_url( 'admin.php?page=bina-project-admin&tab=payments' ) ) . '" style="display:inline-block; margin:0; padding:0;" onsubmit="return confirm(\'' . esc_js( __( 'تأكيد: جعل هذه الدفعة متاحة للسحب لمزود الخدمة؟', 'bina' ) ) . '\');">';
+			echo '<input type="hidden" name="milestone_id" value="' . esc_attr( (string) $mid ) . '" />';
+			echo '<input type="hidden" name="bina_make_milestone_withdrawable" value="1" />';
+			echo '<input type="hidden" name="bina_make_milestone_withdrawable_nonce" value="' . esc_attr( $nonce ) . '" />';
+			echo '<button type="submit" class="button button-small">' . esc_html__( 'إتاحة السحب', 'bina' ) . '</button>';
+			echo '</form>';
+		}
 		echo '</td>';
 		echo '</tr>';
 	}
