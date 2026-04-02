@@ -53,6 +53,9 @@ class bina_Customer_Profile_Widget extends Widget_Base {
 			echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'هذه الصفحة للعملاء فقط.', 'bina' ) . '</p>';
 			return;
 		}
+		if ( ! headers_sent() ) {
+			nocache_headers();
+		}
 
 		$urls     = bina_get_customer_portal_urls( null );
 		$stats    = bina_get_customer_dashboard_stats( $user->ID );

@@ -65,6 +65,9 @@ function bina_ajax_save_service_provider_profile() {
 	if ( isset( $_POST['city'] ) ) {
 		update_user_meta( $user_id, 'bina_city', $city );
 	}
+	if ( function_exists( 'clean_user_cache' ) ) {
+		clean_user_cache( $user_id );
+	}
 
 	wp_send_json_success(
 		array(

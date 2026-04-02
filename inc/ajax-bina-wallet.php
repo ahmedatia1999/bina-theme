@@ -99,7 +99,27 @@ function bina_ajax_create_withdraw_request() {
 		wp_send_json_error( array( 'message' => __( 'هذه العملية لمزودي الخدمة فقط.', 'bina' ) ), 403 );
 	}
 
-	$amount = isset( $_POST['amount'] ) ? (float) wp_unslash( $_POST['amount'] ) : 0;
+	$amount_raw = isset( $_POST['amount'] ) ? (string) wp_unslash( $_POST['amount'] ) : '';
+	$amount_raw = trim( $amount_raw );
+	$amount_raw = strtr(
+		$amount_raw,
+		array(
+			'٠' => '0',
+			'١' => '1',
+			'٢' => '2',
+			'٣' => '3',
+			'٤' => '4',
+			'٥' => '5',
+			'٦' => '6',
+			'٧' => '7',
+			'٨' => '8',
+			'٩' => '9',
+			'٫' => '.',
+			'٬' => '',
+			',' => '.',
+		)
+	);
+	$amount = is_numeric( $amount_raw ) ? (float) $amount_raw : 0;
 	$method = isset( $_POST['method'] ) ? sanitize_text_field( wp_unslash( $_POST['method'] ) ) : 'bank';
 
 	$r = bina_withdraw_request_create( $user_id, $amount, $method );

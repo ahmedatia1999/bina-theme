@@ -609,6 +609,7 @@ function bina_render_admin_payments_list( $project_detail_url ) {
 	echo '<th>' . esc_html__( 'الحالة', 'bina' ) . '</th>';
 	echo '<th>' . esc_html__( 'إجراء', 'bina' ) . '</th>';
 	echo '</tr></thead><tbody>';
+	$provider_paid_withdraw_map = array();
 	foreach ( $funded_rows as $r ) {
 		$mid         = isset( $r['id'] ) ? (int) $r['id'] : 0;
 		$project_id  = isset( $r['project_id'] ) ? (int) $r['project_id'] : 0;
@@ -628,7 +629,27 @@ function bina_render_admin_payments_list( $project_detail_url ) {
 		echo '<td>' . esc_html( $status ) . '</td>';
 		echo '<td>';
 		if ( $status === 'released' ) {
-			echo '<span class="button button-small" style="opacity:.7;cursor:default;">' . esc_html__( 'متاح للسحب', 'bina' ) . '</span>';
+			$has_paid_withdraw = false;
+			if ( $provider_id > 0 ) {
+				if ( ! array_key_exists( $provider_id, $provider_paid_withdraw_map ) ) {
+					$paid_rows = function_exists( 'bina_withdraw_requests_fetch_for_admin' )
+						? bina_withdraw_requests_fetch_for_admin(
+							array(
+								'user_id' => $provider_id,
+								'status'  => 'paid',
+								'limit'   => 1,
+							)
+						)
+						: array();
+					$provider_paid_withdraw_map[ $provider_id ] = ! empty( $paid_rows );
+				}
+				$has_paid_withdraw = ! empty( $provider_paid_withdraw_map[ $provider_id ] );
+			}
+			if ( $has_paid_withdraw ) {
+				echo '<span class="button button-small" style="opacity:.85;cursor:default;background:#16a34a;border-color:#16a34a;color:#fff;">' . esc_html__( 'تم السحب', 'bina' ) . '</span>';
+			} else {
+				echo '<span class="button button-small" style="opacity:.7;cursor:default;">' . esc_html__( 'متاح للسحب', 'bina' ) . '</span>';
+			}
 		} else {
 			$nonce = wp_create_nonce( 'bina_make_milestone_withdrawable_' . $mid );
 			echo '<form method="post" action="' . esc_url( admin_url( 'admin.php?page=bina-project-admin&tab=payments' ) ) . '" style="display:inline-block; margin:0; padding:0;" onsubmit="return confirm(\'' . esc_js( __( 'تأكيد: جعل هذه الدفعة متاحة للسحب لمزود الخدمة؟', 'bina' ) ) . '\');">';

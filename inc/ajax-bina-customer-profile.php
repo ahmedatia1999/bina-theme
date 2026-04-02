@@ -48,6 +48,9 @@ function bina_ajax_save_customer_profile() {
 		update_user_meta( $user_id, 'bina_phone', $digits );
 		update_user_meta( $user_id, 'bina_phone_normalized', function_exists( 'bina_normalize_phone' ) ? bina_normalize_phone( $digits ) : $digits );
 	}
+	if ( function_exists( 'clean_user_cache' ) ) {
+		clean_user_cache( $user_id );
+	}
 
 	wp_send_json_success(
 		array(

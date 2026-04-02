@@ -183,7 +183,7 @@ function bina_withdraw_request_create( $user_id, $amount, $method = 'bank' ) {
 	global $wpdb;
 	$table   = bina_wallet_withdrawals_table_name();
 	$user_id = (int) $user_id;
-	$amount  = (float) $amount;
+	$amount  = round( (float) $amount, 2 );
 	$method  = sanitize_text_field( (string) $method );
 
 	if ( $user_id < 1 || $amount <= 0 ) {
@@ -193,9 +193,18 @@ function bina_withdraw_request_create( $user_id, $amount, $method = 'bank' ) {
 		$method = 'bank';
 	}
 
-	$balances = bina_wallet_get_balances( $user_id );
-	if ( $amount > (float) $balances['available'] ) {
-		return new WP_Error( 'bina_withdraw_funds', __( 'الرصيد المتاح غير كافٍ.', 'bina' ) );
+	$balances  = bina_wallet_get_balances( $user_id );
+	$available = round( (float) ( $balances['available'] ?? 0 ), 2 );
+	if ( $amount - $available > 0.009 ) {
+		return new WP_Error(
+			'bina_withdraw_funds',
+			sprintf(
+				/* translators: 1: available amount, 2: requested amount */
+				__( 'الرصيد المتاح غير كافٍ. المتاح: %1$s ر.س، المطلوب: %2$s ر.س.', 'bina' ),
+				number_format_i18n( $available, 2 ),
+				number_format_i18n( $amount, 2 )
+			)
+		);
 	}
 
 	// Snapshot payout method fields at time of request.
@@ -231,6 +240,8 @@ function bina_withdraw_request_create( $user_id, $amount, $method = 'bank' ) {
 		return new WP_Error( 'bina_withdraw_db', __( 'تعذر إنشاء طلب السحب.', 'bina' ) );
 	}
 
+	$withdraw_request_id = (int) $wpdb->insert_id;
+
 	// Reserve funds by debiting available bucket immediately.
 	$r = bina_wallet_ledger_add(
 		array(
@@ -239,15 +250,54 @@ function bina_withdraw_request_create( $user_id, $amount, $method = 'bank' ) {
 			'amount'         => -1 * $amount,
 			'balance_bucket' => 'available',
 			'note'           => 'withdraw request reserve',
-			'meta'           => array( 'withdraw_request_id' => (int) $wpdb->insert_id ),
+			'meta'           => array( 'withdraw_request_id' => $withdraw_request_id ),
 		)
 	);
 	if ( is_wp_error( $r ) ) {
 		// If reservation failed, rollback request.
-		$wpdb->delete( $table, array( 'id' => (int) $wpdb->insert_id ), array( '%d' ) );
+		$wpdb->delete( $table, array( 'id' => $withdraw_request_id ), array( '%d' ) );
 		return $r;
 	}
 
-	return (int) $wpdb->insert_id;
+	return $withdraw_request_id;
+}
+
+/**
+ * Fetch withdraw requests for admin reporting.
+ *
+ * @param array<string,mixed> $args Optional filters: user_id, status, limit.
+ * @return array<int,array<string,mixed>>
+ */
+function bina_withdraw_requests_fetch_for_admin( $args = array() ) {
+	global $wpdb;
+
+	$table   = bina_wallet_withdrawals_table_name();
+	$user_id = isset( $args['user_id'] ) ? (int) $args['user_id'] : 0;
+	$status  = isset( $args['status'] ) ? sanitize_key( (string) $args['status'] ) : '';
+	$limit   = isset( $args['limit'] ) ? (int) $args['limit'] : 100;
+	$limit   = max( 1, min( 500, $limit ) );
+
+	$where  = array();
+	$params = array();
+
+	if ( $user_id > 0 ) {
+		$where[]  = 'user_id = %d';
+		$params[] = $user_id;
+	}
+	if ( $status !== '' ) {
+		$where[]  = 'status = %s';
+		$params[] = $status;
+	}
+
+	$sql = "SELECT id, user_id, amount, status, payout_method, created_at, updated_at
+		FROM {$table}";
+	if ( ! empty( $where ) ) {
+		$sql .= ' WHERE ' . implode( ' AND ', $where );
+	}
+	$sql .= ' ORDER BY id DESC LIMIT %d';
+	$params[] = $limit;
+
+	$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	return is_array( $rows ) ? $rows : array();
 }
 

@@ -143,6 +143,9 @@ class bina_Service_Provider_Stub_Shell_Widget extends Widget_Base {
 			echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'هذه الصفحة لمقدمي الخدمة فقط.', 'bina' ) . '</p>';
 			return;
 		}
+		if ( in_array( (string) ( $s['active_nav'] ?? '' ), array( 'profile', 'payments' ), true ) && ! headers_sent() ) {
+			nocache_headers();
+		}
 
 		$urls     = bina_get_service_provider_portal_urls( $s );
 		$logo_url = ! empty( $s['logo']['url'] ) ? $s['logo']['url'] : '';

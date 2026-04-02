@@ -383,6 +383,59 @@ function bina_ensure_dashboard_pages_on_init_for_admins() {
 
 add_action( 'init', 'bina_ensure_dashboard_pages_on_init_for_admins', 30 );
 
+/**
+ * Disable full-page cache for dashboard pages.
+ *
+ * This avoids stale HTML with cache plugins (e.g. LiteSpeed) when users
+ * update profile/payout/payment data and immediately navigate between tabs.
+ *
+ * @return void
+ */
+function bina_disable_cache_for_dashboard_pages() {
+	if ( is_admin() ) {
+		return;
+	}
+	if ( ! is_singular( 'page' ) ) {
+		return;
+	}
+
+	$post = get_post();
+	if ( ! $post instanceof WP_Post ) {
+		return;
+	}
+
+	$dashboard_slugs = array();
+	foreach ( bina_get_theme_auto_pages() as $row ) {
+		$slug = isset( $row['slug'] ) ? (string) $row['slug'] : '';
+		if ( $slug !== '' ) {
+			$dashboard_slugs[] = $slug;
+		}
+	}
+
+	if ( ! in_array( (string) $post->post_name, $dashboard_slugs, true ) ) {
+		return;
+	}
+
+	// WordPress + cache plugins common switches.
+	if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+		define( 'DONOTCACHEPAGE', true );
+	}
+	if ( ! defined( 'DONOTCACHEOBJECT' ) ) {
+		define( 'DONOTCACHEOBJECT', true );
+	}
+	if ( ! defined( 'DONOTCACHEDB' ) ) {
+		define( 'DONOTCACHEDB', true );
+	}
+
+	if ( ! headers_sent() ) {
+		nocache_headers();
+		header( 'Cache-Control: no-store, no-cache, must-revalidate, max-age=0' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT' );
+	}
+}
+add_action( 'template_redirect', 'bina_disable_cache_for_dashboard_pages', 0 );
+
 require_once get_template_directory() . '/inc/partials/dashboard-customer-shell.php';
 
 /**

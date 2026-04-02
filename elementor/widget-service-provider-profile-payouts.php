@@ -109,6 +109,9 @@ class bina_Service_Provider_Profile_Payouts_Widget extends Widget_Base {
 			echo '<p class="p-6 text-center text-muted-foreground">' . esc_html__( 'هذه الصفحة لمقدمي الخدمة فقط.', 'bina' ) . '</p>';
 			return;
 		}
+		if ( ! headers_sent() ) {
+			nocache_headers();
+		}
 
 		if ( function_exists( 'bina_customer_portal_enqueue_shell_assets' ) ) {
 			bina_customer_portal_enqueue_shell_assets();

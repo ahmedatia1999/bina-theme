@@ -95,11 +95,21 @@
 		const wForm = root.querySelector('[data-bina-withdraw-form]');
 		if (wForm) {
 			const msg = root.querySelector('[data-bina-withdraw-msg]');
+			const submit = wForm.querySelector('button[type="submit"], [data-bina-withdraw-submit]');
 			wForm.addEventListener('submit', (e) => {
 				e.preventDefault();
+				if (wForm.dataset.loading === '1') return;
+				wForm.dataset.loading = '1';
 				const fd = new FormData(wForm);
 				const amount = String(fd.get('amount') || '');
 				const method = String(fd.get('method') || 'bank');
+				const originalText = submit ? submit.textContent : '';
+
+				if (submit) {
+					submit.disabled = true;
+					submit.classList.add('opacity-60', 'cursor-not-allowed');
+					submit.textContent = 'جارٍ الإرسال...';
+				}
 
 				if (msg) msg.textContent = '...';
 				post({
@@ -109,8 +119,36 @@
 					amount,
 					method
 				}).then((res) => {
+					const ok = !!(res && res.success);
 					if (msg) {
-						msg.textContent = res && res.success ? (res?.data?.message || 'تم إرسال الطلب') : (res?.data?.message || 'تعذر إرسال الطلب');
+						msg.textContent = ok ? (res?.data?.message || 'تم إرسال الطلب') : (res?.data?.message || 'تعذر إرسال الطلب');
+					}
+					if (ok) {
+						// Refresh balances/history from server-confirmed state.
+						setTimeout(() => {
+							try {
+								const u = new URL(window.location.href);
+								u.searchParams.set('_', String(Date.now()));
+								window.location.replace(u.toString());
+							} catch (err) {
+								window.location.reload();
+							}
+						}, 500);
+						return;
+					}
+					wForm.dataset.loading = '0';
+					if (submit) {
+						submit.disabled = false;
+						submit.classList.remove('opacity-60', 'cursor-not-allowed');
+						submit.textContent = originalText || 'طلب سحب';
+					}
+				}).catch(() => {
+					if (msg) msg.textContent = 'تعذر إرسال الطلب';
+					wForm.dataset.loading = '0';
+					if (submit) {
+						submit.disabled = false;
+						submit.classList.remove('opacity-60', 'cursor-not-allowed');
+						submit.textContent = originalText || 'طلب سحب';
 					}
 				});
 			});
