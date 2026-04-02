@@ -244,6 +244,10 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 					$amt   = isset( $ms['amount'] ) ? (float) $ms['amount'] : 0.0;
 					$st    = isset( $ms['status'] ) ? (string) $ms['status'] : '';
 					$ms_meta = isset( $ms['meta'] ) ? json_decode( (string) $ms['meta'], true ) : array();
+					$financials = function_exists( 'bina_milestone_get_financials' ) ? bina_milestone_get_financials( $ms ) : array();
+					$customer_fee = isset( $financials['customer_fee'] ) ? (float) $financials['customer_fee'] : 0.0;
+					$customer_total = isset( $financials['customer_total'] ) ? (float) $financials['customer_total'] : $amt;
+					$provider_net = isset( $financials['provider_net'] ) ? (float) $financials['provider_net'] : $amt;
 					$ms_description = is_array( $ms_meta ) && ! empty( $ms_meta['description'] ) ? (string) $ms_meta['description'] : '';
 					$st_l  = $st;
 					if ( $st === 'scheduled' ) { $st_l = __( 'مستحقة', 'bina' ); }
@@ -257,7 +261,12 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 						<div class="flex items-start justify-between gap-3">
 							<div class="min-w-0">
 								<div class="font-medium"><?php echo esc_html( $title !== '' ? $title : sprintf( __( 'دفعة %d', 'bina' ), $no ) ); ?></div>
-								<div class="text-xs text-muted-foreground tabular-nums mt-1"><?php echo esc_html( number_format_i18n( $amt, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+								<div class="mt-1 space-y-1 text-xs text-muted-foreground tabular-nums">
+									<div><?php echo esc_html( number_format_i18n( $amt, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+									<div><?php esc_html_e( 'عمولة المنصة على العميل 1%', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $customer_fee, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+									<div class="font-medium text-foreground"><?php esc_html_e( 'إجمالي المطلوب دفعه', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $customer_total, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+									<div><?php esc_html_e( 'صافي استلام مزود الخدمة بعد عمولة 1%', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $provider_net, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+								</div>
 								<?php if ( $ms_description !== '' ) : ?>
 									<div class="text-xs text-muted-foreground mt-2"><?php echo esc_html( $ms_description ); ?></div>
 								<?php endif; ?>
@@ -297,4 +306,3 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 		</div>
 	<?php endif; ?>
 </div>
-

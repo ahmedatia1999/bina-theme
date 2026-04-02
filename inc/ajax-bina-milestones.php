@@ -42,7 +42,7 @@ function bina_milestone_get_by_id( $milestone_id ) {
  */
 function bina_ajax_request_milestone_funding() {
 	if ( ! is_user_logged_in() ) {
-		wp_send_json_error( array( 'message' => __( 'يجب تسجيل الدخول.', 'bina' ) ), 401 );
+		wp_send_json_error( array( 'message' => __( '??? ????? ??????.', 'bina' ) ), 401 );
 	}
 	check_ajax_referer( 'bina_milestones', 'nonce' );
 
@@ -50,21 +50,21 @@ function bina_ajax_request_milestone_funding() {
 	$milestone_id = isset( $_POST['milestone_id'] ) ? absint( $_POST['milestone_id'] ) : 0;
 	$row          = bina_milestone_get_by_id( $milestone_id );
 	if ( ! is_array( $row ) ) {
-		wp_send_json_error( array( 'message' => __( 'الدفعة غير موجودة.', 'bina' ) ), 404 );
+		wp_send_json_error( array( 'message' => __( '?????? ??? ??????.', 'bina' ) ), 404 );
 	}
 
 	$project_id = (int) ( $row['project_id'] ?? 0 );
 	$post       = get_post( $project_id );
 	if ( ! $post || $post->post_type !== 'bina_project' ) {
-		wp_send_json_error( array( 'message' => __( 'المشروع غير صالح.', 'bina' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( '??????? ??? ????.', 'bina' ) ), 400 );
 	}
 	if ( ! user_can( $user_id, 'manage_options' ) && (int) $post->post_author !== (int) $user_id ) {
-		wp_send_json_error( array( 'message' => __( 'غير مصرح.', 'bina' ) ), 403 );
+		wp_send_json_error( array( 'message' => __( '??? ????.', 'bina' ) ), 403 );
 	}
 
 	$status = (string) ( $row['status'] ?? '' );
 	if ( $status !== 'scheduled' ) {
-		wp_send_json_error( array( 'message' => __( 'لا يمكن طلب تمويل هذه الدفعة الآن.', 'bina' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( '?? ???? ??? ????? ??? ?????? ????.', 'bina' ) ), 400 );
 	}
 
 	$u = bina_milestone_update_status( $milestone_id, 'payment_requested' );
@@ -80,8 +80,8 @@ function bina_ajax_request_milestone_funding() {
 			if ( $aid < 1 ) {
 				continue;
 			}
-			$title = __( 'طلب تمويل دفعة', 'bina' );
-			$body  = __( 'هناك طلب جديد لتأكيد تمويل دفعة (Milestone).', 'bina' );
+			$title = __( '??? ????? ????', 'bina' );
+			$body  = __( '???? ??? ???? ?????? ????? ???? (Milestone).', 'bina' );
 			if ( function_exists( 'bina_notifications_insert' ) ) {
 				bina_notifications_insert( $aid, 'milestone_funding_requested', $project_id, $user_id, $title, $body );
 			}
@@ -103,34 +103,36 @@ function bina_milestone_confirm_funding( $milestone_id, $admin_id ) {
 	$milestone_id = (int) $milestone_id;
 	$admin_id     = (int) $admin_id;
 	if ( $milestone_id < 1 || $admin_id < 1 ) {
-		return new WP_Error( 'bina_ms_bad', __( 'بيانات غير صالحة.', 'bina' ) );
+		return new WP_Error( 'bina_ms_bad', __( '?????? ??? ?????.', 'bina' ) );
 	}
 	if ( ! user_can( $admin_id, 'manage_options' ) ) {
-		return new WP_Error( 'bina_ms_forbidden', __( 'هذه العملية للأدمن فقط.', 'bina' ) );
+		return new WP_Error( 'bina_ms_forbidden', __( '??? ??????? ?????? ???.', 'bina' ) );
 	}
 
 	$row = bina_milestone_get_by_id( $milestone_id );
 	if ( ! is_array( $row ) ) {
-		return new WP_Error( 'bina_ms_nf', __( 'الدفعة غير موجودة.', 'bina' ) );
+		return new WP_Error( 'bina_ms_nf', __( '?????? ??? ??????.', 'bina' ) );
 	}
 
 	$project_id = (int) ( $row['project_id'] ?? 0 );
 	$post       = get_post( $project_id );
 	if ( ! $post || $post->post_type !== 'bina_project' ) {
-		return new WP_Error( 'bina_ms_project', __( 'المشروع غير صالح.', 'bina' ) );
+		return new WP_Error( 'bina_ms_project', __( '??????? ??? ????.', 'bina' ) );
 	}
 
 	$status = (string) ( $row['status'] ?? '' );
 	if ( $status !== 'payment_requested' ) {
-		return new WP_Error( 'bina_ms_state', __( 'يجب أن يطلب العميل التمويل أولاً.', 'bina' ) );
+		return new WP_Error( 'bina_ms_state', __( '??? ?? ???? ?????? ??????? ?????.', 'bina' ) );
 	}
 
-	$provider_id = (int) ( $row['provider_id'] ?? 0 );
-	$amount      = (float) ( $row['amount'] ?? 0 );
-	$proposal_id = (int) ( $row['proposal_id'] ?? 0 );
-	$no          = (int) ( $row['milestone_no'] ?? 0 );
-	if ( $provider_id < 1 || $amount <= 0 ) {
-		return new WP_Error( 'bina_ms_bad_row', __( 'بيانات الدفعة غير صالحة.', 'bina' ) );
+	$provider_id  = (int) ( $row['provider_id'] ?? 0 );
+	$financials   = function_exists( 'bina_milestone_get_financials' ) ? bina_milestone_get_financials( $row ) : array();
+	$amount       = isset( $financials['base_amount'] ) ? (float) $financials['base_amount'] : (float) ( $row['amount'] ?? 0 );
+	$provider_net = isset( $financials['provider_net'] ) ? (float) $financials['provider_net'] : $amount;
+	$proposal_id  = (int) ( $row['proposal_id'] ?? 0 );
+	$no           = (int) ( $row['milestone_no'] ?? 0 );
+	if ( $provider_id < 1 || $amount <= 0 || $provider_net <= 0 ) {
+		return new WP_Error( 'bina_ms_bad_row', __( '?????? ?????? ??? ?????.', 'bina' ) );
 	}
 
 	$u = bina_milestone_update_status( $milestone_id, 'funded' );
@@ -145,10 +147,15 @@ function bina_milestone_confirm_funding( $milestone_id, $admin_id ) {
 			'proposal_id'    => $proposal_id,
 			'milestone_no'   => $no,
 			'entry_type'     => 'escrow_funded',
-			'amount'         => (float) $amount,
+			'amount'         => (float) $provider_net,
 			'balance_bucket' => 'pending',
-			'note'           => 'milestone funded (admin confirm)',
-			'meta'           => array( 'milestone_id' => $milestone_id, 'admin_id' => $admin_id ),
+			'note'           => 'milestone funded (admin confirm, net after provider fee)',
+			'meta'           => array(
+				'milestone_id' => $milestone_id,
+				'admin_id'     => $admin_id,
+				'base_amount'  => $amount,
+				'provider_net' => $provider_net,
+			),
 		)
 	);
 	if ( is_wp_error( $led ) ) {
@@ -166,7 +173,7 @@ function bina_milestone_confirm_funding( $milestone_id, $admin_id ) {
  */
 function bina_ajax_fund_milestone() {
 	if ( ! is_user_logged_in() ) {
-		wp_send_json_error( array( 'message' => __( 'يجب تسجيل الدخول.', 'bina' ) ), 401 );
+		wp_send_json_error( array( 'message' => __( '??? ????? ??????.', 'bina' ) ), 401 );
 	}
 	check_ajax_referer( 'bina_milestones', 'nonce' );
 
@@ -174,22 +181,22 @@ function bina_ajax_fund_milestone() {
 	$milestone_id = isset( $_POST['milestone_id'] ) ? absint( $_POST['milestone_id'] ) : 0;
 	$row          = bina_milestone_get_by_id( $milestone_id );
 	if ( ! is_array( $row ) ) {
-		wp_send_json_error( array( 'message' => __( 'الدفعة غير موجودة.', 'bina' ) ), 404 );
+		wp_send_json_error( array( 'message' => __( '?????? ??? ??????.', 'bina' ) ), 404 );
 	}
 
 	$project_id = (int) ( $row['project_id'] ?? 0 );
 	$post       = get_post( $project_id );
 	if ( ! $post || $post->post_type !== 'bina_project' ) {
-		wp_send_json_error( array( 'message' => __( 'المشروع غير صالح.', 'bina' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( '??????? ??? ????.', 'bina' ) ), 400 );
 	}
 	// Admin-only confirmation.
 	if ( ! user_can( $user_id, 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'هذه العملية للأدمن فقط.', 'bina' ) ), 403 );
+		wp_send_json_error( array( 'message' => __( '??? ??????? ?????? ???.', 'bina' ) ), 403 );
 	}
 
 	$status = (string) ( $row['status'] ?? '' );
 	if ( $status !== 'payment_requested' ) {
-		wp_send_json_error( array( 'message' => __( 'يجب أن يطلب العميل التمويل أولاً.', 'bina' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( '??? ?? ???? ?????? ??????? ?????.', 'bina' ) ), 400 );
 	}
 
 	$r = bina_milestone_confirm_funding( $milestone_id, $user_id );
@@ -207,7 +214,7 @@ add_action( 'wp_ajax_bina_fund_milestone', 'bina_ajax_fund_milestone' );
  */
 function bina_ajax_submit_milestone() {
 	if ( ! is_user_logged_in() ) {
-		wp_send_json_error( array( 'message' => __( 'يجب تسجيل الدخول.', 'bina' ) ), 401 );
+		wp_send_json_error( array( 'message' => __( '??? ????? ??????.', 'bina' ) ), 401 );
 	}
 	check_ajax_referer( 'bina_milestones', 'nonce' );
 
@@ -215,17 +222,17 @@ function bina_ajax_submit_milestone() {
 	$milestone_id = isset( $_POST['milestone_id'] ) ? absint( $_POST['milestone_id'] ) : 0;
 	$row          = bina_milestone_get_by_id( $milestone_id );
 	if ( ! is_array( $row ) ) {
-		wp_send_json_error( array( 'message' => __( 'الدفعة غير موجودة.', 'bina' ) ), 404 );
+		wp_send_json_error( array( 'message' => __( '?????? ??? ??????.', 'bina' ) ), 404 );
 	}
 
 	$provider_id = (int) ( $row['provider_id'] ?? 0 );
 	if ( (int) $provider_id !== (int) $user_id && ! user_can( $user_id, 'manage_options' ) ) {
-		wp_send_json_error( array( 'message' => __( 'غير مصرح.', 'bina' ) ), 403 );
+		wp_send_json_error( array( 'message' => __( '??? ????.', 'bina' ) ), 403 );
 	}
 
 	$status = (string) ( $row['status'] ?? '' );
 	if ( $status !== 'funded' ) {
-		wp_send_json_error( array( 'message' => __( 'يجب تمويل الدفعة أولاً.', 'bina' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( '??? ????? ?????? ?????.', 'bina' ) ), 400 );
 	}
 
 	$u = bina_milestone_update_status(
@@ -248,7 +255,7 @@ add_action( 'wp_ajax_bina_submit_milestone', 'bina_ajax_submit_milestone' );
  */
 function bina_ajax_approve_milestone() {
 	if ( ! is_user_logged_in() ) {
-		wp_send_json_error( array( 'message' => __( 'يجب تسجيل الدخول.', 'bina' ) ), 401 );
+		wp_send_json_error( array( 'message' => __( '??? ????? ??????.', 'bina' ) ), 401 );
 	}
 	check_ajax_referer( 'bina_milestones', 'nonce' );
 
@@ -256,29 +263,31 @@ function bina_ajax_approve_milestone() {
 	$milestone_id = isset( $_POST['milestone_id'] ) ? absint( $_POST['milestone_id'] ) : 0;
 	$row          = bina_milestone_get_by_id( $milestone_id );
 	if ( ! is_array( $row ) ) {
-		wp_send_json_error( array( 'message' => __( 'الدفعة غير موجودة.', 'bina' ) ), 404 );
+		wp_send_json_error( array( 'message' => __( '?????? ??? ??????.', 'bina' ) ), 404 );
 	}
 
 	$project_id = (int) ( $row['project_id'] ?? 0 );
 	$post       = get_post( $project_id );
 	if ( ! $post || $post->post_type !== 'bina_project' ) {
-		wp_send_json_error( array( 'message' => __( 'المشروع غير صالح.', 'bina' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( '??????? ??? ????.', 'bina' ) ), 400 );
 	}
 	if ( ! user_can( $user_id, 'manage_options' ) && (int) $post->post_author !== (int) $user_id ) {
-		wp_send_json_error( array( 'message' => __( 'غير مصرح.', 'bina' ) ), 403 );
+		wp_send_json_error( array( 'message' => __( '??? ????.', 'bina' ) ), 403 );
 	}
 
 	$status = (string) ( $row['status'] ?? '' );
 	if ( $status !== 'submitted' ) {
-		wp_send_json_error( array( 'message' => __( 'يجب تسليم الدفعة أولاً.', 'bina' ) ), 400 );
+		wp_send_json_error( array( 'message' => __( '??? ????? ?????? ?????.', 'bina' ) ), 400 );
 	}
 
-	$provider_id = (int) ( $row['provider_id'] ?? 0 );
-	$amount      = (float) ( $row['amount'] ?? 0 );
-	$proposal_id = (int) ( $row['proposal_id'] ?? 0 );
-	$no          = (int) ( $row['milestone_no'] ?? 0 );
-	if ( $provider_id < 1 || $amount <= 0 ) {
-		wp_send_json_error( array( 'message' => __( 'بيانات الدفعة غير صالحة.', 'bina' ) ), 400 );
+	$provider_id  = (int) ( $row['provider_id'] ?? 0 );
+	$financials   = function_exists( 'bina_milestone_get_financials' ) ? bina_milestone_get_financials( $row ) : array();
+	$amount       = isset( $financials['base_amount'] ) ? (float) $financials['base_amount'] : (float) ( $row['amount'] ?? 0 );
+	$provider_net = isset( $financials['provider_net'] ) ? (float) $financials['provider_net'] : $amount;
+	$proposal_id  = (int) ( $row['proposal_id'] ?? 0 );
+	$no           = (int) ( $row['milestone_no'] ?? 0 );
+	if ( $provider_id < 1 || $amount <= 0 || $provider_net <= 0 ) {
+		wp_send_json_error( array( 'message' => __( '?????? ?????? ??? ?????.', 'bina' ) ), 400 );
 	}
 
 	// Mark approved.
@@ -293,7 +302,7 @@ function bina_ajax_approve_milestone() {
 		wp_send_json_error( array( 'message' => $u->get_error_message() ), 400 );
 	}
 
-	// Release funds: pending -amount, available +amount.
+	// Release funds: pending -net, available +net.
 	$debit = bina_wallet_ledger_add(
 		array(
 			'user_id'        => $provider_id,
@@ -301,7 +310,7 @@ function bina_ajax_approve_milestone() {
 			'proposal_id'    => $proposal_id,
 			'milestone_no'   => $no,
 			'entry_type'     => 'escrow_release_debit',
-			'amount'         => -1 * (float) $amount,
+			'amount'         => -1 * (float) $provider_net,
 			'balance_bucket' => 'pending',
 			'note'           => 'milestone approved release (debit pending)',
 			'meta'           => array( 'milestone_id' => $milestone_id ),
@@ -317,7 +326,7 @@ function bina_ajax_approve_milestone() {
 			'proposal_id'    => $proposal_id,
 			'milestone_no'   => $no,
 			'entry_type'     => 'escrow_release_credit',
-			'amount'         => (float) $amount,
+			'amount'         => (float) $provider_net,
 			'balance_bucket' => 'available',
 			'note'           => 'milestone approved release (credit available)',
 			'meta'           => array( 'milestone_id' => $milestone_id ),
@@ -332,7 +341,7 @@ function bina_ajax_approve_milestone() {
 				'proposal_id'    => $proposal_id,
 				'milestone_no'   => $no,
 				'entry_type'     => 'escrow_release_rollback',
-				'amount'         => (float) $amount,
+				'amount'         => (float) $provider_net,
 				'balance_bucket' => 'pending',
 				'note'           => 'rollback release debit',
 				'meta'           => array( 'milestone_id' => $milestone_id ),

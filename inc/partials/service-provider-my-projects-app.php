@@ -83,6 +83,9 @@ $ms_nonce  = wp_create_nonce( 'bina_milestones' );
 									$amt   = isset( $ms['amount'] ) ? (float) $ms['amount'] : 0.0;
 									$st    = isset( $ms['status'] ) ? (string) $ms['status'] : '';
 									$ms_meta = isset( $ms['meta'] ) ? json_decode( (string) $ms['meta'], true ) : array();
+									$financials = function_exists( 'bina_milestone_get_financials' ) ? bina_milestone_get_financials( $ms ) : array();
+									$provider_fee = isset( $financials['provider_fee'] ) ? (float) $financials['provider_fee'] : 0.0;
+									$provider_net = isset( $financials['provider_net'] ) ? (float) $financials['provider_net'] : $amt;
 									$ms_description = is_array( $ms_meta ) && ! empty( $ms_meta['description'] ) ? (string) $ms_meta['description'] : '';
 									$st_l  = $st;
 									if ( $st === 'scheduled' ) { $st_l = __( 'مستحقة', 'bina' ); }
@@ -92,13 +95,17 @@ $ms_nonce  = wp_create_nonce( 'bina_milestones' );
 									if ( $st === 'released' ) { $st_l = __( 'تم التحويل للمزوّد', 'bina' ); }
 									?>
 									<li class="rounded-md border border-border/60 p-2 space-y-2" data-bina-ms-row>
-										<div class="flex items-center justify-between gap-2">
-											<div class="text-xs font-medium"><?php echo esc_html( $title ); ?></div>
-											<div class="text-xs text-muted-foreground tabular-nums"><?php echo esc_html( number_format_i18n( $amt, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
-                                    <?php if ( $ms_description !== '' ) : ?>
-                                        <div class="text-xs text-muted-foreground"><?php echo esc_html( $ms_description ); ?></div>
-                                    <?php endif; ?>
-										</div>
+								<div class="flex items-start justify-between gap-2">
+									<div class="text-xs font-medium"><?php echo esc_html( $title ); ?></div>
+									<div class="text-xs text-muted-foreground tabular-nums space-y-1 text-left">
+										<div><?php echo esc_html( number_format_i18n( $amt, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+										<div><?php esc_html_e( 'عمولة المنصة على مزود الخدمة 1%', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $provider_fee, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+										<div class="font-medium text-foreground"><?php esc_html_e( 'صافي الاستلام', 'bina' ); ?>: <?php echo esc_html( number_format_i18n( $provider_net, 2 ) ); ?> <?php esc_html_e( 'ر.س', 'bina' ); ?></div>
+									</div>
+								</div>
+								<?php if ( $ms_description !== '' ) : ?>
+									<div class="text-xs text-muted-foreground"><?php echo esc_html( $ms_description ); ?></div>
+								<?php endif; ?>
 										<div class="flex items-center justify-between gap-2">
 											<span class="inline-flex rounded-md border px-2 py-0.5 text-xs"><?php echo esc_html( $st_l ); ?></span>
 											<?php if ( $st === 'funded' ) : ?>

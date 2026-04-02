@@ -16,6 +16,52 @@ function bina_milestones_db_table_name() {
 	return $wpdb->prefix . 'bina_milestones';
 }
 
+function bina_platform_customer_fee_rate() {
+	return 0.01;
+}
+
+function bina_platform_provider_fee_rate() {
+	return 0.01;
+}
+
+function bina_milestone_calculate_financials( $amount ) {
+	$base_amount   = round( max( 0, (float) $amount ), 2 );
+	$customer_fee  = round( $base_amount * bina_platform_customer_fee_rate(), 2 );
+	$provider_fee  = round( $base_amount * bina_platform_provider_fee_rate(), 2 );
+	$customer_total = round( $base_amount + $customer_fee, 2 );
+	$provider_net   = round( max( 0, $base_amount - $provider_fee ), 2 );
+
+	return array(
+		'base_amount'    => $base_amount,
+		'customer_fee'   => $customer_fee,
+		'provider_fee'   => $provider_fee,
+		'customer_total' => $customer_total,
+		'provider_net'   => $provider_net,
+	);
+}
+
+function bina_milestone_get_financials( $milestone ) {
+	$amount = isset( $milestone['amount'] ) ? (float) $milestone['amount'] : 0.0;
+	$meta   = array();
+
+	if ( isset( $milestone['meta'] ) ) {
+		$decoded = json_decode( (string) $milestone['meta'], true );
+		if ( is_array( $decoded ) ) {
+			$meta = $decoded;
+		}
+	}
+
+	$calc = bina_milestone_calculate_financials( $amount );
+
+	return array(
+		'base_amount'    => isset( $meta['base_amount'] ) ? round( (float) $meta['base_amount'], 2 ) : $calc['base_amount'],
+		'customer_fee'   => isset( $meta['customer_fee'] ) ? round( (float) $meta['customer_fee'], 2 ) : $calc['customer_fee'],
+		'provider_fee'   => isset( $meta['provider_fee'] ) ? round( (float) $meta['provider_fee'], 2 ) : $calc['provider_fee'],
+		'customer_total' => isset( $meta['customer_total'] ) ? round( (float) $meta['customer_total'], 2 ) : $calc['customer_total'],
+		'provider_net'   => isset( $meta['provider_net'] ) ? round( (float) $meta['provider_net'], 2 ) : $calc['provider_net'],
+	);
+}
+
 function bina_milestones_maybe_install() {
 	$ver = get_option( 'bina_milestones_db_version', '0' );
 	if ( $ver === '1' ) {
@@ -290,12 +336,15 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 				'status'       => 'scheduled',
 				'due_at'       => $due ? date( 'Y-m-d H:i:s', $due ) : null,
 				'meta'         => wp_json_encode(
-					array(
-						'plan_key'       => $plan_key,
-						'duration_days'  => $duration,
-						'total_amount'   => $total_amount,
-						'description'    => $description,
-						'created_reason' => 'proposal_accept',
+					array_merge(
+						bina_milestone_calculate_financials( $amount ),
+						array(
+							'plan_key'       => $plan_key,
+							'duration_days'  => $duration,
+							'total_amount'   => $total_amount,
+							'description'    => $description,
+							'created_reason' => 'proposal_accept',
+						)
 					)
 				),
 				'created_at'   => $now_mysql,
