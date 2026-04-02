@@ -4618,7 +4618,7 @@ html.bina-theme-transition * {
         right: 0
     }
 
-   html[dir="rtl"] .sm\:right-6 {
+    html[dir="rtl"] .sm\:right-6 {
         right: 1.5rem !important;
         left: auto !important;
     }
@@ -5775,7 +5775,7 @@ html:not([dir="rtl"]) form {
     text-align: left;
 }
 
-html:not([dir="rtl"]) form  label,
+html:not([dir="rtl"]) form label,
 html:not([dir="rtl"]) form .wpcf7-list-item-label,
 html:not([dir="rtl"]) form .text-start {
     text-align: left;
@@ -5800,7 +5800,7 @@ html:not([dir="rtl"]) form .wpcf7-list-item label {
 }
 
 /* If a wrapper forces RTL, neutralize it in English */
-    html:not([dir="rtl"]) form {
+html:not([dir="rtl"]) form {
     direction: ltr !important;
 }
 
@@ -5897,4 +5897,8 @@ html:not([dir="rtl"]) form .wpcf7-list-item label {
     font-family: 'Tajawal', sans-serif !important;
     color: #000 !important;
     resize: vertical !important;
+}
+
+.mt-3 {
+    margin-top: 10px;
 }

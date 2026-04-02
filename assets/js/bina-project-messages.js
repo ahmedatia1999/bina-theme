@@ -129,10 +129,28 @@
     items.forEach(function (m) {
       const id = parseInt(String(m.id), 10) || 0;
       if (id > maxId) maxId = id;
-      // Align by sender role (customer right, provider left) for clarity.
+      // Align by role with fallbacks:
+      // - customer => right
+      // - service_provider => left
+      // Some payloads may miss sender_role, so fallback to sender_id/is_mine + current portal role.
       const role = m && m.sender_role ? String(m.sender_role) : "";
-      const isCustomer = role === "customer";
-      const isProvider = role === "service_provider";
+      const senderId = parseInt(String((m && m.sender_id) || "0"), 10) || 0;
+      const mine = !!m.is_mine;
+      let isCustomer = role === "customer";
+      let isProvider = role === "service_provider";
+
+      if (!isCustomer && !isProvider) {
+        if (senderId > 0 && currentUserId > 0 && senderId === currentUserId) {
+          isCustomer = portalRole === "customer";
+          isProvider = portalRole === "service_provider";
+        } else if (mine) {
+          isCustomer = portalRole === "customer";
+          isProvider = portalRole === "service_provider";
+        } else {
+          isCustomer = portalRole === "service_provider";
+          isProvider = portalRole === "customer";
+        }
+      }
       // In RTL layouts, flex-start is right. Force logical right/left.
       const alignRight = isCustomer;
       const justify = (function () {
@@ -141,7 +159,6 @@
         if (isRTL) return alignRight ? "justify-start" : "justify-end";
         return alignRight ? "justify-end" : "justify-start";
       })();
-      const mine = !!m.is_mine;
       const wrap = document.createElement("div");
       wrap.className = "flex " + justify;
       wrap.setAttribute("data-msg-id", String(id));
