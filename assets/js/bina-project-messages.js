@@ -188,7 +188,8 @@
           card.className = "overflow-hidden rounded border border-border/50 bg-background/50";
 
           const open = document.createElement("a");
-          open.href = String(a.view || a.url);
+          // Some generated image sizes may be missing on disk; always open original file URL.
+          open.href = String(a.url || a.view || "#");
           open.target = "_blank";
           open.rel = "noopener noreferrer";
           open.className = "block relative";
@@ -199,6 +200,16 @@
             img.alt = String(a.title || "");
             img.className = "h-20 w-20 object-cover";
             open.appendChild(img);
+
+            // Open image immediately in a new tab.
+            open.addEventListener("click", function (ev) {
+              ev.preventDefault();
+              const src = String(a.url || "");
+              if (!src) return;
+              const sep = src.indexOf("?") > -1 ? "&" : "?";
+              const viewUrl = src + sep + "_r=" + Date.now();
+              window.open(viewUrl, "_blank", "noopener,noreferrer");
+            });
           } else {
             const box = document.createElement("div");
             box.className = "h-12 w-40 max-w-[12rem] px-2 flex items-center text-xs";

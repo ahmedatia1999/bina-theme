@@ -302,7 +302,7 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 		for ( $i = 1; $i <= 4; $i++ ) {
 			$due_ts[] = $now_ts + ( $period_days * DAY_IN_SECONDS * $i );
 		}
-	} elseif ( $plan_key === 'eleven_months' ) {
+	} elseif ( $plan_key === 'eleven_installments_equal' || $plan_key === 'eleven_months' ) {
 		$n = 11;
 		for ( $i = 1; $i <= 11; $i++ ) {
 			$titles[] = sprintf( __( 'دفعة شهر %d', 'bina' ), $i );
@@ -332,6 +332,7 @@ function bina_milestones_create_from_accepted_proposal( $proposal ) {
 	}
 
 	if ( count( $items ) !== $n ) {
+		$items   = array();
 		$amounts = bina_milestones_split_amounts_equal( $total_amount, $n );
 		if ( count( $amounts ) !== $n ) {
 			return new WP_Error( 'bina_ms_amounts', __( 'تعذر حساب مبالغ الدفعات.', 'bina' ) );

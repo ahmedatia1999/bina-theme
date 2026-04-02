@@ -65,8 +65,8 @@ function bina_ajax_get_thread_messages() {
 						'mime'     => $mime,
 						'title'    => (string) get_the_title( $aid ),
 						'is_image' => $is_image,
-						'thumb'    => $thumb ? $thumb : '',
-						'view'     => $view ? $view : '',
+						'thumb'    => $thumb ? $thumb : $url,
+						'view'     => $view ? $view : $url,
 					);
 				}
 			}
@@ -229,8 +229,8 @@ function bina_ajax_send_thread_message() {
 			'mime'     => $mime,
 			'title'    => (string) get_the_title( $aid ),
 			'is_image' => $is_image,
-			'thumb'    => $thumb ? $thumb : '',
-			'view'     => $view ? $view : '',
+			'thumb'    => $thumb ? $thumb : $url,
+			'view'     => $view ? $view : $url,
 		);
 	}
 
