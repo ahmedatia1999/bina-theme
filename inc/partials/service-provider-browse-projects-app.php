@@ -40,7 +40,6 @@ $me_id     = (int) get_current_user_id();
 					: null;
 				$has_prop = is_array( $my_prop ) && ! empty( $my_prop['id'] );
 				$prop_st  = $has_prop && isset( $my_prop['status'] ) ? (string) $my_prop['status'] : '';
-				$can_resubmit = ( $prop_st === 'rejected' );
 				$city_raw = (string) get_post_meta( $pid, '_bina_city', true );
 				$city_l   = $city_raw;
 				foreach ( bina_get_cities_for_select() as $c ) {
@@ -49,10 +48,11 @@ $me_id     = (int) get_current_user_id();
 						break;
 					}
 				}
-				$sk = bina_get_project_status_meta( $pid );
-				$sl = isset( $st_labels[ $sk ] ) ? $st_labels[ $sk ] : $sk;
-				$mod = get_post_modified_time( 'U', true, $pid );
-				$ago = $mod ? human_time_diff( (int) $mod, (int) current_time( 'timestamp' ) ) : '';
+				$sk       = bina_get_project_status_meta( $pid );
+				$sl       = isset( $st_labels[ $sk ] ) ? $st_labels[ $sk ] : $sk;
+				$mod      = get_post_modified_time( 'U', true, $pid );
+				$ago      = $mod ? human_time_diff( (int) $mod, (int) current_time( 'timestamp' ) ) : '';
+				$sel_plan = $has_prop ? bina_normalize_payment_plan_key( (string) ( $my_prop['plan_key'] ?? 'pay_at_completion' ) ) : 'pay_at_completion';
 				?>
 				<li class="rounded-xl border border-border/80 bg-card p-4 shadow-sm">
 					<div class="font-semibold line-clamp-2"><?php the_title(); ?></div>
@@ -69,13 +69,13 @@ $me_id     = (int) get_current_user_id();
 						<p class="text-sm text-muted-foreground mt-2 line-clamp-3"><?php echo esc_html( wp_strip_all_tags( get_the_excerpt() ? get_the_excerpt() : wp_trim_words( get_the_content(), 30 ) ) ); ?></p>
 					<?php endif; ?>
 					<div class="mt-3 space-y-3" data-bina-proposal-card data-project-id="<?php echo (int) $pid; ?>">
-						<?php if ( $has_prop && ! $can_resubmit ) : ?>
+						<?php if ( $has_prop && $prop_st !== 'rejected' ) : ?>
 							<div class="inline-flex items-center justify-center rounded-md border bg-background shadow-xs h-9 px-4 text-sm font-medium text-muted-foreground" data-bina-proposal-sent>
 								<?php esc_html_e( 'تم إرسال العرض', 'bina' ); ?>
 							</div>
 						<?php else : ?>
 							<button type="button" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium" data-bina-proposal-open>
-								<?php echo $can_resubmit ? esc_html__( 'إعادة تقديم عرض', 'bina' ) : esc_html__( 'تقديم عرض', 'bina' ); ?>
+								<?php echo $prop_st === 'rejected' ? esc_html__( 'إعادة تقديم العرض', 'bina' ) : esc_html__( 'تقديم عرض', 'bina' ); ?>
 							</button>
 							<div class="hidden inline-flex items-center justify-center rounded-md border bg-background shadow-xs h-9 px-4 text-sm font-medium text-muted-foreground" data-bina-proposal-sent>
 								<?php esc_html_e( 'تم إرسال العرض', 'bina' ); ?>
@@ -86,38 +86,37 @@ $me_id     = (int) get_current_user_id();
 							<div class="grid gap-3 sm:grid-cols-2">
 								<div class="space-y-1.5">
 									<label class="text-xs font-medium"><?php esc_html_e( 'السعر الإجمالي (ر.س)', 'bina' ); ?></label>
-									<input name="price_total" inputmode="decimal" class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm" placeholder="0" value="<?php echo $can_resubmit && $has_prop ? esc_attr( (string) ( $my_prop['price_total'] ?? '' ) ) : ''; ?>" required />
+									<input name="price_total" inputmode="decimal" class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm" placeholder="0" value="<?php echo $has_prop ? esc_attr( (string) ( $my_prop['price_total'] ?? '' ) ) : ''; ?>" required />
 								</div>
 								<div class="space-y-1.5" data-bina-duration-row>
-									<label class="text-xs font-medium"><?php esc_html_e( 'المدة (بالأيام)', 'bina' ); ?></label>
-									<input name="duration_days" inputmode="numeric" class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm" placeholder="0" value="<?php echo $can_resubmit && $has_prop ? esc_attr( (string) ( $my_prop['duration_days'] ?? '' ) ) : ''; ?>" required />
-									<p class="text-[11px] text-muted-foreground" data-bina-duration-hint><?php esc_html_e( 'في أنظمة الأقساط: المدة ثابتة تلقائياً.', 'bina' ); ?></p>
+									<label class="text-xs font-medium"><?php esc_html_e( 'المدة الإجمالية (بالأيام)', 'bina' ); ?></label>
+									<input name="duration_days" inputmode="numeric" class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm" placeholder="0" value="<?php echo $has_prop ? esc_attr( (string) ( $my_prop['duration_days'] ?? '' ) ) : ''; ?>" required />
+									<p class="text-[11px] text-muted-foreground" data-bina-duration-hint><?php esc_html_e( 'اكتب المدة الإجمالية للمشروع، وعدد الدفعات يتم اختياره بشكل منفصل.', 'bina' ); ?></p>
 								</div>
 							</div>
 							<div class="space-y-1.5">
-								<label class="text-xs font-medium"><?php esc_html_e( 'نظام الدفع', 'bina' ); ?></label>
+								<label class="text-xs font-medium"><?php esc_html_e( 'عدد الدفعات', 'bina' ); ?></label>
 								<select name="plan_key" class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm">
-									<?php $sel_plan = $can_resubmit && $has_prop ? (string) ( $my_prop['plan_key'] ?? 'pay_at_completion' ) : 'pay_at_completion'; ?>
-									<option value="pay_at_completion" <?php selected( $sel_plan, 'pay_at_completion' ); ?>><?php esc_html_e( 'الدفع بعد اكتمال المشروع', 'bina' ); ?></option>
-									<option value="four_installments_equal" <?php selected( $sel_plan, 'four_installments_equal' ); ?>><?php esc_html_e( 'الدفع على 4 أقساط متساوية', 'bina' ); ?></option>
-									<option value="eleven_months" <?php selected( $sel_plan, 'eleven_months' ); ?>><?php esc_html_e( 'الدفع على 11 شهر (يتم الاتفاق على المبالغ)', 'bina' ); ?></option>
+									<option value="pay_at_completion" <?php selected( $sel_plan, 'pay_at_completion' ); ?>><?php esc_html_e( 'دفعة واحدة بعد اكتمال المشروع', 'bina' ); ?></option>
+									<option value="four_installments_equal" <?php selected( $sel_plan, 'four_installments_equal' ); ?>><?php esc_html_e( '4 دفعات', 'bina' ); ?></option>
+									<option value="eleven_installments_equal" <?php selected( $sel_plan, 'eleven_installments_equal' ); ?>><?php esc_html_e( '11 دفعة', 'bina' ); ?></option>
 								</select>
-								<p class="text-xs text-muted-foreground" data-bina-plan-hint><?php esc_html_e( 'في نظام 11 شهر: يتم الاتفاق على المبالغ المطلوبة بين العميل ومزود الخدمة.', 'bina' ); ?></p>
+								<p class="text-xs text-muted-foreground" data-bina-plan-hint><?php esc_html_e( 'اختر فقط عدد مرات الدفع، ثم وزّع المبلغ الإجمالي على الدفعات بالأسفل.', 'bina' ); ?></p>
 							</div>
 
-							<div class="rounded-lg border border-border/70 bg-muted/10 p-3 space-y-2" data-bina-plan-breakdown-root>
+							<div class="rounded-lg border border-border/70 bg-muted/10 p-3 space-y-2 hidden" data-bina-plan-breakdown-root>
 								<div class="flex items-center justify-between gap-2">
 									<div class="text-xs font-medium"><?php esc_html_e( 'تفاصيل الدفعات', 'bina' ); ?></div>
 									<div class="text-[11px] text-muted-foreground" data-bina-plan-total-hint></div>
 								</div>
 								<div class="space-y-2" data-bina-plan-breakdown></div>
-								<input type="hidden" name="plan_meta" value="<?php echo $can_resubmit && $has_prop ? esc_attr( (string) ( $my_prop['plan_meta'] ?? '' ) ) : ''; ?>" />
-								<p class="text-[11px] text-muted-foreground"><?php esc_html_e( 'اكتب المطلوب تنفيذه في كل شهر/دفعة. سيتم تثبيت هذه التفاصيل عند قبول العرض.', 'bina' ); ?></p>
+								<input type="hidden" name="plan_meta" value="<?php echo $has_prop ? esc_attr( (string) ( $my_prop['plan_meta'] ?? '' ) ) : ''; ?>" />
+								<p class="text-[11px] text-muted-foreground"><?php esc_html_e( 'اكتب المطلوب تنفيذه في كل دفعة. سيتم تثبيت هذه التفاصيل عند قبول العرض.', 'bina' ); ?></p>
 							</div>
 
 							<div class="space-y-1.5">
 								<label class="text-xs font-medium"><?php esc_html_e( 'رسالة للعميل', 'bina' ); ?></label>
-								<textarea name="message" rows="3" class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm" placeholder="<?php esc_attr_e( 'اكتب تفاصيل عرضك...', 'bina' ); ?>"><?php echo $can_resubmit && $has_prop ? esc_textarea( (string) ( $my_prop['message'] ?? '' ) ) : ''; ?></textarea>
+								<textarea name="message" rows="3" class="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm" placeholder="<?php esc_attr_e( 'اكتب تفاصيل عرضك...', 'bina' ); ?>"><?php echo $has_prop ? esc_textarea( (string) ( $my_prop['message'] ?? '' ) ) : ''; ?></textarea>
 							</div>
 							<div class="flex items-center gap-3">
 								<button type="submit" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium" data-bina-proposal-submit>

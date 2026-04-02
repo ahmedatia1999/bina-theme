@@ -50,6 +50,12 @@
     });
   }
 
+  function getInstallmentsCount(planKey) {
+    if (planKey === "four_installments_equal") return 4;
+    if (planKey === "eleven_installments_equal" || planKey === "eleven_months") return 11;
+    return 0;
+  }
+
   function init(root) {
     const ajaxUrl = root.getAttribute("data-ajaxurl") || "";
     const nonce = root.getAttribute("data-nonce") || "";
@@ -58,8 +64,6 @@
     function renderBreakdown(form) {
       const planSel = form.querySelector('select[name="plan_key"]');
       const priceEl = form.querySelector('input[name="price_total"]');
-      const durationRow = form.querySelector("[data-bina-duration-row]");
-      const durationEl = form.querySelector('input[name="duration_days"]');
       const bdRoot = form.querySelector("[data-bina-plan-breakdown-root]");
       const bd = form.querySelector("[data-bina-plan-breakdown]");
       const hint = form.querySelector("[data-bina-plan-total-hint]");
@@ -69,20 +73,9 @@
       const planKey = String(planSel.value || "pay_at_completion");
       const total = toMoney(priceEl.value || "");
       const existing = safeJsonParse(planMetaInput.value);
+      const n = getInstallmentsCount(planKey);
 
-      if (durationRow && durationEl) {
-        if (planKey === "four_installments_equal") {
-          durationRow.classList.add("hidden");
-          durationEl.value = durationEl.value && String(durationEl.value).trim() !== "" ? durationEl.value : "120";
-        } else if (planKey === "eleven_months") {
-          durationRow.classList.add("hidden");
-          durationEl.value = durationEl.value && String(durationEl.value).trim() !== "" ? durationEl.value : "330";
-        } else {
-          durationRow.classList.remove("hidden");
-        }
-      }
-
-      if (planKey === "pay_at_completion") {
+      if (n < 1) {
         bdRoot.classList.add("hidden");
         planMetaInput.value = "";
         if (hint) {
@@ -91,9 +84,9 @@
         }
         return;
       }
+
       bdRoot.classList.remove("hidden");
 
-      const n = planKey === "four_installments_equal" ? 4 : 11;
       const defaultAmounts = splitEqual(total, n);
       const prevItems = Array.isArray(existing?.items) ? existing.items : [];
       const items = [];
@@ -101,7 +94,7 @@
       function updateSummary() {
         const sum = Math.round(items.reduce((a, it) => a + (Number(it.amount) || 0), 0) * 100) / 100;
         if (hint) {
-          hint.textContent = `Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ: ${sum.toFixed(2)} Ø±.Ø³ (Ø§Ù„Ù…Ø·Ù„ÙˆØ¨: ${total.toFixed(2)} Ø±.Ø³)`;
+          hint.textContent = `الإجمالي: ${sum.toFixed(2)} ر.س (المطلوب: ${total.toFixed(2)} ر.س)`;
           hint.classList.toggle("text-destructive", Math.abs(sum - total) > 0.01);
         }
         planMetaInput.value = serializePlanMeta(planKey, total, items);
@@ -112,10 +105,11 @@
       for (let i = 0; i < n; i++) {
         const idx = i + 1;
         const prev = prevItems[i] && typeof prevItems[i] === "object" ? prevItems[i] : {};
-        const title = planKey === "eleven_months" ? `Ø´Ù‡Ø± ${idx}` : `Ø¯ÙØ¹Ø© ${idx}`;
-        const amount = prev.amount !== undefined && prev.amount !== null && prev.amount !== ""
-          ? toMoney(prev.amount)
-          : (defaultAmounts[i] ?? 0);
+        const title = `دفعة ${idx}`;
+        const amount =
+          prev.amount !== undefined && prev.amount !== null && prev.amount !== ""
+            ? toMoney(prev.amount)
+            : defaultAmounts[i] ?? 0;
 
         const row = document.createElement("div");
         row.className = "rounded-md border border-border/60 bg-background p-2 space-y-2";
@@ -124,7 +118,7 @@
             <div class="text-xs font-medium">${title}</div>
             <input type="number" min="0" step="0.01" class="w-28 rounded-md border border-input bg-transparent px-2 py-1.5 text-xs text-start" placeholder="0.00" value="${amount.toFixed(2)}" />
           </div>
-          <textarea rows="2" class="w-full rounded-md border border-input bg-transparent px-2 py-1.5 text-xs" placeholder="Ø§ÙƒØªØ¨ ØªÙØ§ØµÙŠÙ„ Ù…Ø§ Ø³ÙŠØªÙ… ØªÙ†ÙÙŠØ°Ù‡ ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø´Ù‡Ø±/Ø§Ù„Ø¯ÙØ¹Ø©..."></textarea>
+          <textarea rows="2" class="w-full rounded-md border border-input bg-transparent px-2 py-1.5 text-xs" placeholder="اكتب تفاصيل ما سيتم تنفيذه في هذه الدفعة..."></textarea>
         `;
 
         const amountInput = row.querySelector('input[type="number"]');
@@ -149,9 +143,7 @@
           amountInput.addEventListener("input", syncItem);
           amountInput.addEventListener("change", syncItem);
         }
-        if (ta) {
-          ta.addEventListener("input", syncItem);
-        }
+        if (ta) ta.addEventListener("input", syncItem);
 
         bd.appendChild(row);
       }
@@ -179,7 +171,7 @@
       const form = qs(card, "[data-bina-proposal-form]");
       const msg = qs(card, "[data-bina-proposal-msg]");
       if (msg) msg.textContent = "";
-      if (form) form.classList.add("hidden");
+      if (form && form.dataset.submitting !== "1") form.classList.add("hidden");
     });
 
     root.addEventListener("change", (e) => {
@@ -203,11 +195,13 @@
 
       const card = e.target.closest("[data-bina-proposal-card]");
       if (!card) return;
-      const projectId = card.getAttribute("data-project-id");
+      if (form.dataset.submitting === "1" || form.dataset.submitted === "1") return;
 
+      const projectId = card.getAttribute("data-project-id");
       const msg = qs(card, "[data-bina-proposal-msg]");
       const submit = qs(form, "[data-bina-proposal-submit]");
-      if (msg) msg.textContent = "Ø¬Ø§Ø±Ù Ø§Ù„Ø¥Ø±Ø³Ø§Ù„...";
+      form.dataset.submitting = "1";
+      if (msg) msg.textContent = "جارٍ إرسال العرض...";
       if (submit) submit.disabled = true;
 
       renderBreakdown(form);
@@ -220,11 +214,11 @@
       const planMeta = (fd.get("plan_meta") || "").toString().trim();
 
       try {
-        if (planKey !== "pay_at_completion" && !planMeta) {
-          throw new Error("Ø£ÙƒÙ…Ù„ ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø¯ÙØ¹Ø§Øª Ø£ÙˆÙ„Ø§Ù‹.");
+        if (getInstallmentsCount(planKey) > 0 && !planMeta) {
+          throw new Error("أكمل تفاصيل الدفعات أولاً.");
         }
 
-        if (planKey !== "pay_at_completion") {
+        if (getInstallmentsCount(planKey) > 0) {
           const parsed = safeJsonParse(planMeta);
           const items = Array.isArray(parsed?.items) ? parsed.items : [];
           const sum = Math.round(items.reduce((acc, item) => acc + toMoney(item?.amount || 0), 0) * 100) / 100;
@@ -232,10 +226,10 @@
           const hasEmptyDescription = items.some((item) => !String(item?.description || "").trim());
 
           if (!items.length || Math.abs(sum - total) > 0.01) {
-            throw new Error("Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø¯ÙØ¹Ø§Øª ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ³Ø§ÙˆÙŠ Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ.");
+            throw new Error("إجمالي الدفعات يجب أن يساوي السعر الإجمالي.");
           }
           if (hasEmptyDescription) {
-            throw new Error("Ø§ÙƒØªØ¨ ÙˆØµÙÙ‹Ø§ Ù„ÙƒÙ„ Ø¯ÙØ¹Ø©.");
+            throw new Error("اكتب وصفًا لكل دفعة.");
           }
         }
 
@@ -251,21 +245,21 @@
         });
 
         if (!json.success) {
-          throw new Error((json.data && json.data.message) || "ØªØ¹Ø°Ø± Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¹Ø±Ø¶.");
+          throw new Error((json.data && json.data.message) || "تعذر إرسال العرض.");
         }
 
-        if (msg) msg.textContent = (json.data && json.data.message) || "ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¹Ø±Ø¶.";
-        form.reset();
+        form.dataset.submitted = "1";
+        if (msg) msg.textContent = (json.data && json.data.message) || "تم إرسال العرض.";
         form.classList.add("hidden");
         const openBtn = card.querySelector("[data-bina-proposal-open]");
         const sentEl = card.querySelector("[data-bina-proposal-sent]");
         if (openBtn) openBtn.classList.add("hidden");
         if (sentEl) sentEl.classList.remove("hidden");
-        window.setTimeout(() => window.location.reload(), 700);
       } catch (err) {
-        if (msg) msg.textContent = err && err.message ? err.message : "ØªØ¹Ø°Ø± Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¹Ø±Ø¶.";
+        if (msg) msg.textContent = err && err.message ? err.message : "تعذر إرسال العرض.";
       } finally {
-        if (submit) submit.disabled = false;
+        form.dataset.submitting = "0";
+        if (submit && form.dataset.submitted !== "1") submit.disabled = false;
       }
     });
 
