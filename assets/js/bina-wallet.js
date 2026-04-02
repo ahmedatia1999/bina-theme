@@ -110,7 +110,7 @@
 					method
 				}).then((res) => {
 					if (msg) {
-						msg.textContent = res && res.success ? 'تم إرسال الطلب' : (res?.data?.message || 'تعذر إرسال الطلب');
+						msg.textContent = res && res.success ? (res?.data?.message || 'تم إرسال الطلب') : (res?.data?.message || 'تعذر إرسال الطلب');
 					}
 				});
 			});

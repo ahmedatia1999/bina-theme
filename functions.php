@@ -125,6 +125,7 @@
         'bina-proposals-db.php',
         'bina-milestones-db.php',
         'bina-wallet-db.php',
+        'bina-payments.php',
         'bina-disputes-db.php',
         'bina-project-messages.php',
         'ajax-bina-project.php',

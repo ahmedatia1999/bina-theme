@@ -107,11 +107,20 @@ function bina_ajax_create_withdraw_request() {
 		wp_send_json_error( array( 'message' => $r->get_error_message() ), 400 );
 	}
 
+	$message = __( 'Withdrawal request created.', 'bina' );
+	if ( function_exists( 'bina_payments_is_mock_gateway' ) && bina_payments_is_mock_gateway() && function_exists( 'bina_payment_process_mock_withdrawal' ) ) {
+		$processed = bina_payment_process_mock_withdrawal( (int) $r );
+		if ( is_wp_error( $processed ) ) {
+			wp_send_json_error( array( 'message' => $processed->get_error_message() ), 400 );
+		}
+		$message = __( 'Mock withdrawal completed successfully.', 'bina' );
+	}
+
 	wp_send_json_success(
 		array(
 			'withdraw_request_id' => (int) $r,
+			'message'             => $message,
 		)
 	);
 }
 add_action( 'wp_ajax_bina_create_withdraw_request', 'bina_ajax_create_withdraw_request' );
-

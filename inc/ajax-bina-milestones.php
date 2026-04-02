@@ -63,8 +63,26 @@ function bina_ajax_request_milestone_funding() {
 	}
 
 	$status = (string) ( $row['status'] ?? '' );
-	if ( $status !== 'scheduled' ) {
+	$allow_mock_resume = function_exists( 'bina_payments_is_mock_gateway' ) && bina_payments_is_mock_gateway() && $status === 'payment_requested';
+	if ( $status !== 'scheduled' && ! $allow_mock_resume ) {
 		wp_send_json_error( array( 'message' => __( '?? ???? ??? ????? ??? ?????? ????.', 'bina' ) ), 400 );
+	}
+
+	if ( function_exists( 'bina_payments_is_mock_gateway' ) && bina_payments_is_mock_gateway() ) {
+		$return_url = isset( $_POST['return_url'] ) ? esc_url_raw( wp_unslash( $_POST['return_url'] ) ) : '';
+		$checkout   = function_exists( 'bina_payment_start_mock_milestone_checkout' )
+			? bina_payment_start_mock_milestone_checkout( $milestone_id, $user_id, $return_url )
+			: new WP_Error( 'bina_payment_missing', __( 'Mock gateway is not available.', 'bina' ) );
+		if ( is_wp_error( $checkout ) ) {
+			wp_send_json_error( array( 'message' => $checkout->get_error_message() ), 400 );
+		}
+
+		wp_send_json_success(
+			array(
+				'ok'           => 1,
+				'redirect_url' => isset( $checkout['redirect_url'] ) ? (string) $checkout['redirect_url'] : '',
+			)
+		);
 	}
 
 	$u = bina_milestone_update_status( $milestone_id, 'payment_requested' );

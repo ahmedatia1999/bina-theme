@@ -255,6 +255,19 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 					$customer_fee = isset( $financials['customer_fee'] ) ? (float) $financials['customer_fee'] : 0.0;
 					$customer_total = isset( $financials['customer_total'] ) ? (float) $financials['customer_total'] : $amt;
 					$provider_net = isset( $financials['provider_net'] ) ? (float) $financials['provider_net'] : $amt;
+					$mock_payment_resume_url = '';
+					if ( function_exists( 'bina_payments_is_mock_gateway' ) && bina_payments_is_mock_gateway() && function_exists( 'bina_payment_tx_get_by_object' ) ) {
+						$pending_payment_tx = bina_payment_tx_get_by_object( 'payin', 'milestone', $mid, 'pending' );
+						if ( is_array( $pending_payment_tx ) && ! empty( $pending_payment_tx['redirect_token'] ) ) {
+							$mock_payment_resume_url = add_query_arg(
+								array(
+									'bina_mock_checkout' => 1,
+									'token'              => rawurlencode( (string) $pending_payment_tx['redirect_token'] ),
+								),
+								home_url( '/' )
+							);
+						}
+					}
 					$ms_description = is_array( $ms_meta ) && ! empty( $ms_meta['description'] ) ? (string) $ms_meta['description'] : '';
 					$st_l  = $st;
 					if ( $st === 'scheduled' ) { $st_l = __( 'مستحقة', 'bina' ); }
@@ -295,9 +308,14 @@ $accepted_pid     = (int) get_post_meta( (int) ( $post->ID ?? 0 ), '_bina_accept
 										data-milestone-id="<?php echo esc_attr( (string) $mid ); ?>"
 										data-confirm="<?php echo esc_attr__( 'تأكيد: تم استلام الدفعة من العميل وتأكيد التمويل؟', 'bina' ); ?>"
 									><?php esc_html_e( 'تأكيد التمويل (أدمن)', 'bina' ); ?></button>
-								<?php else : ?>
-									<span class="text-xs text-muted-foreground"><?php esc_html_e( 'تم إرسال طلب التمويل، في انتظار تأكيد الأدمن.', 'bina' ); ?></span>
-								<?php endif; ?>
+							<?php elseif ( $mock_payment_resume_url !== '' ) : ?>
+								<a class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium" href="<?php echo esc_url( $mock_payment_resume_url ); ?>">
+									<?php esc_html_e( 'استكمال الدفع التجريبي', 'bina' ); ?>
+								</a>
+								<span class="text-xs text-muted-foreground"><?php esc_html_e( 'الدفعة بانتظار إتمام الدفع عبر بوابة التجربة.', 'bina' ); ?></span>
+							<?php else : ?>
+								<span class="text-xs text-muted-foreground"><?php esc_html_e( 'تم إرسال طلب التمويل، في انتظار تأكيد الأدمن.', 'bina' ); ?></span>
+							<?php endif; ?>
 							<?php elseif ( $st === 'submitted' ) : ?>
 								<button type="button" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 text-sm font-medium"
 									data-bina-ms-action="approve"

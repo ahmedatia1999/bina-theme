@@ -48,8 +48,13 @@
 				return;
 			}
 
-			post({ action: wpAction, nonce, milestone_id: milestoneId }).then((res) => {
+			post({ action: wpAction, nonce, milestone_id: milestoneId, return_url: window.location.href }).then((res) => {
 				if (res && res.success) {
+					const redirectUrl = res?.data?.redirect_url || '';
+					if (redirectUrl) {
+						window.location.href = redirectUrl;
+						return;
+					}
 					if (msgEl) msgEl.textContent = 'تم';
 					setTimeout(() => window.location.reload(), 250);
 				} else {
