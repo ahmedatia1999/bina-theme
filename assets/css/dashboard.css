@@ -8947,7 +8947,8 @@
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transform: translate3d(14px, 0, 0) scale(.99);
+        transform: translate3d(100%, 0, 0);
+        will-change: transform, opacity;
         transition: opacity var(--bina-dashboard-medium) var(--bina-dashboard-ease),
             transform var(--bina-dashboard-medium) var(--bina-dashboard-ease),
             visibility 0s linear var(--bina-dashboard-medium);
@@ -8957,7 +8958,7 @@
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
-        transform: translate3d(0, 0, 0) scale(1);
+        transform: translate3d(0, 0, 0);
         transition-delay: 0s;
     }
 
