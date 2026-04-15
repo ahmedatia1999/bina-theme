@@ -68,7 +68,7 @@
       form.style.overflow = "hidden";
       form.style.willChange = "max-height, opacity, transform";
       form.style.transition =
-        "max-height .34s cubic-bezier(.22,.61,.36,1), opacity .28s ease, transform .34s cubic-bezier(.22,.61,.36,1)";
+        "max-height .48s cubic-bezier(.22,.61,.36,1), opacity .40s ease, transform .48s cubic-bezier(.22,.61,.36,1)";
       // start state
       form.style.maxHeight = "0px";
       form.style.opacity = "0";
@@ -98,7 +98,7 @@
       form.style.overflow = "hidden";
       form.style.willChange = "max-height, opacity, transform";
       form.style.transition =
-        "max-height .34s cubic-bezier(.22,.61,.36,1), opacity .28s ease, transform .34s cubic-bezier(.22,.61,.36,1)";
+        "max-height .48s cubic-bezier(.22,.61,.36,1), opacity .40s ease, transform .48s cubic-bezier(.22,.61,.36,1)";
       form.style.maxHeight = Math.max(form.scrollHeight + 24, 240) + "px";
       form.style.opacity = "1";
       form.style.transform = "translateY(0)";
@@ -107,7 +107,7 @@
         form.style.opacity = "0";
         form.style.transform = "translateY(-6px)";
       });
-      window.setTimeout(finish, 340);
+      window.setTimeout(finish, 500);
     }
 
     function renderBreakdown(form) {
