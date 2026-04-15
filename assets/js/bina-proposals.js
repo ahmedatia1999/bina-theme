@@ -82,6 +82,13 @@
         form.style.opacity = "1";
         form.style.transform = "translateY(0)";
       });
+      // After animation, restore natural height so dynamic fields won't be clipped.
+      window.setTimeout(() => {
+        if (form.classList.contains("hidden")) return;
+        form.style.removeProperty("max-height");
+        form.style.removeProperty("overflow");
+        form.style.removeProperty("will-change");
+      }, 520);
     }
 
     function closeProposalForm(form) {
@@ -127,6 +134,10 @@
       if (n < 1) {
         bdRoot.classList.add("hidden");
         planMetaInput.value = "";
+        if (!form.classList.contains("hidden")) {
+          form.style.removeProperty("max-height");
+          form.style.removeProperty("overflow");
+        }
         if (hint) {
           hint.textContent = "";
           hint.classList.remove("text-destructive");
@@ -135,6 +146,10 @@
       }
 
       bdRoot.classList.remove("hidden");
+      if (!form.classList.contains("hidden")) {
+        form.style.removeProperty("max-height");
+        form.style.removeProperty("overflow");
+      }
 
       const defaultAmounts = splitEqual(total, n);
       const prevItems = Array.isArray(existing?.items) ? existing.items : [];
