@@ -65,8 +65,8 @@ if ( in_array( $verification_status_raw, array( 'verified', 'approved', 'active'
 <div data-bina-dashboard-shell class="bina-service-provider-portal group/sidebar-wrapper flex flex-row min-h-svh w-full max-w-[100vw] bg-muted/30 overflow-x-hidden" style="--sidebar-width: 17rem;">
 	<div data-bina-sp-backdrop class="fixed inset-0 z-[35] hidden bg-black/50 md:hidden" aria-hidden="true"></div>
 	<div class="group peer text-sidebar-foreground pointer-events-none md:pointer-events-auto" data-state="expanded" data-variant="inset" data-side="right" data-slot="sidebar">
-		<div data-slot="sidebar-gap" class="relative hidden md:block shrink-0 bg-transparent transition-[width] duration-200 ease-linear" style="width: var(--sidebar-width);"></div>
-		<div data-bina-sidebar-container data-slot="sidebar-container" class="pointer-events-auto fixed inset-y-0 z-[40] hidden h-svh transition-[left,right,width] duration-200 ease-linear md:flex right-0 w-[min(100vw,17rem)] max-w-[85vw] md:max-w-none md:w-[17rem] p-2 border-l border-white/10 shadow-xl" style="background: linear-gradient(180deg, #14181F 0%, #0d1015 100%); width: 100%;">
+		<div data-slot="sidebar-gap" class="relative hidden md:block shrink-0 bg-transparent transition-[width] duration-500 ease-out" style="width: var(--sidebar-width);"></div>
+		<div data-bina-sidebar-container data-slot="sidebar-container" class="pointer-events-auto fixed inset-y-0 z-[40] hidden h-svh transition-[left,right,width] duration-500 ease-out md:flex right-0 w-[min(100vw,17rem)] max-w-[85vw] md:max-w-none md:w-[17rem] p-2 border-l border-white/10 shadow-xl" style="background: linear-gradient(180deg, #14181F 0%, #0d1015 100%); width: 100%;">
 			<div data-sidebar="sidebar" class="flex h-full w-full flex-col">
 				<div class="flex flex-col gap-2 p-2">
 					<ul class="flex w-full min-w-0 flex-col gap-1">

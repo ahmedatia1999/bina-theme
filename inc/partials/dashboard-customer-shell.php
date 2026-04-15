@@ -69,8 +69,8 @@ function bina_render_customer_portal_shell_start( $args ) {
 <div data-bina-dashboard-shell class="bina-customer-portal group/sidebar-wrapper flex flex-row min-h-svh w-full max-w-[100vw] bg-muted/30 overflow-x-hidden" style="--sidebar-width: 17rem; --sidebar-width-icon: 3rem;">
 	<div data-bina-portal-backdrop class="fixed inset-0 z-[35] hidden bg-black/50 md:hidden" aria-hidden="true"></div>
 	<div class="group peer text-sidebar-foreground pointer-events-none md:pointer-events-auto" data-state="expanded" data-variant="inset" data-side="right" data-slot="sidebar">
-		<div data-slot="sidebar-gap" class="relative hidden md:block w-[--sidebar-width] bg-transparent transition-[width] duration-200 ease-linear shrink-0"></div>
-		<div data-bina-sidebar-container data-slot="sidebar-container" class="pointer-events-auto fixed inset-y-0 z-[40] hidden h-svh w-[min(100vw,17rem)] max-w-[85vw] transition-[left,right,width] duration-200 ease-linear md:flex right-0 p-2 md:w-[--sidebar-width] md:max-w-none border-l border-white/10 shadow-2xl md:shadow-none" style="background: linear-gradient(180deg, #14181F 0%, #0d1015 100%); width: 100%;">
+		<div data-slot="sidebar-gap" class="relative hidden md:block w-[--sidebar-width] bg-transparent transition-[width] duration-500 ease-out shrink-0"></div>
+		<div data-bina-sidebar-container data-slot="sidebar-container" class="pointer-events-auto fixed inset-y-0 z-[40] hidden h-svh w-[min(100vw,17rem)] max-w-[85vw] transition-[left,right,width] duration-500 ease-out md:flex right-0 p-2 md:w-[--sidebar-width] md:max-w-none border-l border-white/10 shadow-2xl md:shadow-none" style="background: linear-gradient(180deg, #14181F 0%, #0d1015 100%); width: 100%;">
 			<div data-sidebar="sidebar" class="flex h-full w-full flex-col rounded-xl md:rounded-lg border border-white/10 overflow-hidden">
 				<div class="flex flex-col gap-2 p-3 border-b border-white/10">
 					<ul class="flex w-full min-w-0 flex-col gap-1">
