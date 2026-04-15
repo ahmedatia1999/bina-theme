@@ -19,6 +19,22 @@ $ajaxurl   = admin_url( 'admin-ajax.php' );
 $nonce     = wp_create_nonce( 'bina_proposals' );
 $me_id     = (int) get_current_user_id();
 ?>
+<style>
+[data-bina-proposals] [data-bina-proposal-card],
+[data-bina-proposals] [data-bina-proposal-form]{
+	overflow: visible;
+}
+[data-bina-proposals] [data-bina-proposal-form] select[name="plan_key"]{
+	position: relative;
+	z-index: 5;
+	background: #fff;
+	color: #111827;
+}
+[data-bina-proposals] [data-bina-proposal-form] select[name="plan_key"] option{
+	background: #fff;
+	color: #111827;
+}
+</style>
 <div class="space-y-6" data-bina-proposals data-ajaxurl="<?php echo esc_url( $ajaxurl ); ?>" data-nonce="<?php echo esc_attr( $nonce ); ?>">
 	<div>
 		<h1 class="text-2xl sm:text-3xl font-bold tracking-tight"><?php esc_html_e( 'تصفح المشاريع', 'bina' ); ?></h1>

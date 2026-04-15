@@ -9000,3 +9000,28 @@
         transition-duration: 1ms !important;
     }
 }
+
+/* Browse projects: smooth proposal form expand/collapse + reliable mobile select menu */
+[data-bina-proposal-form].bina-proposal-form-anim {
+    overflow: hidden;
+    transition: max-height .34s cubic-bezier(.22, .61, .36, 1), opacity .28s ease, transform .34s cubic-bezier(.22, .61, .36, 1);
+    will-change: max-height, opacity, transform;
+}
+
+[data-bina-proposal-card],
+[data-bina-proposal-form] {
+    overflow: visible;
+}
+
+[data-bina-proposal-form] select[name="plan_key"] {
+    position: relative;
+    z-index: 5;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+}
+
+/* Native option list colors for mobile/desktop WebKit/Chromium */
+[data-bina-proposal-form] select[name="plan_key"] option {
+    background: #ffffff;
+    color: #111827;
+}

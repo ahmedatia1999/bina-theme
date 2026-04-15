@@ -106,6 +106,7 @@ function bina_customer_portal_enqueue_shell_assets() {
 	if ( $done ) {
 		return;
 	}
+
 	$script_path = get_template_directory() . '/assets/js/dashboard-shell.js';
 	if ( ! file_exists( $script_path ) ) {
 		return;

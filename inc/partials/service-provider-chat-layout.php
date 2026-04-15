@@ -83,13 +83,36 @@ function bina_render_service_provider_chat_layout_start( $args ) {
 	?>
 <style>
 @media (max-width: 767px) {
-	[data-bina-dashboard-shell].bina-dashboard-sidebar-open [data-bina-sidebar-container] {
+	[data-bina-dashboard-shell] [data-bina-sidebar-container] {
 		display: flex !important;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transform: translate3d(100%, 0, 0);
+		transition: opacity .42s cubic-bezier(.22,.61,.36,1), transform .42s cubic-bezier(.22,.61,.36,1), visibility 0s linear .42s;
+	}
+	[data-bina-dashboard-shell].bina-dashboard-sidebar-open [data-bina-sidebar-container] {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transform: translate3d(0, 0, 0);
+		transition-delay: 0s;
 		z-index: 40;
+	}
+	[data-bina-dashboard-shell] [data-bina-portal-backdrop],
+	[data-bina-dashboard-shell] [data-bina-sp-backdrop] {
+		display: block !important;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition: opacity .32s cubic-bezier(.22,.61,.36,1), visibility 0s linear .32s;
 	}
 	[data-bina-dashboard-shell].bina-dashboard-sidebar-open [data-bina-portal-backdrop],
 	[data-bina-dashboard-shell].bina-dashboard-sidebar-open [data-bina-sp-backdrop] {
-		display: block !important;
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transition-delay: 0s;
 	}
 }
 </style>

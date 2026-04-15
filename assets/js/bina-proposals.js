@@ -61,6 +61,53 @@
     const nonce = root.getAttribute("data-nonce") || "";
     if (!ajaxUrl || !nonce) return;
 
+    function openProposalForm(form) {
+      if (!form) return;
+      form.classList.remove("hidden");
+      form.style.display = "block";
+      form.style.overflow = "hidden";
+      form.style.willChange = "max-height, opacity, transform";
+      form.style.transition =
+        "max-height .34s cubic-bezier(.22,.61,.36,1), opacity .28s ease, transform .34s cubic-bezier(.22,.61,.36,1)";
+      // start state
+      form.style.maxHeight = "0px";
+      form.style.opacity = "0";
+      form.style.transform = "translateY(-6px)";
+      // next frame -> animate to content height
+      requestAnimationFrame(() => {
+        const target = Math.max(form.scrollHeight + 24, 240);
+        form.style.maxHeight = target + "px";
+        form.style.opacity = "1";
+        form.style.transform = "translateY(0)";
+      });
+    }
+
+    function closeProposalForm(form) {
+      if (!form) return;
+      const finish = () => {
+        form.classList.add("hidden");
+        form.style.removeProperty("max-height");
+        form.style.removeProperty("opacity");
+        form.style.removeProperty("transform");
+        form.style.removeProperty("transition");
+        form.style.removeProperty("overflow");
+        form.style.removeProperty("will-change");
+      };
+      form.style.overflow = "hidden";
+      form.style.willChange = "max-height, opacity, transform";
+      form.style.transition =
+        "max-height .34s cubic-bezier(.22,.61,.36,1), opacity .28s ease, transform .34s cubic-bezier(.22,.61,.36,1)";
+      form.style.maxHeight = Math.max(form.scrollHeight + 24, 240) + "px";
+      form.style.opacity = "1";
+      form.style.transform = "translateY(0)";
+      requestAnimationFrame(() => {
+        form.style.maxHeight = "0px";
+        form.style.opacity = "0";
+        form.style.transform = "translateY(-6px)";
+      });
+      window.setTimeout(finish, 340);
+    }
+
     function renderBreakdown(form) {
       const planSel = form.querySelector('select[name="plan_key"]');
       const priceEl = form.querySelector('input[name="price_total"]');
@@ -158,7 +205,7 @@
       if (!card) return;
       const form = qs(card, "[data-bina-proposal-form]");
       if (form) {
-        form.classList.remove("hidden");
+        openProposalForm(form);
         renderBreakdown(form);
       }
     });
@@ -171,7 +218,7 @@
       const form = qs(card, "[data-bina-proposal-form]");
       const msg = qs(card, "[data-bina-proposal-msg]");
       if (msg) msg.textContent = "";
-      if (form && form.dataset.submitting !== "1") form.classList.add("hidden");
+      if (form && form.dataset.submitting !== "1") closeProposalForm(form);
     });
 
     root.addEventListener("change", (e) => {
