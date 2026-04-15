@@ -73,6 +73,8 @@
       form.style.maxHeight = "0px";
       form.style.opacity = "0";
       form.style.transform = "translateY(-6px)";
+      // force layout so browser applies start state before transition
+      void form.offsetHeight;
       // next frame -> animate to content height
       requestAnimationFrame(() => {
         const target = Math.max(form.scrollHeight + 24, 240);
@@ -323,6 +325,24 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("[data-bina-proposals]").forEach(init);
+    document.querySelectorAll("[data-bina-proposals]").forEach((root) => {
+      // Ensure all proposal forms start collapsed unless explicitly in submitted state.
+      root.querySelectorAll("[data-bina-proposal-card]").forEach((card) => {
+        const form = card.querySelector("[data-bina-proposal-form]");
+        const openBtn = card.querySelector("[data-bina-proposal-open]");
+        if (!form) return;
+        if (openBtn) {
+          form.classList.add("hidden");
+          form.style.display = "none";
+          form.style.removeProperty("max-height");
+          form.style.removeProperty("opacity");
+          form.style.removeProperty("transform");
+          form.style.removeProperty("transition");
+          form.style.removeProperty("overflow");
+          form.style.removeProperty("will-change");
+        }
+      });
+      init(root);
+    });
   });
 })();
